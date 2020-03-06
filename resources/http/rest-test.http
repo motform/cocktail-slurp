@@ -1,0 +1,19 @@
+# _*_ restclient _*_
+#
+## Get a cocktail via transit+json
+
+POST http://localhost:3232/cocktail
+Content-Type: application/transit+json
+Accept-Charset: utf-8
+Accept: application/transit+json
+
+["^ ","~:cocktail","have a ball"]
+
+## should fail?!
+
+GET http://localhost:3232/cocktailso
+Content-Type: application/transit+json
+Accept-Charset: utf-8
+Accept: application/transit+json
+
+["^ ","~:cocktail","have a ball"]
