@@ -46,6 +46,7 @@
   (->> body (filter string?) (apply str)))
 
 ;; WARN does not cover cases where there is only one \n before story
+;;      as we cant have nil in the db, we mock it out with ""
 (defn- split-body [body]
   (str/split body #"\n\n"))
 
@@ -53,7 +54,7 @@
   (let [body (-> (s/select (s/child (s/class :post-body)) post)
                  first :content body->str str/trim)
         [recipie prep story] (split-body body)]
-    (assoc post :recipie recipie :preparation prep :story story)))
+    (assoc post :recipie recipie :preparation (or prep " ") :story (or story " "))))
 
 (defn- nested-img [post]
   (-> (s/select (s/child (s/class :post-body) (s/tag :center) (s/tag :img)) post)
@@ -64,18 +65,19 @@
       first :attrs :src))
 
 (defn- img [post]
-  (assoc post :img (or (nested-img post)
-                       (flat-img post))))
+  (let [img (or (nested-img post)
+                (flat-img post))]
+    (if img (assoc post :img img) post)))
 
 (defn- parse-tag-by [pred k]
   (fn [post]
-    (assoc post k
-           (->> (s/select (s/child (s/class :post-labels)) post)
-               first :content
-               (filter map?)
-               (map (comp first :content))
-               (filter pred)
-               (into #{})))))
+    (let [tag-set (->> (s/select (s/child (s/class :post-labels)) post)
+                      first :content
+                      (filter map?)
+                      (map (comp first :content))
+                      (filter pred)
+                      (into #{}))]
+      (if-not (empty? tag-set) (assoc post k tag-set) post))))
 
 (defn- category? [tag]
   (re-matches #"\*.+" tag))
