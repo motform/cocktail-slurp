@@ -1,20 +1,12 @@
 (ns cocktail-slurp.parse
-  (:require [clojure.string :as string]
+  (:require [clojure.string :as str]
             [hickory.select :as s]))
 
-(defn category? [tag]
-  (re-matches #"\*.+" tag))
+(declare id url date title body img author categories bars ingredients prefix-ingredients)
 
-(defn bar? [tag]
-  (re-matches #"\#.+" tag))
 
-(defn ingredient? [tag]
-  (re-matches #"\w.+" tag))
-
-(declare id url date title author categories bars ingredients prefix-ingredients body)
-
-(defn post->map [post]
-  (-> post id url title author date body categories bars ingredients #_prefix-ingredients
+(defn post->cocktail [post]
+  (-> post id url title author date body img categories bars ingredients prefix-ingredients
       (dissoc :type :attrs :tag :content)))
 
 (defn- id [post]
@@ -35,20 +27,40 @@
 (defn- author [post]
   (assoc post :author
          (-> (s/select (s/child (s/class :post-author)) post)
-             first :content second :content first))) ;
+             first :content second :content first)))
+
+(defn- readable-date [date]
+  (-> date (subs 2 10) (str/replace #"-" "")))
 
 (defn- date [post]
-  (assoc post :date
-         (-> (s/select (s/child (s/class :timestamp-link)) post)
-             first :content first :attrs :title)))
+  (let [date (-> (s/select (s/child (s/class :timestamp-link)) post)
+                 first :content first :attrs :title)]
+    (assoc post :date (readable-date date))))
 
 (defn- body->str [body]
   (->> body (filter string?) (apply str)))
 
+;; WARN does not cover cases where there is only one \n before story
+(defn- split-body [body]
+  (str/split body #"\n\n"))
+
 (defn- body [post]
-  (assoc post :body
-         (-> (s/select (s/child (s/class :post-body)) post)
-             first :content body->str string/trim)))
+  (let [body (-> (s/select (s/child (s/class :post-body)) post)
+                 first :content body->str str/trim)
+        [recipie prep story] (split-body body)]
+    (assoc post :recipie recipie :preparation prep :story story)))
+
+(defn- nested-img [post]
+  (-> (s/select (s/child (s/class :post-body) (s/tag :center) (s/tag :img)) post)
+      first :attrs :src))
+
+(defn- flat-img [post]
+  (-> (s/select (s/child (s/class :post-body) (s/tag :img)) post)
+      first :attrs :src))
+
+(defn- img [post]
+  (assoc post :img (or (nested-img post)
+                       (flat-img post))))
 
 (defn- parse-tag-by [pred k]
   (fn [post]
@@ -60,6 +72,15 @@
                (filter pred)
                (into #{})))))
 
+(defn- category? [tag]
+  (re-matches #"\*.+" tag))
+
+(defn- bar? [tag]
+  (re-matches #"\#.+" tag))
+
+(defn- ingredient? [tag]
+  (re-matches #"\w.+" tag))
+
 (defn- categories [post]
   ((parse-tag-by category? :categories) post))
 
@@ -69,12 +90,11 @@
 (defn- ingredients [post]
   ((parse-tag-by ingredient? :ingredients) post))
 
-;; TODO re-examine this
 (defn- prefix-ingredient [ingredient]
   (if-let [prefix (re-find #"\(\w+\)" ingredient)]
-    (string/join " " (cons (string/replace prefix #"\(|\)" "")
-                           (drop-last (string/split ingredient #" "))))
+    (str/join " " (cons (str/replace prefix #"\(|\)" "")
+                        (drop-last (str/split ingredient #" "))))
     ingredient))
 
 (defn prefix-ingredients [post]
-  (update post :ingredients (partial map prefix-ingredient)))
+  (update post :ingredients #(into #{} (map prefix-ingredient %))))
