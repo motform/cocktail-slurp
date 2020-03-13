@@ -4,6 +4,11 @@
 
 (declare id url date title body img author categories bars ingredients prefix-ingredients)
 
+(defn cocktail?
+  "Assumes that all non-cocktail posts have a leading ':: ' in the title.
+   There might some collateral, but we accept that as we need corrects cocktails."
+  [{:keys [title]}]
+  (not (re-find #"::" title)))
 
 (defn post->cocktail [post]
   (-> post id url title author date body img categories bars ingredients prefix-ingredients
