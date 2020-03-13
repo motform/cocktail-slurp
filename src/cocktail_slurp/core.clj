@@ -1,7 +1,6 @@
 (ns cocktail-slurp.core
   (:gen-class)
-  (:require [clojure.pprint :refer [pprint]]
-            [cocktail-slurp.routes :as routes]
+  (:require [cocktail-slurp.routes :as routes]
             [muuntaja.middleware :refer [wrap-format]]
             [org.httpkit.server :refer [run-server]]
             [ring.middleware.cors :refer [wrap-cors]]
@@ -16,20 +15,12 @@
                (assoc request :body (->> request :body .bytes slurp))
                request))))
 
-(defn wrap-println [handler]
-  (fn [request]
-    (pprint request)
-    (handler
-     request)))
-
 ;; TODO clean up the handler
 (def bartender
   (-> #'routes/route-handler
       (wrap-cors :access-control-allow-origin  [#"http://localhost:8020"]
                  :access-control-allow-methods [:post :get])
-      ;; wrap-println
-      ;; wrap-format
-      ;; wrap-body-string
+      wrap-body-string
       wrap-session
       wrap-params
       wrap-flash
