@@ -2,17 +2,7 @@
   (:require [clojure.string :as str]
             [hickory.select :as s]))
 
-(declare id url date title body img author categories bars ingredients prefix-ingredients)
-
-(defn cocktail?
-  "Assumes that all non-cocktail posts have a leading ':: ' in the title.
-   There might some collateral, but we accept that as we need corrects cocktails."
-  [{:keys [title]}]
-  (not (re-find #"::" title)))
-
-(defn post->cocktail [post]
-  (-> post id url title author date body img categories bars ingredients prefix-ingredients
-      (dissoc :type :attrs :tag :content)))
+;; TODO add parsing for type #{:strained :stirred :punch}
 
 (defn- id [post]
   (assoc post :id
@@ -37,6 +27,7 @@
 (defn- readable-date [date]
   (-> date (subs 2 10) (str/replace #"-" "")))
 
+;; TODO make this an instant instead of a string
 (defn- date [post]
   (let [date (-> (s/select (s/child (s/class :timestamp-link)) post)
                  first :content first :attrs :title)]
@@ -103,5 +94,22 @@
                         (drop-last (str/split ingredient #" "))))
     ingredient))
 
-(defn prefix-ingredients [post]
+(defn- prefix-ingredients [post]
   (update post :ingredients #(into #{} (map prefix-ingredient %))))
+
+(defn cocktail?
+  "Assumes that all non-cocktail posts have a leading ':: ' in the title.
+   There might some collateral, but we accept that as we need corrects cocktails."
+  [{:keys [title]}]
+  (not (re-find #"::" title)))
+
+(defn post->cocktail [post]
+  (-> post id url title author date body img categories bars ingredients prefix-ingredients
+      (dissoc :type :attrs :tag :content)))
+
+(def xf-cocktail
+  (comp (map post->cocktail)
+        (filter cocktail?)))
+
+(defn posts->cocktails [posts]
+  (->> posts slurp read-string (into [] xf-cocktail)))
