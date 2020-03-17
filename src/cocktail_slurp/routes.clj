@@ -14,14 +14,14 @@
     (transit+json-response (db/cocktail-by-title (:cocktail strainer)))))
 
 (defn cocktail-handler [{:keys [params]}]
-  (transit+json-response (db/cocktail-by-id (get params "id"))))
+  (transit+json-response (ffirst (db/cocktail-by-id (params "id"))))) ;; TODO refactor away this ffirst call
 
-(defn random-cocktails [{:keys [params]}]
+(defn cocktail-feed [{:keys [params]}]
   (let [cocktails (-> params (get "cocktails") (Integer/parseInt))]
-    (transit+json-response (db/random-cocktails cocktails))))
+    (transit+json-response (db/cocktail-feed cocktails))))
 
 (def route-handler
   (make-handler ["/" {"index.html" :TODO-index
                       "bartender/" {"strain" strain-handler
                                     "cocktail" cocktail-handler
-                                    "cocktails/" {"random" random-cocktails}}}]))
+                                    "cocktails/" {"feed" cocktail-feed}}}]))
