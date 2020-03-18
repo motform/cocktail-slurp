@@ -1,0 +1,3 @@
+{:datomic {:uri "datomic:mem://cocktail-slurp"
+           :posts "posts.edn"}
+ :http {:port 3232}}

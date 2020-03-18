@@ -4,8 +4,6 @@
 
 ;;; db
 
-(def uri "datomic:mem://cocktail-slurp")
-
 (def *conn (atom nil))
 
 ;; TODO refactor data into cocktail/ author/ ingredient/ bar/ and category/ namespaces
@@ -47,15 +45,15 @@
     :db/doc "Ingredients used in the cocktail."
     :db/valueType :db.type/string :db/cardinality :db.cardinality/many}])
 
-(defn init-conn! []
+(defn init-conn! [uri]
   (reset! *conn (d/connect uri)))
 
 (defn init-db!
   "Initialize and populate the in-memory Datomic db.
    Expects `posts` to be the relative path to an .edn of scraped posts"
-  [posts]
+  [uri posts]
   (d/create-database uri)
-  (init-conn!)
+  (init-conn! uri)
   @(d/transact @*conn schema)
   @(d/transact @*conn (parse/posts->cocktails posts)))
 
@@ -82,8 +80,12 @@
 
 (comment
   ;; datomic
-  (init-db! "posts.edn")
-  (d/delete-database uri)
+  (init-db! "posts.edn" "datomic:mem://cocktail-slurp")
+  (d/delete-database "datomic:mem://cocktail-slurp")
 
+  (d/q '[:find (pull ?e [:id :title])
+         :where
+         [?e :id ?id]]
+       (d/db @*conn))
   ;; export the cocktails
   (spit "resources/edn/formatted-posts.edn" (pr-str (parse/posts->cocktails "posts.edn"))))

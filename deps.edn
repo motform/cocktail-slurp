@@ -1,4 +1,4 @@
-{:paths ["src" "resources"]
+{:paths ["src" "resources" "env" "test"]
 
  :deps {bidi {:mvn/version "2.1.6"}
         http-kit {:mvn/version "2.4.0-alpha6"}

@@ -1,7 +1,8 @@
 (ns cocktail-slurp.core
   (:gen-class)
-  (:require [cocktail-slurp.routes :as routes]
-            [cocktail-slurp.db :as db]
+  (:require [cocktail-slurp.db :as db]
+            [cocktail-slurp.config :refer [env]]
+            [cocktail-slurp.routes :as routes]
             [muuntaja.middleware :refer [wrap-format]]
             [org.httpkit.server :refer [run-server]]
             [ring.middleware.cors :refer [wrap-cors]]
@@ -28,6 +29,7 @@
       wrap-reload))
 
 (defn -main []
-  (db/init-db! "posts.edn")
   (println "init")
-  (run-server bartender {:port 3232}))
+  (db/init-db! (get-in env [:datomic :uri])
+               (get-in env [:datomic :posts]))
+  (run-server bartender {:port (get-in env [:http :port])}))
