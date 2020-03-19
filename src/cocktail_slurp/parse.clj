@@ -24,7 +24,9 @@
          (-> (s/select (s/child (s/class :post-author)) post)
              first :content second :content first)))
 
-(defn- readable-date [date]
+(defn- readable-date
+  "Formats long date string to YYMMDD"
+  [date]
   (-> date (subs 2 10) (str/replace #"-" "")))
 
 ;; TODO make this an instant instead of a string
@@ -70,7 +72,7 @@
 (defn- img [post]
   (let [img (or (nested-img post)
                 (flat-img post))]
-    (if img (assoc post :img img) post)))
+    (if img (assoc post :img img) post))) ;; TODO refactor into ?assoc
 
 (defn- parse-tag-by [pred k]
   (fn [post]

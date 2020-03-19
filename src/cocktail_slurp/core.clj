@@ -29,7 +29,7 @@
       wrap-reload))
 
 (defn -main []
-  (println "init")
-  (db/init-db! (get-in env [:datomic :uri])
-               (get-in env [:datomic :posts]))
-  (run-server bartender {:port (get-in env [:http :port])}))
+  (let [{:keys [datomic http]} env]
+    (println "init")
+    (db/init-db! (:uri datomic) (:posts datomic))
+    (run-server bartender {:port (:port http)})))

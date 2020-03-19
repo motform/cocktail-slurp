@@ -60,7 +60,7 @@
 ;;; queries
 
 (defn cocktail-by
-  "Factory for creating single attribute-single result quires."
+  "Factory for creating single attribute quires."
   [a]
   (fn [v]
     (d/q '[:find (pull ?e [*])
@@ -68,24 +68,25 @@
            :where [?e ?a ?v]]
          (d/db @*conn) a v)))
 
-(def cocktail-by-id (cocktail-by :id))
+(def cocktail-by-id #(ffirst ((cocktail-by :id) %)))
 (def cocktail-by-title (cocktail-by :title))
 
-;; TODO move to pull api, implement pagination, shrink payload
+;; TODO move to pull api, implement pagination
 (defn cocktail-feed [n]
-  (let [cocktails (d/q '[:find (pull ?e [*])
+  (let [cocktails (d/q '[:find (pull ?e [:id :title :recipie :preparation :ingredients])
                          :where [?e :id]]
                        (d/db @*conn))]
     (->> cocktails (take n) (mapv first))))
 
 (comment
   ;; datomic
-  (init-db! "posts.edn" "datomic:mem://cocktail-slurp")
+  (init-db! "datomic:mem://cocktail-slurp" "posts.edn")
   (d/delete-database "datomic:mem://cocktail-slurp")
 
   (d/q '[:find (pull ?e [:id :title])
          :where
          [?e :id ?id]]
        (d/db @*conn))
+
   ;; export the cocktails
   (spit "resources/edn/formatted-posts.edn" (pr-str (parse/posts->cocktails "posts.edn"))))

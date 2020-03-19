@@ -14,7 +14,7 @@
     (transit+json-response (db/cocktail-by-title (:cocktail strainer)))))
 
 (defn cocktail-handler [{:keys [params]}]
-  (transit+json-response (ffirst (db/cocktail-by-id (params "id"))))) ;; TODO refactor away this ffirst call
+  (transit+json-response (db/cocktail-by-id (params "id"))))
 
 (defn cocktail-feed [{:keys [params]}]
   (let [cocktails (-> params (get "cocktails") (Integer/parseInt))]
