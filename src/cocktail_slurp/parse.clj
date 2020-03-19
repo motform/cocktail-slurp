@@ -33,17 +33,29 @@
                  first :content first :attrs :title)]
     (assoc post :date (readable-date date))))
 
+(defn- flatten-anchors
+  "Takes a vec of text nodes Hickory has extracted from a <p> and
+  flattens the anchors into their `:content`. Nodes have are pairs
+  str {meta} in a vec, with :content holding the anchor str in
+  cases of that tag, which we would otherwise miss by just
+  filtering for the strings. Does not preserve URLs."
+  [x]
+  (cond 
+    (string? x) x
+    (map? x) (-> x :content first)
+    :else (throw (Exception. "invalid input to `flatten-anchors`"))))
+
 (defn- body->str [body]
-  (->> body (filter string?) (apply str)))
+  (->> body (map flatten-anchors) (apply str)))
+
+(defn- split-body [body]
+  (map #(str/replace % #"  " "\n") (str/split body #"\n\n")))
 
 ;; WARN does not cover cases where there is only one \n before story
-;;      as we cant have nil in the db, we mock it out with ""
-(defn- split-body [body]
-  (str/split body #"\n\n"))
-
+;; WARN as we cant have nil in the db, we mock it out with ""
 (defn- body [post]
   (let [body (-> (s/select (s/child (s/class :post-body)) post)
-                 first :content body->str str/trim)
+                 first :content body->str #_str/trim)
         [recipie prep story] (split-body body)]
     (assoc post :recipie recipie :preparation (or prep " ") :story (or story " "))))
 
