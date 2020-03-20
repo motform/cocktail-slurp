@@ -1,4 +1,4 @@
-(ns cocktail-slurp.core
+(ns cocktail-slurp.server
   (:gen-class)
   (:require [cocktail-slurp.db :as db]
             [cocktail-slurp.config :refer [env]]
