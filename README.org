@@ -1,0 +1,20 @@
+#+BEGIN_QUOTE
+“Quality versus quantity does not have to be a winner-take-all proposition.”
+— cocktail +virgin+ slut
+#+END_QUOTE
+
+An unsolicited re-misrepresentation of [[https://cocktailvirgin.blogspot.com][the internets foremost experimental cocktail repository]].
+
+** Development
+   Things will most likely break/look strange if you do not have the required typefaces. Suisse Int’l is proprietary, but can be aquired free of charge [[https://www.swisstypefaces.com/fonts/suisse/#font][here]].
+
+*** Server
+    Simply run ~clj -A:server~. 
+
+*** Front-end
+    Before I make nice aliases etc, you can run ~npx shadow-cljs watch~ (preferably via CIDER) for development or ~npx shadow-cljs compile app~ for some kind of deployment.
+    
+
+** Deployment
+   TBA, docker or uberjar or whatever
+
