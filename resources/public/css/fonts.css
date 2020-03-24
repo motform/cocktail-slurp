@@ -1,0 +1,7 @@
+@font-face {
+    src: url('/fonts/SuisseIntl-Book-WebXL.woff2') format("woff2"),
+         url('/fonts/SuisseIntl-Book-WebXL.woff')  format("woff");
+    font-family: "Suisse Intl";
+    font-style: normal;
+    font-weight: 300;
+}

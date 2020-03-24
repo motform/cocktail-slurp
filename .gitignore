@@ -1,0 +1,6 @@
+.shadow-cljs/
+.clj-kondo/
+node_modules/
+!resources/public
+resources/public/js/
+package-lock.json

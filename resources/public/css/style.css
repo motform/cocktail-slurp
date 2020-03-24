@@ -1,0 +1,345 @@
+:root {
+    --bg: #C0C0C0;
+    --fg: #000000;
+
+    --green: #86c65f;
+    --menu-bg: #fcc90e;
+    --cocktails: #f18d1e;
+    --library-bg: #4cbcd0;
+}
+
+* {
+    box-sizing: border-box;
+}  
+
+html {
+    font-size: 5px;
+    font-family: "Suisse Intl";
+    color: var(--fg);
+}
+
+body {
+    background: var(--bg);
+    font-size: 4rem;
+    line-height: 5rem;
+}
+
+a {
+    text-decoration: none;
+    color: var(--fg);
+}
+
+a:hover {
+    color: white;
+}
+
+::selection {
+    color: white;
+    background-color: none;
+}
+
+h1 {
+    font-size: 16rem;
+    line-height: 13rem;
+    margin-bottom: 4rem;
+}
+
+h2 {
+}
+
+h3 {
+    text-transform: lowercase;
+}
+
+button {
+    background: none;
+    color: var(--fg);
+    font-family: "Suisse Intl";
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+/* General */
+
+.dense-grid {
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-column-gap: 3rem;
+    grid-auto-flow: dense;
+    grid-auto-rows: auto;
+    list-style: none;
+}
+
+footer {
+    margin: 20rem 10rem 10rem 10rem;
+    color: white;
+}
+
+/* Catalouge */
+
+.dispatch-btn:hover {
+    color: white;
+}
+
+/* Header */
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: 0rem 0 0 10rem;
+    height: 50rem;
+    color: white;
+}
+
+a.header-btn:link    { color: white; }
+a.header-btn:visited { color: white; }
+a.header-btn:hover   { color: var(--fg); }
+a.header-btn:active  { color: white; }
+
+#title {
+}
+
+.header-btn {
+    /* [TODO] align with baseline of header */
+    align-self: stretch;
+    cursor: pointer;
+    width: 30rem;
+    text-align: center;
+    padding: 10rem 0 0 0;
+}
+
+.header-library {
+    background-color: var(--library-bg);
+}
+
+.header-menu {
+    background-color: var(--menu-bg);
+}
+
+.header-cocktails {
+    background-color: var(--cocktails);
+}
+
+/* Picker */
+
+#picker {
+    display: flex;
+    margin: 10rem 0 20rem 0;
+}
+
+.picker-input {
+}
+
+/* Main */
+
+main {
+    display: flex;
+    padding: 10rem 10rem 0 10rem;
+}
+
+/* Menu */
+
+#menu {
+    background-color: var(--menu-bg);
+}
+
+/* About */
+
+.about {
+    line-height: 7rem;
+    max-width: 800px;
+}
+
+/* Catalouge */
+
+.ingredients {
+
+}
+
+.ingredient {
+    text-transform: lowercase;
+    display: inline;
+    margin-right: 3rem;
+}
+
+.clickable-ingredient {
+    cursor: pointer;
+}
+
+.clickable-ingredient:hover{
+    color: white;
+}
+
+
+
+/* Library  */
+
+#library-wrapper {
+    width: 100%;
+}
+
+#library {
+    background-color: var(--library-bg);
+}
+
+#btn-library-clear {
+    margin-bottom: 10rem;
+}
+
+.empty {
+    padding: 10rem 0 20rem 0;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 15rem;
+    margin-right: 5rem;
+}
+
+.section-initial {
+    display: inline-block;
+    min-width: 20rem;
+
+    font-size: 12rem;
+    text-align: center;
+
+    border: 2px solid var(--fg);
+    border-width: 0 0 2px 0;
+    padding-bottom: 6rem;
+    margin-bottom: 1rem;
+}
+
+.section-title {
+}
+
+.section-cocktails {
+    padding-top: 3rem;
+    line-height: 5rem;
+}
+
+/* Cards */
+
+#cards {
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    padding: 0rem 0rem 12rem 3rem;
+
+    line-height: 3.5rem;
+}
+
+.card-header {
+    display: flex;
+    margin-bottom: 1rem;
+}
+
+.card-add-menu {
+    margin-left: auto;
+}
+
+.card-add-library {
+    margin-left: auto;
+}
+
+.card-body {
+    margin-top: 4rem;
+    white-space: pre-wrap;
+    font-size: 3rem;
+}
+
+.card-ingredient {
+    font-size: 2rem;
+    padding-right: 2rem;
+}
+
+.flags {
+    margin-left: auto;
+}
+
+.flag {
+    height: 1.5rem;
+    width: 5rem;
+}
+
+.flag-menu {
+    background-color: var(--menu-bg);
+}
+
+.flag-library {
+    background-color: var(--library-bg);
+}
+
+.line-left {
+    border: 2px solid var(--fg);
+    border-width: 0 0 0 2px;
+}
+
+/* Cocktail */
+
+#cocktail {
+    white-space: pre-wrap;
+}
+
+#metadata {
+    margin-right: 8rem;
+}
+.cocktail-body {
+}
+
+.coccktail-ingredient {
+}
+
+/* Strainer */
+
+#strainer {
+    background: var(--cocktails);
+    padding: 10rem;
+    display: flex;
+}
+
+input {
+    font-family: "Suisse Intl";
+    font-size: 4rem;
+    border: 2px solid var(--fg);
+    border-width: 0 0 2px 0;
+    background: none;
+    padding: 1rem;
+}
+
+::placeholder {
+    color: var(--fg);
+}
+
+#strain-input {
+    height: 10rem;
+    width: 300px;
+    color: var(--fg);
+}
+
+.strainer-bit {
+    font-size: 4rem;
+    margin-left: 6rem;
+}
+
+.strainer-bit:hover {
+    text-decoration: line-through;
+    color: white;
+}
+
+#btn-strainer-clear {
+    border-width: 0;
+    margin-left: auto;
+    font-size: 4rem;
+    cursor: pointer ;
+}
+
+#btn-strainer-clear:hover {
+    color: white;
+}

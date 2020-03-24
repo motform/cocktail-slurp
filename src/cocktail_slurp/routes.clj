@@ -20,8 +20,13 @@
   (let [cocktails (-> params (get "cocktails") (Integer/parseInt))]
     (transit+json-response (db/cocktail-feed cocktails))))
 
+(defn home-page [_]
+  (ring/file-response "index.html" {:root "resources/public"}))
+
 (def route-handler
-  (make-handler ["/" {"index.html" :TODO-index
+  (make-handler ["/" {"" home-page
+                      "index.html" home-page
+                      ;; "" (ring/resource-response "resources/public/index.html")
                       "bartender/" {"strain" strain-handler
                                     "cocktail" cocktail-handler
                                     "cocktails/" {"feed" cocktail-feed}}}]))
