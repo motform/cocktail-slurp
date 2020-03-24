@@ -51,13 +51,13 @@
   (->> body (map flatten-anchors) (apply str)))
 
 (defn- split-body [body]
-  (map #(str/replace % #"  " "\n") (str/split body #"\n\n")))
+  (map #(str/replace % #"  " "\n\n") (str/split body #"\n\n")))
 
 ;; WARN does not cover cases where there is only one \n before story
 ;; WARN as we cant have nil in the db, we mock it out with ""
 (defn- body [post]
   (let [body (-> (s/select (s/child (s/class :post-body)) post)
-                 first :content body->str #_str/trim)
+                 first :content body->str str/trim)
         [recipie prep story] (split-body body)]
     (assoc post :recipie recipie :preparation (or prep " ") :story (or story " "))))
 

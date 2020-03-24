@@ -1,4 +1,6 @@
 {:paths ["src" "resources" "env" "test"]
+ :aliases 
+ {:server {:main-opts ["-m" "cocktail-slurp.server"]}}
 
  :deps {;; http-server
         bidi {:mvn/version "2.1.6"}
