@@ -1,13 +1,21 @@
 (ns cocktail.spit.events
   (:require [re-frame.core :refer [reg-event-db reg-event-fx inject-cofx path after debug]]
             [ajax.core :as ajax]
+            [clojure.spec.alpha :as s]
             [cognitect.transit :as t]
             [cocktail.spit.db :as db]
-            [cocktail.spit.helpers :as helpers]))
+            [cocktail.stuff.util :as util]))
 
 ;;;; Interceptors
 
-(def check-spec-interceptor (after (partial helpers/check-and-throw :cocktail.spit.db/db)))
+(defn- check-and-throw
+  "Throws an exception if `db` doesn't match the Spec `a-spec`.
+  SOURCE: re-frame docs."
+  [a-spec db]
+  (when-not (s/valid? a-spec db)
+    (throw (ex-info (str "spec check failed: " (s/explain-str a-spec db)) {}))))
+
+(def check-spec-interceptor (after (partial check-and-throw :cocktail.spit.db/db)))
 (def spec-interceptor [check-spec-interceptor])
 
 (def ->local-storage (after db/collections->local-storage))
@@ -19,7 +27,7 @@
  :initialize-db
  [(inject-cofx :local-store-collections)]
  (fn [{:keys [db local-store-collections] :as fx} _]
-   {:db (helpers/?assoc db/default-db :collections local-store-collections)}))
+   {:db (util/?assoc db/default-db :collections local-store-collections)}))
 
 ;;;; Page Events
 

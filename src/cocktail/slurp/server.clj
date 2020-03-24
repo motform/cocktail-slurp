@@ -1,7 +1,7 @@
 (ns cocktail.slurp.server
   (:gen-class)
-  (:require [cocktail.slurp.db :as db]
-            [cocktail.slurp.config :refer [env]]
+  (:require [cocktail.stuff.config :as config]
+            [cocktail.slurp.db :as db]
             [cocktail.slurp.routes :as routes]
             [muuntaja.middleware :refer [wrap-format]]
             [org.httpkit.server :refer [run-server]]
@@ -38,7 +38,7 @@
       wrap-reload))
 
 (defn -main []
-  (let [{:keys [datomic http]} env]
+  (let [{:keys [datomic http]} config/env]
     (println "init")
     (db/init-db! (:uri datomic) (:posts datomic))
     (run-server bartender {:port (:port http)})))

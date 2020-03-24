@@ -1,6 +1,6 @@
 (ns cocktail.spit.components.catalouge
   (:require [re-frame.core :as rf]
-            [cocktail.spit.helpers :as helpers]))
+            [cocktail.stuff.util :as util]))
 
 (defn dispatch-btn [k label cocktail]
   (let [collection @(rf/subscribe [(keyword k)])
@@ -23,7 +23,7 @@
 (defn ingredient-list [ingredients class]
   [:ul.ingredients {:class class} 
    (sort (for [ingredient ingredients]
-           ^{:key (helpers/gen-key ingredient ingredients)}
+           ^{:key (util/gen-key ingredient ingredients)}
            ;; WARN might result in a key collision when we have two drinks with identical ingredients
            [ingredient' ingredient]))])
 

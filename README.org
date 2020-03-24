@@ -3,7 +3,7 @@ Quality versus quantity does not have to be a winner-take-all proposition.
 — cocktail +virgin+ slut
 #+END_QUOTE
 
-An unsolicited re-misrepresentation of [[https://cocktailvirgin.blogspot.com][the internets foremost experimental cocktail repository]].
+An unsolicited misrepresentation of [[https://cocktailvirgin.blogspot.com][the internets foremost experimental cocktail repository]].
 
 ** Development
    Things will most likely break/look strange if you do not have the required typefaces. Suisse Int’l is proprietary, but can be acquired free of charge [[https://www.swisstypefaces.com/fonts/suisse/#font][here]].
