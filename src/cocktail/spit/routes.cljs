@@ -1,4 +1,4 @@
-(ns cocktail-spit.routes
+(ns cocktail.spit.routes
   (:require [bidi.bidi :as bidi]
             [re-frame.core :as rf]
             [pushy.core :as pushy]))

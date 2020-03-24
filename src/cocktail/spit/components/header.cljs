@@ -1,6 +1,6 @@
-(ns cocktail-spit.components.header
+(ns cocktail.spit.components.header
   (:require [re-frame.core :as rf]
-            [cocktail-spit.routes :as routes]))
+            [cocktail.spit.routes :as routes]))
 
 (declare title menu library cocktails about)
 

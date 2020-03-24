@@ -1,4 +1,4 @@
-(ns cocktail-spit.components.strainer
+(ns cocktail.spit.components.strainer
   (:require [reagent.core :as r]
             [re-frame.core :as rf]
             [cognitect.transit :as t]

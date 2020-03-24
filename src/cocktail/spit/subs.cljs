@@ -1,4 +1,4 @@
-(ns cocktail-spit.subs
+(ns cocktail.spit.subs
   (:require [re-frame.core :refer [reg-sub subscribe]]))
 
 (reg-sub

@@ -1,4 +1,4 @@
-(ns cocktail-slurp.scrpe
+(ns cocktail.slurp.scrpe
   (:require [hickory.core :as h]
             [hickory.select :as s]))
 

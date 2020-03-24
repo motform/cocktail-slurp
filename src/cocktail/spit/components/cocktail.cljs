@@ -1,7 +1,6 @@
-(ns cocktail-spit.components.cocktail
+(ns cocktail.spit.components.cocktail
   (:require [re-frame.core :as rf]
-            [cocktail-spit.components.catalouge :as catalouge]
-            [clojure.string :as str]))
+            [cocktail.spit.components.catalouge :as catalouge]))
 
 (declare metadata header byline body)
 

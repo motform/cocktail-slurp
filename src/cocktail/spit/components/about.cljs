@@ -1,4 +1,4 @@
-(ns cocktail-spit.components.about)
+(ns cocktail.spit.components.about)
 
 (defn main []
   [:main.about

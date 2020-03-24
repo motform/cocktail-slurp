@@ -1,4 +1,4 @@
-(ns cocktail-slurp.parse
+(ns cocktail.slurp.parse
   (:require [clojure.string :as str]
             [hickory.select :as s]))
 

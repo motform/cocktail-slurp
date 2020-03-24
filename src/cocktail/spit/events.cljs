@@ -1,13 +1,13 @@
-(ns cocktail-spit.events
+(ns cocktail.spit.events
   (:require [re-frame.core :refer [reg-event-db reg-event-fx inject-cofx path after debug]]
             [ajax.core :as ajax]
             [cognitect.transit :as t]
-            [cocktail-spit.db :as db]
-            [cocktail-spit.helpers :as helpers]))
+            [cocktail.spit.db :as db]
+            [cocktail.spit.helpers :as helpers]))
 
 ;;;; Interceptors
 
-(def check-spec-interceptor (after (partial helpers/check-and-throw :cocktail-spit.db/db)))
+(def check-spec-interceptor (after (partial helpers/check-and-throw :cocktail.spit.db/db)))
 (def spec-interceptor [check-spec-interceptor])
 
 (def ->local-storage (after db/collections->local-storage))

@@ -1,8 +1,8 @@
-(ns cocktail-slurp.server
+(ns cocktail.slurp.server
   (:gen-class)
-  (:require [cocktail-slurp.db :as db]
-            [cocktail-slurp.config :refer [env]]
-            [cocktail-slurp.routes :as routes]
+  (:require [cocktail.slurp.db :as db]
+            [cocktail.slurp.config :refer [env]]
+            [cocktail.slurp.routes :as routes]
             [muuntaja.middleware :refer [wrap-format]]
             [org.httpkit.server :refer [run-server]]
             [ring.middleware.cors :refer [wrap-cors]]

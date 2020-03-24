@@ -1,8 +1,8 @@
-(ns cocktail-slurp.routes
+(ns cocktail.slurp.routes
   (:require [bidi.ring :refer [make-handler]]
             [ring.util.response :as ring]
             [muuntaja.core :as m]
-            [cocktail-slurp.db :as db]))
+            [cocktail.slurp.db :as db]))
 
 (defn- transit+json-response [data]
   (-> (m/encode "application/transit+json" data)

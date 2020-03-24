@@ -1,4 +1,4 @@
-(ns cocktail-spit.helpers
+(ns cocktail.spit.helpers
   (:require [clojure.spec.alpha :as s]))
 
 (defn gen-key

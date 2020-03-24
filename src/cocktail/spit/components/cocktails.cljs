@@ -1,10 +1,9 @@
-(ns cocktail-spit.components.cocktails
+(ns cocktail.spit.components.cocktails
   (:require [clojure.string :as str]
             [re-frame.core :as rf]
-            [cocktail-spit.routes :as routes]
-            [cocktail-spit.helpers :as helpers]
-            [cocktail-spit.components.catalouge :as catalouge]
-            [cocktail-spit.components.strainer :as strainer]))
+            [cocktail.spit.routes :as routes]
+            [cocktail.spit.components.catalouge :as catalouge]
+            [cocktail.spit.components.strainer :as strainer]))
 
 (declare card header title body buttons)
 

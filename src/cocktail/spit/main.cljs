@@ -1,11 +1,11 @@
-(ns cocktail-spit.main
+(ns cocktail.spit.main
   (:require [reagent.core :as r]
             [re-frame.core :as rf]
             [goog.dom :as gdom]
-            [cocktail-spit.routes :as routes]
-            [cocktail-spit.components.app :as app]
-            [cocktail-spit.events]
-            [cocktail-spit.subs]
+            [cocktail.spit.routes :as routes]
+            [cocktail.spit.components.app :as app]
+            [cocktail.spit.events]
+            [cocktail.spit.subs]
             [day8.re-frame.http-fx]))
 
 ;; (devtools/install!)

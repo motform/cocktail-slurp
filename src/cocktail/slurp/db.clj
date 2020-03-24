@@ -1,5 +1,5 @@
-(ns cocktail-slurp.db
-  (:require [cocktail-slurp.parse :as parse]
+(ns cocktail.slurp.db
+  (:require [cocktail.slurp.parse :as parse]
             [datomic.api :as d]))
 
 ;;; db
@@ -80,8 +80,8 @@
 
 (comment
   ;; datomic
-  (init-db! "datomic:mem://cocktail-slurp" "posts.edn")
-  (d/delete-database "datomic:mem://cocktail-slurp")
+  (init-db! "datomic:mem://cocktail.slurp" "posts.edn")
+  (d/delete-database "datomic:mem://cocktail.slurp")
 
   (d/q '[:find (pull ?e [:id :title])
          :where

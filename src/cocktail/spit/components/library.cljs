@@ -1,7 +1,7 @@
-(ns cocktail-spit.components.library
+(ns cocktail.spit.components.library
   (:require [re-frame.core :as rf]
-            [cocktail-spit.routes :as routes]
-            [cocktail-spit.components.catalouge :as catalouge]))
+            [cocktail.spit.routes :as routes]
+            [cocktail.spit.components.catalouge :as catalouge]))
 
 ;; TODO other sorting options beyond initial
 

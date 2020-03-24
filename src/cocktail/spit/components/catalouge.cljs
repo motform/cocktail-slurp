@@ -1,6 +1,6 @@
-(ns cocktail-spit.components.catalouge
+(ns cocktail.spit.components.catalouge
   (:require [re-frame.core :as rf]
-            [cocktail-spit.helpers :as helpers]))
+            [cocktail.spit.helpers :as helpers]))
 
 (defn dispatch-btn [k label cocktail]
   (let [collection @(rf/subscribe [(keyword k)])

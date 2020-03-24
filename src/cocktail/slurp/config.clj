@@ -1,4 +1,4 @@
-(ns cocktail-slurp.config
+(ns cocktail.slurp.config
   (:require [clojure.edn :as edn]))
 
 (defn dev []

@@ -1,4 +1,4 @@
-(ns cocktail-spit.db
+(ns cocktail.spit.db
   (:require [cljs.reader :as reader]
             [cljs.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
@@ -39,7 +39,7 @@
 
 ;;;; local-storage
 
-(def ls-key "cocktail-slurp-collections")
+(def ls-key "cocktail.slurp-collections") ;; TODO make sure this works
 
 (defn collections->local-storage [db]
   (.setItem js/localStorage ls-key (str (:collections db))))

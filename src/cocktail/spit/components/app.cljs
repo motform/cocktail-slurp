@@ -1,11 +1,11 @@
-(ns cocktail-spit.components.app
+(ns cocktail.spit.components.app
   (:require [re-frame.core :as rf]
-            [cocktail-spit.components.header :as header]
-            [cocktail-spit.components.about :as about]
-            [cocktail-spit.components.library :as library]
-            [cocktail-spit.components.cocktails :as cocktails]
-            [cocktail-spit.components.cocktail :as cocktail]
-            [cocktail-spit.components.menu :as menu]))
+            [cocktail.spit.components.header :as header]
+            [cocktail.spit.components.about :as about]
+            [cocktail.spit.components.library :as library]
+            [cocktail.spit.components.cocktails :as cocktails]
+            [cocktail.spit.components.cocktail :as cocktail]
+            [cocktail.spit.components.menu :as menu]))
 
 ;; ;; NOTE what ns should this be in?
 ;; (defn strain [cocktails]
