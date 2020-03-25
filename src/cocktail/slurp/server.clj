@@ -40,5 +40,5 @@
 (defn -main []
   (let [{:keys [datomic http]} config/env]
     (println "init")
-    (db/init-db! (:uri datomic) (:posts datomic))
+    (db/init-db! datomic)
     (run-server bartender {:port (:port http)})))

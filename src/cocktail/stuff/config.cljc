@@ -2,6 +2,7 @@
 
 (def dev
   {:datomic {:uri "datomic:mem://cocktail.slurp"
+             :schema "resources/edn/cocktail-schema.edn"
              :posts "posts.edn"}
    :http {:port 3232}})
 

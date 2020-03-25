@@ -1,0 +1,66 @@
+[{:db/ident :id
+  :db/doc "(Blogspot) id of the cocktail."
+  :db/valueType :db.type/string 
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity}
+
+ {:db/ident :title
+  :db/doc "Cocktail title. Note that we allow for/have multiple cocktails with the same title."
+  :db/valueType :db.type/string 
+  :db/cardinality :db.cardinality/one}
+
+ {:db/ident :date
+  :db/doc "Date when the cocktail was posted, in YYMMDD."
+  :db/valueType :db.type/string 
+  :db/cardinality :db.cardinality/one}
+
+ {:db/ident :author
+  :db/doc "Author, should be replaced with a ?v pointing to an ?e."
+  :db/valueType :db.type/string 
+  :db/cardinality :db.cardinality/one}
+
+ {:db/ident :recipie
+  :db/doc "List of ingredients required for the cocktail."
+  :db/valueType :db.type/string 
+  :db/cardinality :db.cardinality/one}
+
+ {:db/ident :preparation
+  :db/doc "Instructions on how to mix the cocktail."
+  :db/valueType :db.type/string 
+  :db/cardinality :db.cardinality/one}
+
+ {:db/ident :story
+  :db/doc "Everything else from the post body."
+  :db/valueType :db.type/string 
+  :db/cardinality :db.cardinality/one}
+
+ {:db/ident :fulltext
+  :db/doc "Concatenation of all string attributes to assist in fulltext search."
+  :db/valueType :db.type/string 
+  :db/cardinality :db.cardinality/one
+  :db/fulltext true}
+
+ {:db/ident :img
+  :db/doc "URL for the img from Blogspot, not always available."
+  :db/valueType :db.type/string 
+  :db/cardinality :db.cardinality/one}
+
+ {:db/ident :url
+  :db/doc "URL to the original post."
+  :db/valueType :db.type/string 
+  :db/cardinality :db.cardinality/one}
+
+ {:db/ident :bars
+  :db/doc "Bars tagged in the post."
+  :db/valueType :db.type/string 
+  :db/cardinality :db.cardinality/many}
+
+ {:db/ident :categories
+  :db/doc "Categories tagged in the post."
+  :db/valueType :db.type/string 
+  :db/cardinality :db.cardinality/many}
+
+ {:db/ident :ingredients
+  :db/doc "Ingredients used in the cocktail."
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/many}]
