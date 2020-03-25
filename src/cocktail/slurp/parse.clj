@@ -111,9 +111,9 @@
 (defn- prefix-ingredients [post]
   (update post :ingredients #(into #{} (map prefix-ingredient %))))
 
-(defn fulltext [cocktail]
-  (let [fulltext (->> cocktail vals (filter string?) (str/join " "))]
-    (assoc cocktail :fulltext fulltext)))
+(defn fulltext [post]
+  (let [fulltext (->> post vals (filter string?) (str/join " "))]
+    (assoc post :fulltext fulltext)))
 
 (defn cocktail?
   "Assumes that all non-cocktail posts have a leading ':: ' in the title.
@@ -122,13 +122,12 @@
   (not (re-find #"::" title)))
 
 (defn post->cocktail [post]
-  (-> post id url title author date body img categories bars ingredients prefix-ingredients
+  (-> post id url title author date body img categories bars ingredients prefix-ingredients fulltext
       (dissoc :type :attrs :tag :content)))
 
 (def xf-cocktail
   (comp (map post->cocktail)
-        (filter cocktail?)
-        (map fulltext)))
+        (filter cocktail?)))
 
 (defn posts->cocktails [posts]
   (->> posts slurp read-string (into [] xf-cocktail)))

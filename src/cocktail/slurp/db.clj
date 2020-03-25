@@ -21,9 +21,14 @@
 
 ;;; queries
 
-(defn paginate [index limit q & args]
-  {:pre [(pos? limit)]}
-  (subvec (apply (memoize q) args) index (+ index limit)))
+;; NOTE returns nil and not [] on fail
+(defn paginate [start limit q & args]
+  (let [result (apply (memoize q) args)
+        stop (+ start limit)]
+    (when (seq result)
+      (if (< stop (count result))
+        (subvec result start stop)
+        (subvec result start)))))
 
 (defn cocktail-by
   "Factory for creating single attribute quires."
