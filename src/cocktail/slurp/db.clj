@@ -43,6 +43,11 @@
                          :where [?e :id]]
                        (d/db @*conn))]
     (->> cocktails (take n) (mapv first))))
+(defn cocktail-by-fulltext [search]
+  (d/q '[:find [(pull ?e [:id :title :recipie]) ...]
+         :in $ ?search
+         :where [(fulltext $ :fulltext ?search) [[?e ?n]]]]
+       (d/db @*conn) search))
 
 (comment
   ;; datomic

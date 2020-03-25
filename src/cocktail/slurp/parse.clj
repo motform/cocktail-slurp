@@ -111,6 +111,10 @@
 (defn- prefix-ingredients [post]
   (update post :ingredients #(into #{} (map prefix-ingredient %))))
 
+(defn fulltext [cocktail]
+  (let [fulltext (->> cocktail vals (filter string?) (str/join " "))]
+    (assoc cocktail :fulltext fulltext)))
+
 (defn cocktail?
   "Assumes that all non-cocktail posts have a leading ':: ' in the title.
    There might some collateral, but we accept that as we need corrects cocktails."
@@ -123,7 +127,8 @@
 
 (def xf-cocktail
   (comp (map post->cocktail)
-        (filter cocktail?)))
+        (filter cocktail?)
+        (map fulltext)))
 
 (defn posts->cocktails [posts]
   (->> posts slurp read-string (into [] xf-cocktail)))
