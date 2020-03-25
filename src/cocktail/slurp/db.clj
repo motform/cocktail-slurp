@@ -37,12 +37,18 @@
 (def cocktail-by-id #(ffirst ((cocktail-by :id) %)))
 (def cocktail-by-title (cocktail-by :title))
 
-;; TODO move to pull api, implement pagination
-(defn cocktail-feed [n]
-  (let [cocktails (d/q '[:find (pull ?e [:id :title :recipie :preparation :ingredients])
-                         :where [?e :id]]
-                       (d/db @*conn))]
-    (->> cocktails (take n) (mapv first))))
+(defn cocktail-by-ingredients [ingredients]
+  (d/q '[:find [(pull ?e [*]) ...]
+         :in $ [?ingredients ...]
+         :where
+         [?e :ingredients ?ingredients]]
+       (d/db @*conn) ingredients))
+
+(defn cocktail-feed []
+  (d/q '[:find [(pull ?e [:id :title :recipie :preparation :ingredients]) ...]
+         :where [?e :id]]
+       (d/db @*conn)))
+
 (defn cocktail-by-fulltext [search]
   (d/q '[:find [(pull ?e [:id :title :recipie]) ...]
          :in $ ?search
