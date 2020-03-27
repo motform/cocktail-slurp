@@ -58,8 +58,8 @@
 (defn- body [post]
   (let [body (-> (s/select (s/child (s/class :post-body)) post)
                  first :content body->str str/trim)
-        [recipie prep story] (split-body body)]
-    (assoc post :recipie recipie :preparation (or prep " ") :story (or story " "))))
+        [recipe prep story] (split-body body)]
+    (assoc post :recipe recipe :preparation (or prep " ") :story (or story " "))))
 
 (defn- nested-img [post]
   (-> (s/select (s/child (s/class :post-body) (s/tag :center) (s/tag :img)) post)
@@ -111,10 +111,11 @@
 (defn- prefix-ingredients [post]
   (update post :ingredients #(into #{} (map prefix-ingredient %))))
 
-(defn fulltext [post]
+(defn- fulltext [post]
   (let [fulltext (->> post vals (filter string?) (str/join " "))]
     (assoc post :fulltext fulltext)))
 
+;; TODO add filtering by category (should not be essay and stuff)
 (defn cocktail?
   "Assumes that all non-cocktail posts have a leading ':: ' in the title.
    There might some collateral, but we accept that as we need corrects cocktails."

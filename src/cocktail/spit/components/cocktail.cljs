@@ -16,7 +16,7 @@
   [:div#metadata
    [header cocktail]
    [catalouge/ingredient-list ingredients "cocktail-ingredient"]
-   [:p {:style {:margin-top "15rem"}} (:recipie cocktail)]
+   [:p {:style {:margin-top "15rem"}} (:recipe cocktail)]
    [:p {:style {:margin-top "5rem"}}  (:preparation cocktail)]
    [:div {:style {:height "50rem"}}]
    [byline cocktail]])

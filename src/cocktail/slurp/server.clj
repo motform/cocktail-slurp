@@ -3,10 +3,8 @@
   (:require [cocktail.stuff.config :as config]
             [cocktail.slurp.db :as db]
             [cocktail.slurp.routes :as routes]
-            [muuntaja.middleware :refer [wrap-format]]
             [org.httpkit.server :refer [run-server]]
             [ring.middleware.cors :refer [wrap-cors]]
-            [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.not-modified :refer [wrap-not-modified]]
             [ring.middleware.session :refer [wrap-session]]
             [ring.middleware.reload :refer [wrap-reload]]
@@ -17,7 +15,7 @@
 (set! *warn-on-reflection* 1)
 
 ;; TODO refactor, remove reflection from .bytes
-(defn wrap-body-string [handler]
+(defn- wrap-body-string [handler]
   (fn [request]
     (handler (if (:body request)
                (assoc request :body (->> request :body .bytes slurp))
@@ -29,16 +27,16 @@
       (wrap-cors :access-control-allow-origin  [#"http://localhost:8020"]
                  :access-control-allow-methods [:post :get])
       (wrap-resource "public")
-      ;; wrap-content-type
       wrap-not-modified
       wrap-body-string
       wrap-session
       wrap-params
-      wrap-flash
-      wrap-reload))
+      wrap-reload
+      wrap-flash))
 
 (defn -main []
   (let [{:keys [datomic http]} config/env]
-    (println "init")
+    (println "init, creating database…")
     (db/init-db! datomic)
+    (println "database created, listening on http://localhost:" (:port http))
     (run-server bartender {:port (:port http)})))

@@ -10,3 +10,11 @@ Accept-Charset: utf-8
 POST http://localhost:3232/bartender/cocktails/feed?cocktails=10
 Accept-Charset: utf-8
 Accept: application/transit+json
+
+## Do a fulltext search, expect some t+j back
+
+POST http://localhost:3232/bartender/cocktails/fulltext?search=negroni
+Accept-Charset: utf-8
+Accept: application/transit+json
+
+## Do a fulltext search, expect some t+j back

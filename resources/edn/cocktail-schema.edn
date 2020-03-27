@@ -14,12 +14,13 @@
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
 
+ ;; -> author/name
  {:db/ident :author
   :db/doc "Author, should be replaced with a ?v pointing to an ?e."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
 
- {:db/ident :recipie
+ {:db/ident :recipe
   :db/doc "List of ingredients required for the cocktail."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
@@ -50,16 +51,19 @@
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
 
+ ;; -> bar/name
  {:db/ident :bars
   :db/doc "Bars tagged in the post."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/many}
 
+ ;; -> category/name
  {:db/ident :categories
   :db/doc "Categories tagged in the post."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/many}
 
+ ;; -> coll-of ingredient/name
  {:db/ident :ingredients
   :db/doc "Ingredients used in the cocktail."
   :db/valueType :db.type/string

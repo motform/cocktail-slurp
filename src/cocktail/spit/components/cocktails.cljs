@@ -29,9 +29,9 @@
 (defn title [{:keys [title id]}]
   [:a {:href (routes/cocktail-url-for id)} title])
 
-(defn body [{:keys [recipie preparation] :as cocktail}]
+(defn body [{:keys [recipe preparation] :as cocktail}]
   [:div.card-body
-   [:p recipie] [:br]
+   [:p recipe] [:br]
    [:p preparation] [:br] [:br]
    [buttons cocktail]])
 
