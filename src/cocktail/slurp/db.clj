@@ -1,17 +1,19 @@
 (ns cocktail.slurp.db
-  (:require [cocktail.slurp.parse :as parse]
-            [datomic.api :as d]))
+  (:require [datomic.api :as d]
+            [clojure.string :as str]
+            [cocktail.slurp.parse :as parse]
+            [cocktail.stuff.util :as util]))
 
 ;;; db
 
-(def *conn (atom nil))
+(defonce *conn (atom nil))
 
 (defn- init-conn! [uri]
   (reset! *conn (d/connect uri)))
 
 (defn init-db!
   "Initialize and populate the in-memory Datomic db.
-   Expects `posts` to be the relative path to an .edn of scraped posts"
+   Expects `posts` to be the relative path to an .edn of scraped posts."
   [{:keys [uri schema posts]}]
   (d/create-database uri)
   (init-conn! uri)
@@ -29,6 +31,14 @@
         (subvec result start stop)
         (subvec result start)))))
 
+;; TODO front-end should query this on launch
+(defn all
+  "Lists all `v` for `a`."
+  [a]
+  (d/q [:find '[?a ...]
+        :where ['_ a '?a]]
+       (d/db @*conn)))
+
 (defn cocktail-by-id [id]
   (d/pull (d/db @*conn) '[:id :title :recipe :preparation :ingredients] [:id id]))
 
@@ -38,41 +48,76 @@
        (d/db @*conn)))
 
 (def base-query
-  '{:query {:find [(pull ?e [:id :title])]
+  '{:query {:find [(pull ?e [:id :title :recipe :preparation :ingredients])]
             :in [$]
             :where []}
     :args []})
 
-(defn- simple-query [q k s xs]
-  (-> q
-      (update-in [:query :in] conj [s '...])
-      (update-in [:query :where] conj ['?e k s])
-      (update-in [:args] conj xs)))
+(defn- gen-syms [s xs]
+  (map-indexed (fn [i _] (symbol (str \? s i))) xs))
 
-(defn- fn-query [q k s f db xs]
-  (-> q
-      (update-in [:query :in] conj [s '...])
-      (update-in [:query :where] conj [`(~f ~db ~k ~s) '[[?e ?n]]])
-      (update-in [:args] conj xs)))
+(defn- gen-where [e k syms]
+  (for [s syms] [e k s]))
 
-(defn- parse-strainer [{:keys [:ingredients :search :type]}]
+(defn- gen-fn-where [f db k syms]
+  (for [s syms] [`(~f ~db ~k ~s) '[[?e ?n]]]))
+
+(defn- and-query
+  "Example input: {...} :title ?title [ts]
+   Output: :in [?title ...] :where [?e :title ?title] :args [ts]"
+  [q k s xs]
+  (let [syms (gen-syms s xs)]
+    (-> q
+        (update-in [:query :in] concat syms)
+        (update-in [:query :where] concat (gen-where '?e k syms))
+        (update-in [:args] concat xs))))
+
+(defn- fn-and-query
+  "Example input: {...} :title ?title 'fulltext '$ [ts]
+   Output: :in [?title ...] :where [(fulltext $ :title ?title) [[?e ?n]]] :args [ts]"
+  [q k f s db xs]
+  (let [syms (gen-syms s xs)]
+    (-> q
+        (update-in [:query :in] concat syms)
+        (update-in [:query :where] concat (gen-fn-where f db k syms))
+        (update-in [:args] concat xs))))
+
+(defn- wash-strainer
+  "Sanitize strings and remove empty seqs from user input."
+  [strainer]
+  (let [sanitize (comp #(map str/lower-case %) #(when (seq %) %))]
+    (util/map-map strainer sanitize)))
+
+(defn- parse-strainer
+  "Builds a query map based on user input, excepts irrelevant keys to be falsy.
+   Order of clause conj is preserved, so try and do fulltext last."
+  [{:keys [:ingredients :search :type]}]
   (cond-> base-query
-    ingredients (simple-query :ingredients '?ingredients ingredients)
-    type (simple-query :type '?type type)
-    search (fn-query :fulltext '?fulltext 'fulltext '$ search)))
+    type (and-query :type \t type)
+    ingredients (and-query :ingredients \i ingredients)
+    search (fn-and-query :fulltext 'fulltext \f '$ search)))
 
+;; NOTE extra input does or, not and WHOOPS
 (defn strain [strainer]
-  (let [{:keys [query args]} (parse-strainer strainer)]
+  (let [{:keys [query args]} (-> strainer wash-strainer parse-strainer)]
     (apply d/q query (d/db @*conn) args)))
-
 
 (comment
   ;; datomic
-  (init-db! {:uri "datomic:mem://cocktail.slurp"
+  (init-db! {:uri "datomic:mem://cocktail.slurp.dev"
              :posts "posts.edn"
              :schema "resources/edn/cocktail-schema.edn"})
 
   (d/delete-database "datomic:mem://cocktail.slurp")
+
+  (count
+   (d/q
+    '[:find [(pull ?e [:title :id]) ...]
+      :in $ [?i1 i2]
+      :where [?e :ingredients ?i2]
+      [?e :ingredients ?i1]
+      ]
+    (d/db @*conn) ["rum" "cream"]))
 
   (strain {:ingredients ["rum" "cream"] :search ["russian"]})
 

@@ -38,5 +38,5 @@
   (let [{:keys [datomic http]} config/env]
     (println "init, creating database…")
     (db/init-db! datomic)
-    (println "database created, listening on http://localhost:" (:port http))
+    (println (str "database created, listening on http://localhost:" (:port http)))
     (run-server bartender {:port (:port http)})))
