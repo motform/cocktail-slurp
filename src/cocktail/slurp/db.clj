@@ -22,8 +22,10 @@
 
 ;;; queries
 
-;; NOTE returns nil and not [] on fail
-(defn paginate [start limit q & args]
+(defn paginate
+  "Simple functional pagination of query results.
+   Returns nil on fail, for use with `when` or reagent."
+  [start limit q & args]
   (let [result (apply q args)
         stop (+ start limit)]
     (when (seq result)
@@ -62,8 +64,8 @@
   (for [s syms] [`(~f ~db ~k ~s) '[[?e ?n]]]))
 
 (defn- and-query
-  "Example input: {...} :title ?title [ts]
-   Output: :in [?title ...] :where [?e :title ?title] :args [ts]"
+  "Example input: {q} :title \t [t1 t2...]
+   Output: :in [?t4 ...] :where [?e :title ?t1] :args [t1 t2...]"
   [q k s xs]
   (let [syms (gen-syms s xs)]
     (-> q
@@ -72,8 +74,8 @@
         (update-in [:args] concat xs))))
 
 (defn- fn-and-query
-  "Example input: {...} :title ?title 'fulltext '$ [ts]
-   Output: :in [?title ...] :where [(fulltext $ :title ?title) [[?e ?n]]] :args [ts]"
+  "Example input: {q} :title \t 'fulltext '$ [t1 t2...]
+   Output: :in [?1 ...] :where [(fulltext $ :title ?t1) [[?e ?n]]] :args [t1 t2...]"
   [q k f s db xs]
   (let [syms (gen-syms s xs)]
     (-> q
@@ -103,7 +105,7 @@
 
 (comment
   ;; datomic
-  (init-db! {:uri "datomic:mem://cocktail.slurp.dev"
+  (init-db! {:uri "datomic:mem://cocktail.slurp/dev"
              :posts "posts.edn"
              :schema "resources/edn/cocktail-schema.edn"})
 
