@@ -84,10 +84,10 @@
         (update-in [:args] concat xs))))
 
 (defn- wash-strainer
-  "Sanitize strings and remove empty seqs from user input."
+  "Homogenize strings and remove empty seqs from user input."
   [strainer]
-  (let [sanitize (comp #(map str/lower-case %) #(when (seq %) %))]
-    (util/map-map strainer sanitize)))
+  (util/map-map strainer (comp #(map str/lower-case %)
+                               #(when (seq %) %))))
 
 (defn- parse-strainer
   "Builds a query map based on user input, excepts irrelevant keys to be falsy.

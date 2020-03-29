@@ -79,7 +79,7 @@
     (let [tag-set (->> (s/select (s/child (s/class :post-labels)) post)
                       first :content
                       (filter map?)
-                      (map (comp first :content))
+                      (map (comp str/lower-case first :content))
                       (filter pred)
                       (into #{}))]
       (if-not (empty? tag-set) (assoc post k tag-set) post))))
@@ -103,7 +103,7 @@
   ((parse-tag-by ingredient? :ingredients) post))
 
 (defn- prefix-ingredient [ingredient]
-  (if-let [prefix (re-find #"\(\w+\)" ingredient)]
+  (if-let [prefix (re-find #"\([\w\p{Punct}]+\)" ingredient)]
     (str/join " " (cons (str/replace prefix #"\(|\)" "")
                         (drop-last (str/split ingredient #" "))))
     ingredient))
@@ -112,7 +112,7 @@
   (update post :ingredients #(into #{} (map prefix-ingredient %))))
 
 (defn- fulltext [post]
-  (let [fulltext (->> post vals (filter string?) (str/join " "))]
+  (let [fulltext (->> post vals (filter string?) (str/join " ") str/lower-case)]
     (assoc post :fulltext fulltext)))
 
 ;; TODO add filtering by category (should not be essay and stuff)

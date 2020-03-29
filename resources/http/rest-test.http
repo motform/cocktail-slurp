@@ -12,7 +12,6 @@ Accept-Charset: utf-8
 Accept: application/transit+json
 
 ## Get all possible ingredients
-#  Note how the v is a clj kw and requires escaping
 
 GET http://localhost:3232/bartender/all?attribute=ingredients
 Accept-Charset: utf-8

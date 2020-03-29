@@ -4,7 +4,8 @@
             [clojure.spec.alpha :as s]
             [cognitect.transit :as t]
             [cocktail.spit.db :as db]
-            [cocktail.stuff.util :as util]))
+            [cocktail.stuff.util :as util]
+            [clojure.string :as str]))
 
 ;;;; Interceptors
 
@@ -78,7 +79,7 @@
  :strainer-conj
  [spec-interceptor]
  (fn [db [_ k v]]
-   (update-in db [:strainer k] conj v)))
+   (update-in db [:strainer k] conj (str/lower-case v))))
 
 (reg-event-db
  :strainer-disj
