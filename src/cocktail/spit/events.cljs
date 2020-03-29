@@ -75,30 +75,30 @@
 
 ;; TODO add an interceptor/spec that checks for valid ingredients
 (reg-event-db
- :strainer-ingredient-conj
+ :strainer-conj
  [spec-interceptor]
- (fn [db [_ ingredient]]
-   (update-in db [:strainer :ingredients] conj ingredient)))
+ (fn [db [_ k v]]
+   (update-in db [:strainer k] conj v)))
 
 (reg-event-db
- :strainer-ingredient-disj
+ :strainer-disj
  [spec-interceptor]
- (fn [db [_ ingredient]]
-   (update-in db [:strainer :ingredients] disj ingredient)))
+ (fn [db [_ k v]]
+   (update-in db [:strainer k] disj v)))
 
 (reg-event-db
  :strainer-clear
  [spec-interceptor]
  (fn [db [_]]
-   (assoc-in db [:strainer :ingredients] #{})))
+   (assoc db :strainer {:cocktails #{} :ingredients #{} :search #{}})))
 
 (reg-event-fx
  :cocktail-feed
- (fn [{:keys [db]} [_ cocktails]]
+ (fn [{:keys [db]} [_ start end]]
    {:db (assoc db :ajax-test true) ;; NOTE leaving this here as a reminder (for now)
     :http-xhrio {:method :get
-                 :uri "http://localhost:3232/bartender/cocktails/feed"
-                 :params {:cocktails cocktails}
+                 :uri "http://localhost:3232/bartender/cocktails"
+                 :params {:start start :end end}
                  :body ""
                  :timeout 8000
                  :response-format (ajax/transit-response-format {:keywords? true})
