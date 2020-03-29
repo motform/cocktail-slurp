@@ -12,6 +12,10 @@
 (defn- home-page [_]
   (ring/file-response "index.html" {:root "resources/public"}))
 
+(defn- all [{:keys [params]}]
+  (let [a (-> params (get "attribute") keyword)]
+    (transit+json-response (db/all a))))
+
 (defn- strain [{:keys [body]}]
   (let [strainer (m/decode "application/transit+json" body)
         result (db/paginate 0 20 db/strain strainer)]
@@ -29,6 +33,7 @@
   (make-handler
    ["/" {"" home-page
          "index.html" home-page
-         "bartender/" {"strain" strain
+         "bartender/" {"all" all
+                       "strain" strain
                        "cocktail" cocktail-by-id
                        "cocktails" cocktail-feed}}]))

@@ -6,16 +6,18 @@
 
 ;;;; specs
 
-(s/def ::db (s/keys :req-un [::active-page ::active-cocktail ::collections ::strainer]))
+(s/def ::db (s/keys :req-un [::active-page ::active-cocktail ::collections ::strainer ::metadata]))
 
 (s/def ::active-page #{:cocktails :cocktail :library :menu :about})
 (s/def ::active-cocktail map?)
+
+(s/def ::metadata (s/keys :req-un [::ingredients]))
 
 (s/def ::collections (s/keys :req-un [::library ::menu]))
 (s/def ::library (s/keys :req-un [::cocktails]))
 (s/def ::menu (s/keys :req-un [::cocktails]))
 
-(s/def ::strainer (s/keys :req-un [::ingredients ::cocktails]))
+(s/def ::strainer (s/keys :req-un [::ingredients ::cocktails ::search ::type]))
 (s/def ::ingredients (s/coll-of ::ingredient))
 (s/def ::ingredient string?)
 
@@ -32,9 +34,12 @@
 (def default-db
   {:active-page :cocktails
    :active-cocktail {} ; not sure where this should be
+   :meta {:ingredients #{}}
    :collections {:menu {:cocktails #{}}
                  :library {:cocktails #{}}}
    :strainer {:ingredients #{}
+              :search #{}
+              :type #{}
               :cocktails #{}}})
 
 ;;;; local-storage

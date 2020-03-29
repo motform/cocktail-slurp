@@ -31,13 +31,12 @@
         (subvec result start stop)
         (subvec result start)))))
 
-;; TODO front-end should query this on launch
 (defn all
   "Lists all `v` for `a`."
   [a]
-  (d/q [:find '[?a ...]
-        :where ['_ a '?a]]
-       (d/db @*conn)))
+  (into #{} (d/q [:find '[?a ...]
+                  :where ['_ a '?a]]
+                 (d/db @*conn))))
 
 (defn cocktail-by-id [id]
   (d/pull (d/db @*conn) '[:id :title :recipe :preparation :ingredients] [:id id]))

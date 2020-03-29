@@ -22,6 +22,11 @@
    (get-in db [:strainer :ingredients])))
 
 (reg-sub
+ :meta-all
+ (fn [db _ attribute]
+   (get-in db [:meta attribute])))
+
+(reg-sub
  :strained-cocktails
  (fn [db _]
    (get-in db [:strainer :cocktails])))

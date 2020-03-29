@@ -143,6 +143,26 @@
  (fn [db [_ result]]
    (assoc db :active-cocktail result)))
 
+;;; Meta
+
+(reg-event-fx
+ :meta-all
+ (fn [{:keys [db]} [_ attribute]]
+   {:db (assoc db :ajax-test true) ;; NOTE
+    :http-xhrio {:method :get
+                 :uri "http://localhost:3232/bartender/all"
+                 :params {:attribute attribute}
+                 :body ""
+                 :timeout 8000
+                 :response-format (ajax/transit-response-format {:keywords? true})
+                 :on-success [:success-meta-all (keyword attribute)]
+                 :on-failure [:failure-http]}}))
+
+(reg-event-db
+ :success-meta-all
+ (fn [db [_ attribute result]]
+   (assoc-in db [:meta attribute] result)))
+
 ;;; Ajax helpers
 
 (reg-event-db

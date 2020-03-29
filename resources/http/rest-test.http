@@ -7,14 +7,13 @@ Accept-Charset: utf-8
 
 ## Fetch 10 cocktails from the feed, in transit-json
 
-POST http://localhost:3232/bartender/cocktails/feed?cocktails=10
+POST http://localhost:3232/bartender/cocktails?start=0&end=10
 Accept-Charset: utf-8
 Accept: application/transit+json
 
-## Do a fulltext search, expect some t+j back
+## Get all possible ingredients
+#  Note how the v is a clj kw and requires escaping
 
-POST http://localhost:3232/bartender/cocktails/fulltext?search=negroni
+GET http://localhost:3232/bartender/all?attribute=ingredients
 Accept-Charset: utf-8
 Accept: application/transit+json
-
-## Do a fulltext search, expect some t+j back
