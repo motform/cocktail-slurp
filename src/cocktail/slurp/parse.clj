@@ -1,5 +1,6 @@
 (ns cocktail.slurp.parse
-  (:require [clojure.string :as str]
+  (:require [clojure.instant :as instant]
+            [clojure.string :as str]
             [hickory.select :as s]))
 
 ;; TODO add parsing for type #{:strained :stirred :punch}
@@ -24,16 +25,11 @@
          (-> (s/select (s/child (s/class :post-author)) post)
              first :content second :content first)))
 
-(defn- readable-date
-  "Formats long date string to YYMMDD"
-  [date]
-  (-> date (subs 2 10) (str/replace #"-" "")))
-
 ;; TODO make this an instant instead of a string
 (defn- date [post]
   (let [date (-> (s/select (s/child (s/class :timestamp-link)) post)
                  first :content first :attrs :title)]
-    (assoc post :date (readable-date date))))
+    (assoc post :date (instant/read-instant-date date))))
 
 (defn- flatten-anchors
   "Takes a vec of text nodes Hickory has extracted from a <p> and

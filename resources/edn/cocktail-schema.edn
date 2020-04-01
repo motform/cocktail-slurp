@@ -11,7 +11,7 @@
 
  {:db/ident :date
   :db/doc "Date when the cocktail was posted, in YYMMDD."
-  :db/valueType :db.type/string 
+  :db/valueType :db.type/instant
   :db/cardinality :db.cardinality/one}
 
  ;; -> author/name
