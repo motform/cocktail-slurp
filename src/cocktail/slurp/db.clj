@@ -1,8 +1,8 @@
 (ns cocktail.slurp.db
-  (:require [datomic.api :as d]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [cocktail.slurp.parse :as parse]
-            [cocktail.stuff.util :as util]))
+            [cocktail.stuff.util :as util]
+            [datomic.api :as d]))
 
 ;;; db
 
@@ -44,9 +44,10 @@
   (d/pull (d/db @*conn) '[:id :title :recipe :preparation :ingredients] [:id id]))
 
 (defn cocktail-feed []
-  (d/q '[:find [(pull ?e [:id :title :recipe :preparation :ingredients]) ...]
-         :where [?e :id]]
-       (d/db @*conn)))
+  (let [result (d/q '[:find [(pull ?e [:date :id :title :recipe :preparation :ingredients]) ...]
+                      :where [?e :id]]
+                    (d/db @*conn))]
+    (->> result (sort-by :date compare) reverse (into []))))
 
 (def base-query
   '{:query {:find [(pull ?e [:id :title :recipe :preparation :ingredients])]
@@ -103,22 +104,15 @@
   (let [{:keys [query args]} (-> strainer wash-strainer parse-strainer)]
     (apply d/q query (d/db @*conn) args)))
 
+
+
 (comment
   ;; datomic
-  (init-db! {:uri "datomic:mem://cocktail.slurp/dev"
+  (init-db! {:uri "datomic:mem://cocktail.slurp/repl"
              :posts "posts.edn"
              :schema "resources/edn/cocktail-schema.edn"})
 
-  (d/delete-database "datomic:mem://cocktail.slurp")
-
-  (count
-   (d/q
-    '[:find [(pull ?e [:title :id]) ...]
-      :in $ [?i1 i2]
-      :where [?e :ingredients ?i2]
-      [?e :ingredients ?i1]
-      ]
-    (d/db @*conn) ["rum" "cream"]))
+  (d/delete-database "datomic:mem://cocktail.slurp/repl")
 
   (strain {:ingredients ["rum" "cream"] :search ["russian"]})
 
