@@ -7,10 +7,15 @@
   (hash (str (rand-int 255) o rest)))
 
 (defn ?assoc
-  "assocs the `k` into the `m` if the `v` is truthy, otherwise returns `m`.
+  "Associates the `k` into the `m` if the `v` is truthy, otherwise returns `m`.
   NOTE: this version of ?assoc only does a single kv pair."
   [m k v]
   (if v (assoc m k v) m))
+
+(defn ?update
+  "Update `k` with `f` in `m`, the `k` exists, otherwise returns `m`. "
+  [m k f & args]
+  (if (k m) (apply update m k f args) m))
 
 (defn map-map
   "Maps a `f` to all the v in `m`"
