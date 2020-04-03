@@ -17,9 +17,20 @@
    (get-in db [:collections :library :cocktails])))
 
 (reg-sub
+ :strainer
+ (fn [db _]
+   (select-keys (:strainer db) [:ingredients :search])))
+
+;; TODO remove?
+(reg-sub
  :strainer-ingredients
  (fn [db _]
    (get-in db [:strainer :ingredients])))
+
+(reg-sub
+ :strainer-search
+ (fn [db _]
+   (get-in db [:strainer :search])))
 
 (reg-sub
  :meta-all

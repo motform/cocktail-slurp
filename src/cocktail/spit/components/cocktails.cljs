@@ -1,19 +1,22 @@
 (ns cocktail.spit.components.cocktails
-  (:require [clojure.string :as str]
-            [re-frame.core :as rf]
+  (:require [cocktail.spit.components.catalouge :as catalouge]
+            [cocktail.spit.components.strainer :as strainer]
             [cocktail.spit.routes :as routes]
-            [cocktail.spit.components.catalouge :as catalouge]
-            [cocktail.spit.components.strainer :as strainer]))
+            [cocktail.stuff.util :as util]
+            [re-frame.core :as rf]))
 
 (declare card header title body buttons)
 
-(defn main [cocktails]
-  [:<>
-   [strainer/main]
-   [:main
-    [:div#cocktails.dense-grid 
-     (for [cocktail cocktails]
-       ^{:key (:id cocktail)} [card cocktail])]]])
+(defn main []
+  (let [c (util/->transit+json @(rf/subscribe [:strainer]))
+        _ (rf/dispatch [:strain-cocktails c])
+        cocktails @(rf/subscribe [:strained-cocktails])]
+    [:<>
+     [strainer/main]
+     [:main
+      [:div#cocktails.dense-grid 
+       (for [cocktail cocktails]
+         ^{:key (:id cocktail)} [card cocktail])]]]))
 
 (defn card [{:keys [ingredients] :as cocktail}]
   [:div.card.hover-card.line-left

@@ -36,7 +36,7 @@
      (when (menu cocktail) [:div.flag-menu.flag])
      (when (library cocktail) [:div.flag-library.flag])]))
 
-(defn text-input [{:keys [title on-save]}]
+(defn text-input-submit [{:keys [title on-save]}]
   (let [val (r/atom title)
         stop #(reset! val "")
         save #(let [v (-> @val str str/trim)]
@@ -51,3 +51,14 @@
                                13 (save)
                                27 (stop)
                                nil)})])))
+
+(defn text-input-auto [{:keys [on-change]}]
+  (fn [props]
+    [:input
+     (merge (dissoc props :on-save :title)
+            {:type "text"
+             :value @(rf/subscribe [:strainer-search])
+             :autoFocus true
+             :on-change on-change
+             :on-key-down #(case (.-which %)
+                             nil)})]))

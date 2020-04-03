@@ -7,16 +7,9 @@
             [cocktail.spit.components.cocktail :as cocktail]
             [cocktail.spit.components.menu :as menu]))
 
-;; ;; NOTE what ns should this be in?
-;; (defn strain [cocktails]
-;;   (let [ingredients @(rf/subscribe [:strainer-ingredients])]
-;;     (if (seq ingredients)
-;;       (filter #(set/subset? ingredients (:ingredients %)) cocktails)
-;;       cocktails)))
-
 (defn active-page [page]
   (case page
-    :cocktails [cocktails/main @(rf/subscribe [:strained-cocktails])]
+    :cocktails [cocktails/main]
     :cocktail [cocktail/main]
     :library [library/main]
     :about [about/main]

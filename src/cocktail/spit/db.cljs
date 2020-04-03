@@ -38,7 +38,7 @@
    :collections {:menu {:cocktails #{}}
                  :library {:cocktails #{}}}
    :strainer {:ingredients #{}
-              :search #{}
+              :search ""
               :type #{}
               :cocktails #{}}})
 

@@ -17,7 +17,7 @@
     (throw (ex-info (str "spec check failed: " (s/explain-str a-spec db)) {}))))
 
 (def check-spec-interceptor (after (partial check-and-throw :cocktail.spit.db/db)))
-(def spec-interceptor [check-spec-interceptor])
+(def spec-interceptor [#_check-spec-interceptor])
 
 (def ->local-storage (after db/collections->local-storage))
 (def local-storage-interceptor [->local-storage])
@@ -82,6 +82,12 @@
    (update-in db [:strainer k] conj (str/lower-case v))))
 
 (reg-event-db
+ :strainer-search
+ [spec-interceptor]
+ (fn [db [_ search]]
+   (assoc-in db [:strainer :search] search)))
+
+(reg-event-db
  :strainer-disj
  [spec-interceptor]
  (fn [db [_ k v]]
@@ -94,24 +100,6 @@
    (assoc db :strainer {:cocktails #{} :ingredients #{} :search #{}})))
 
 (reg-event-fx
- :cocktail-feed
- (fn [{:keys [db]} [_ start end]]
-   {:db (assoc db :ajax-test true) ;; NOTE leaving this here as a reminder (for now)
-    :http-xhrio {:method :get
-                 :uri "http://localhost:3232/bartender/cocktails"
-                 :params {:start start :end end}
-                 :body ""
-                 :timeout 8000
-                 :response-format (ajax/transit-response-format {:keywords? true})
-                 :on-success [:success-strained-cocktails]
-                 :on-failure [:failure-http]}}))
-
-(reg-event-db
- :success-strained-cocktails
- (fn [db [_ result]]
-   (assoc-in db [:strainer :cocktails] result)))
-
-(reg-event-fx
  :strain-cocktails
  (fn [{:keys [db]} [_ data]]
    {:db (assoc db :ajax-test true) ;; NOTE
@@ -121,8 +109,13 @@
                  :body data
                  :format (ajax/transit-request-format)
                  :response-format (ajax/transit-response-format {:keywords? true})
-                 :on-success [:success-http]
+                 :on-success [:success-strained-cocktails]
                  :on-failure [:failure-http]}}))
+
+(reg-event-db
+ :success-strained-cocktails
+ (fn [db [_ result]]
+   (assoc-in db [:strainer :cocktails] result)))
 
 ;;; Cocktail
 

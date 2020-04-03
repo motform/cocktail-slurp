@@ -24,5 +24,4 @@
   (routes/app-routes)
   (rf/dispatch-sync [:initialize-db])
   (rf/dispatch-sync [:meta-all "ingredients"])
-  (rf/dispatch-sync [:cocktail-feed 0 20])
   (render))
