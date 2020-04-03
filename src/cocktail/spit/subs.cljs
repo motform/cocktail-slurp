@@ -21,7 +21,6 @@
  (fn [db _]
    (select-keys (:strainer db) [:ingredients :search])))
 
-;; TODO remove?
 (reg-sub
  :strainer-ingredients
  (fn [db _]
@@ -33,9 +32,9 @@
    (get-in db [:strainer :search])))
 
 (reg-sub
- :meta-all
- (fn [db _ attribute]
-   (get-in db [:meta attribute])))
+ :meta-ingredients
+ (fn [db _]
+   (get-in db [:meta :ingredients])))
 
 (reg-sub
  :strained-cocktails

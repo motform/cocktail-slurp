@@ -52,13 +52,12 @@
                                27 (stop)
                                nil)})])))
 
-(defn text-input-auto [{:keys [on-change]}]
+(defn text-input-auto [{:keys [on-change sub]}]
   (fn [props]
-    [:input
-     (merge (dissoc props :on-save :title)
-            {:type "text"
-             :value @(rf/subscribe [:strainer-search])
-             :autoFocus true
-             :on-change on-change
-             :on-key-down #(case (.-which %)
-                             nil)})]))
+    (let [val @(rf/subscribe [sub])]
+      [:input
+       (merge (dissoc props :on-save :title)
+              {:type "text"
+               :value val
+               :autoFocus true
+               :on-change on-change})])))

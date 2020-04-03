@@ -7,6 +7,8 @@
 
 (declare card header title body buttons)
 
+;; NOTE Dispatch and updating of the cocktails are now handled in the top
+;;      level component, not sure if this let pattern is a good idea
 (defn main []
   (let [c (util/->transit+json @(rf/subscribe [:strainer]))
         _ (rf/dispatch [:strain-cocktails c])
