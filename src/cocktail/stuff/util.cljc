@@ -1,4 +1,6 @@
-(ns cocktail.stuff.util)
+(ns cocktail.stuff.util
+  (:require #?(:cljs [cognitect.transit :as t])
+            #?(:clj  [muuntaja.core :as m])))
 
 (defn gen-key
   "Generates a React key by hashing the str representation of `o`
@@ -21,3 +23,7 @@
   "Maps a `f` to all the v in `m`"
   [m f]
   (into {} (for [[k v] m] [k (f v)])))
+
+(defn ->transit+json [data]
+  #?(:cljs (t/write (t/writer :json) data)
+     :clj (m/encode "application/transit+json" data)))

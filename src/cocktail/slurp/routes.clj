@@ -1,12 +1,14 @@
 (ns cocktail.slurp.routes
   (:require [bidi.ring :refer [make-handler]]
-            [ring.util.response :as ring]
+            [cocktail.slurp.db :as db]
+            [cocktail.stuff.util :as util]
             [muuntaja.core :as m]
-            [cocktail.slurp.db :as db]))
+            [ring.util.response :as ring]))
 
 (defn- transit+json-response [data]
-  (-> (m/encode "application/transit+json" data)
-      (ring/response)
+  (-> data
+      util/->transit+json
+      ring/response
       (ring/header "Content-Type" "application/transit+json")))
 
 (defn- home-page [_]
@@ -19,7 +21,7 @@
 (defn- strain [{:keys [body]}]
   (let [strainer (m/decode "application/transit+json" body)
         result (db/paginate 0 20 db/strain strainer)]
-    (transit+json-response (map first result))))
+    (transit+json-response result)))
 
 (defn- cocktail-by-id [{:keys [params]}]
   (transit+json-response (db/cocktail-by-id (params "id"))))
