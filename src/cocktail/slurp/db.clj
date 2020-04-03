@@ -84,11 +84,12 @@
         (update-in [:query :where] concat (gen-fn-where f db k syms))
         (update-in [:args] concat xs))))
 
+
 (defn- wash-strainer
-  "Homogenize strings and remove empty seqs from user input."
-  [strainer]
-  (util/map-map strainer (comp #(map str/lower-case %)
-                               #(when (seq %) %))))
+  "Homogenize & split strings, possibly do other processing to input"
+  [{:keys [search type ingredients] :as strainer}]
+  (cond-> strainer
+    search (update :search #(-> % str/lower-case str/trim (str/replace #" +" " ") (str/split #" ")))))
 
 (defn- parse-strainer
   "Builds a query map based on user input, excepts irrelevant keys to be falsy.
@@ -99,10 +100,11 @@
     ingredients (and-query :ingredients \i ingredients)
     search (fn-and-query :fulltext 'fulltext \f '$ search)))
 
-;; NOTE extra input does or, not and WHOOPS
 (defn strain [strainer]
-  (let [{:keys [query args]} (-> strainer wash-strainer parse-strainer)]
-    (apply d/q query (d/db @*conn) args)))
+  (let [{:keys [query args]} (-> strainer util/remove-empty wash-strainer parse-strainer)]
+    (if (seq args) ; handle stupid empty calls -> move to interceptor
+      (into [] (map first (apply d/q query (d/db @*conn) args)))
+      (cocktail-feed))))
 
 
 
