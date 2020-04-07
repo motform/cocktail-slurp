@@ -1,6 +1,8 @@
 (ns cocktail.slurp.parse
   (:require [clojure.instant :as instant]
+            [clojure.set :as set]
             [clojure.string :as str]
+            [cocktail.stuff.util :as util]
             [hickory.select :as s]))
 
 ;; TODO add parsing for type #{:strained :stirred :punch}
@@ -44,7 +46,7 @@
     :else (throw (Exception. "invalid input to `flatten-anchors`"))))
 
 (defn- body->str [body]
-  (->> body (map flatten-anchors) (apply str)))
+  (->> body (map flatten-anchors) (filter string?) (apply str)))
 
 (defn- split-body [body]
   (map #(str/replace % #"  " "\n\n") (str/split body #"\n\n")))
@@ -68,7 +70,7 @@
 (defn- img [post]
   (let [img (or (nested-img post)
                 (flat-img post))]
-    (if img (assoc post :img img) post))) ;; TODO refactor into ?assoc
+    (util/?assoc post :img img)))
 
 (defn- parse-tag-by [pred k]
   (fn [post]
@@ -113,10 +115,12 @@
 
 ;; TODO add filtering by category (should not be essay and stuff)
 (defn cocktail?
-  "Assumes that all non-cocktail posts have a leading ':: ' in the title.
-   There might some collateral, but we accept that as we need corrects cocktails."
-  [{:keys [title]}]
-  (not (re-find #"::" title)))
+  "Assumes that all non-cocktail posts have a leading ':: ' in the title or are
+   correctly tagged in the original source
+   There might some collateral, but we accept that as we need correct cocktails."
+  [{:keys [title categories]}]
+  (and (set/subset? categories #{"*hot" "*original" "*room temperature"})
+       (not (re-find #"::" title))))
 
 (defn post->cocktail [post]
   (-> post id url title author date body img categories bars ingredients prefix-ingredients fulltext
