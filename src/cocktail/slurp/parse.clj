@@ -113,6 +113,23 @@
   (let [fulltext (->> post vals (filter string?) (str/join " ") str/lower-case)]
     (assoc post :fulltext fulltext)))
 
+(defn- punch? [post]
+  (< 200 (transduce (comp (map (comp read-string first #(str/split % #" "))) (filter number?))
+                    +
+                    (str/split-lines (:recipe post)))))
+
+(defn- stirred? [post]
+  (str/includes? (:recipe post) "stir"))
+
+(defn- shaken? [post]
+  (str/includes? (:recipe post) "shake"))
+
+(defn- cocktail-type [post]
+  (let [type (cond (punch? post)  "punch"
+                   (stirred? post) "stirred"
+                   (shaken? post) "shaken")]
+    (util/?assoc post :type type)))
+
 ;; TODO add filtering by category (should not be essay and stuff)
 (defn cocktail?
   "Assumes that all non-cocktail posts have a leading ':: ' in the title or are
@@ -123,7 +140,7 @@
        (not (re-find #"::" title))))
 
 (defn post->cocktail [post]
-  (-> post id url title author date body img categories bars ingredients prefix-ingredients fulltext
+  (-> post id url title author date body img categories bars ingredients prefix-ingredients fulltext cocktail-type
       (dissoc :type :attrs :tag :content)))
 
 (def xf-cocktail
@@ -132,3 +149,9 @@
 
 (defn posts->cocktails [posts]
   (->> posts slurp read-string (into [] xf-cocktail)))
+
+
+(comment
+  (posts->cocktails "posts.edn")
+  (->> "posts.edn" slurp read-string first post->cocktail)
+  )
