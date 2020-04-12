@@ -113,10 +113,9 @@
   (let [fulltext (->> post vals (filter string?) (str/join " ") str/lower-case)]
     (assoc post :fulltext fulltext)))
 
-(defn- punch? [post]
-  (< 200 (transduce (comp (map (comp read-string first #(str/split % #" "))) (filter number?))
-                    +
-                    (str/split-lines (:recipe post)))))
+(defn- punch? [post min]
+  (let [xf (comp (filter number?) (map read-string))]
+    (< min (transduce xf + (str/split-lines (:recipe post))))))
 
 (defn- stirred? [post]
   (str/includes? (:recipe post) "stir"))
@@ -125,7 +124,7 @@
   (str/includes? (:recipe post) "shake"))
 
 (defn- cocktail-type [post]
-  (let [type (cond (punch? post)  "punch"
+  (let [type (cond (punch? post 300) "punch"
                    (stirred? post) "stirred"
                    (shaken? post) "shaken")]
     (util/?assoc post :type type)))
@@ -152,6 +151,10 @@
 
 
 (comment
+
   (posts->cocktails "posts.edn")
+  
+  ;; Get the first cocktail
   (->> "posts.edn" slurp read-string first post->cocktail)
+
   )
