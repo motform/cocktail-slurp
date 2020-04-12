@@ -91,7 +91,9 @@
   "Homogenize & split strings, possibly do other processing to input"
   [{:keys [search type ingredients] :as strainer}]
   (cond-> strainer
-    search (update :search #(-> % str/lower-case str/trim (str/replace #" +" " ") (str/split #" ") append-*))))
+    (not (str/blank? search))
+    (update :search
+            #(-> % str/lower-case str/trim (str/replace #" +" " ") (str/split #" ") append-*))))
 
 (defn- parse-strainer
   "Builds a query map based on user input, excepts irrelevant keys to be falsy.
