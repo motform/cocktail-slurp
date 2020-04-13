@@ -79,6 +79,10 @@ footer {
 
 /* Catalouge */
 
+.dispatch-btn {
+    visibility: hidden;
+}
+
 .dispatch-btn:hover {
     color: white;
 }
@@ -233,6 +237,10 @@ main {
     padding: 0rem 0rem 12rem 3rem;
 
     line-height: 3.5rem;
+}
+
+.card:hover .dispatch-btn {
+    visibility: visible;
 }
 
 .card-header {
