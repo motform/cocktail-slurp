@@ -120,7 +120,7 @@
 
   (d/delete-database "datomic:mem://cocktail.slurp/repl")
 
-  (strain {:ingredients ["rum" "cream"] :search ["russian"]})
+  (strain {:ingredients ["rum" "cream"] :search "russian"})
 
   ;; export the cocktails
   (spit "resources/edn/formatted-posts.edn" (pr-str (parse/posts->cocktails "posts.edn"))))

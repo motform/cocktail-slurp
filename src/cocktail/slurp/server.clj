@@ -1,16 +1,16 @@
 (ns cocktail.slurp.server
   (:gen-class)
-  (:require [cocktail.stuff.config :as config]
-            [cocktail.slurp.db :as db]
+  (:require [cocktail.slurp.db :as db]
             [cocktail.slurp.routes :as routes]
+            [cocktail.stuff.config :as config]
             [org.httpkit.server :refer [run-server]]
             [ring.middleware.cors :refer [wrap-cors]]
-            [ring.middleware.not-modified :refer [wrap-not-modified]]
-            [ring.middleware.session :refer [wrap-session]]
-            [ring.middleware.reload :refer [wrap-reload]]
-            [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.flash :refer [wrap-flash]]
-            [ring.middleware.resource :refer [wrap-resource]]))
+            [ring.middleware.not-modified :refer [wrap-not-modified]]
+            [ring.middleware.params :refer [wrap-params]]
+            [ring.middleware.reload :refer [wrap-reload]]
+            [ring.middleware.resource :refer [wrap-resource]]
+            [ring.middleware.session :refer [wrap-session]]))
 
 (set! *warn-on-reflection* 1)
 

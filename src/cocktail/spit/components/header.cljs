@@ -6,7 +6,7 @@
 
 (defn main []
   [:header
-   [title] [cocktails] [menu] [library] #_[about]])
+   [title] [cocktails] [menu] [library]])
 
 (defn title []
   [:a#title.header-btn
