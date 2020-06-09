@@ -44,7 +44,7 @@
 
 ;;;; local-storage
 
-(def ls-key "cocktail.slurp-collections") ;; TODO make sure this works
+(def ls-key "cocktail.slurp-collections")
 
 (defn collections->local-storage [db]
   (.setItem js/localStorage ls-key (str (:collections db))))

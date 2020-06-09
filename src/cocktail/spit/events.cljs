@@ -1,9 +1,9 @@
 (ns cocktail.spit.events
-  (:require [re-frame.core :refer [reg-event-db reg-event-fx inject-cofx path after debug]]
+  (:require [re-frame.core :refer [reg-event-db reg-event-fx reg-fx inject-cofx path after debug]]
             [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
-            [cognitect.transit :as t]
             [cocktail.spit.db :as db]
+            [cocktail.spit.routes :as routes]
             [cocktail.stuff.util :as util]
             [clojure.string :as str]))
 
@@ -27,16 +27,30 @@
 (reg-event-fx
  :initialize-db
  [(inject-cofx :local-store-collections)]
- (fn [{:keys [db local-store-collections] :as fx} _]
+ (fn [{:keys [local-store-collections]} _]
    {:db (util/?assoc db/default-db :collections local-store-collections)}))
 
 ;;;; Page Events
 
-(reg-event-db
+(reg-fx
+ :title
+ (fn [page-name]
+   (let [separator (when page-name " | ")
+         title (str "cocktail slurp" separator page-name)]
+     (set! (.-title js/document) title))))
+
+(reg-event-fx
  :active-page
- spec-interceptor
- (fn [db [_ page]]
-   (assoc db :active-page page)))
+ [spec-interceptor]
+ (fn [{:keys [db]} [_ page]]
+   (let [page-name (routes/titles page)]
+     {:db (assoc db :active-page page)
+      :title page-name})))
+
+(reg-event-fx
+ :cocktail-title
+ (fn [_ [_ cocktail-title]]
+   {:title cocktail-title}))
 
 ;;; Menu
 

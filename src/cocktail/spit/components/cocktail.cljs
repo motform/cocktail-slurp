@@ -5,7 +5,8 @@
 (declare metadata header byline body)
 
 (defn main []
-  (let [cocktail @(rf/subscribe [:active-cocktail])]
+  (let [cocktail @(rf/subscribe [:active-cocktail])
+        _ (rf/dispatch [:cocktail-title (:title cocktail)])]
     [:main#cocktail.dense-grid
      [metadata cocktail]
      [body cocktail]
@@ -28,7 +29,7 @@
 
 (defn byline [{:keys [date author url]}]
   [:div.cockail-footer
-   [:p date
+   [:p #_date
     [:br] "by " author
     [:br] [:a {:href url} "view original"]]])
 

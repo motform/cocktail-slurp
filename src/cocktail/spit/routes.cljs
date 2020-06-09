@@ -3,6 +3,11 @@
             [re-frame.core :as rf]
             [pushy.core :as pushy]))
 
+(def titles
+  {:about "about"
+   :library "library"
+   :menu "menu"})
+
 (def routes ["/" {"" :cocktails
                   "menu" :menu
                   "library" :library
