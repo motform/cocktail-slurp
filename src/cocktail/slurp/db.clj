@@ -41,7 +41,9 @@
                  (d/db @*conn))))
 
 (defn cocktail-by-id [id]
-  (d/pull (d/db @*conn) '[:id :title :recipe :preparation :ingredients] [:id id]))
+  (d/pull (d/db @*conn)
+          '[:id :title :recipe :preparation :ingredients :img :story :author :date :type]
+          [:id id]))
 
 (defn cocktail-feed []
   (let [result (d/q '[:find [(pull ?e [:date :id :title :recipe :preparation :ingredients]) ...]
@@ -109,8 +111,6 @@
     (if (seq args) ; handle stupid empty calls -> move to interceptor
       (into [] (map first (apply d/q query (d/db @*conn) args)))
       (cocktail-feed))))
-
-
 
 (comment
   ;; datomic

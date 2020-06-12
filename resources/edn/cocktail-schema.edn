@@ -63,9 +63,9 @@
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/many}
 
- ;; -> category/name
- {:db/ident :type
-  :db/doc "Type of the cocktail - shaken, stirred or punch"
+ ;; -> cocktail/type
+ {:db/ident :kind
+  :db/doc "The kind of cocktail - shaken, stirred or punch"
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
 

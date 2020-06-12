@@ -118,18 +118,17 @@
     (< min (transduce xf + (str/split-lines (:recipe post))))))
 
 (defn- stirred? [post]
-  (str/includes? (:recipe post) "stir"))
+  (str/includes? (str/lower-case (:fulltext post)) "stir"))
 
 (defn- shaken? [post]
-  (str/includes? (:recipe post) "shake"))
+  (str/includes? (str/lower-case (:fulltext post)) "shake"))
 
-(defn- cocktail-type [post]
-  (let [type (cond (punch? post 300) "punch"
+(defn- kind [post]
+  (let [kind (cond (punch? post 300) "punch"
                    (stirred? post) "stirred"
                    (shaken? post) "shaken")]
-    (util/?assoc post :type type)))
+    (assoc post :cocktail/kind kind)))
 
-;; TODO add filtering by category (should not be essay and stuff)
 (defn cocktail?
   "Assumes that all non-cocktail posts have a leading ':: ' in the title or are
    correctly tagged in the original source
@@ -139,7 +138,7 @@
        (not (re-find #"::" title))))
 
 (defn post->cocktail [post]
-  (-> post id url title author date body img categories bars ingredients prefix-ingredients fulltext cocktail-type
+  (-> post id url title author date body img categories bars ingredients prefix-ingredients fulltext kind
       (dissoc :type :attrs :tag :content)))
 
 (def xf-cocktail
