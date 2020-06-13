@@ -22,15 +22,20 @@ body {
     background: var(--bg);
     font-size: 4rem;
     line-height: 5rem;
+    font-variant-numeric: diagonal-fractions;
+    -moz-font-feature-settings: "frac";
+    -webkit-font-feature-settings: "frac";
+    font-feature-settings: "frac";
 }
 
 a {
     text-decoration: none;
     color: var(--fg);
+    cursor: pointer;
 }
 
 a:hover {
-    color: white;
+    text-decoration: underline;
 }
 
 ::selection {
@@ -42,13 +47,7 @@ h1 {
     font-size: 16rem;
     line-height: 13rem;
     margin-bottom: 4rem;
-}
-
-h2 {
-}
-
-h3 {
-    text-transform: lowercase;
+    text-transform: capitalize;
 }
 
 button {
@@ -65,8 +64,8 @@ button {
 .dense-grid {
     max-width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    grid-column-gap: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-column-gap: 5rem;
     grid-auto-flow: dense;
     grid-auto-rows: auto;
     list-style: none;
@@ -77,6 +76,10 @@ footer {
     color: white;
 }
 
+.illustration {
+    border-radius: 2rem 2rem 0 0;
+}
+
 /* Catalouge */
 
 .dispatch-btn {
@@ -84,7 +87,7 @@ footer {
 }
 
 .dispatch-btn:hover {
-    color: white;
+    text-decoration: underline;
 }
 
 /* Header */
@@ -101,7 +104,7 @@ header {
 
 a.header-btn:link    { color: white; }
 a.header-btn:visited { color: white; }
-a.header-btn:hover   { color: var(--fg); }
+a.header-btn:hover   { text-decoration: underline;b }
 a.header-btn:active  { color: white; }
 
 #title {
@@ -175,7 +178,7 @@ main {
 }
 
 .clickable-ingredient:hover{
-    color: white;
+    text-decoration: underline;
 }
 
 
@@ -228,19 +231,29 @@ main {
 
 /* Cards */
 
-#cards {
-}
-
 .card {
     display: flex;
+    border-radius: 2rem;
     flex-direction: column;
-    padding: 0rem 0rem 12rem 3rem;
-
-    line-height: 3.5rem;
+    line-height: 4rem;
+    background: whitesmoke;
+    margin-bottom: 5rem;
 }
 
-.card:hover .dispatch-btn {
-    visibility: visible;
+.card:hover .dispatch-btn { visibility: visible; }
+
+.card svg { margin-bottom: 5rem; }
+
+.card-contents {
+    padding: 0rem 0rem 10rem 3rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.card a {
+    font-size: 6rem;
+    margin-bottom: 1rem;
+    text-transform: capitalize;
 }
 
 .card-header {
@@ -260,29 +273,31 @@ main {
     margin-top: 4rem;
     white-space: pre-wrap;
     font-size: 3rem;
+    padding-right: 3rem;
+}
+
+.card-body > table {
+    margin-bottom: 6rem;
+    table-layout: fixed;
+}
+
+.card-body td:first-child {
+    min-width: 12rem;
 }
 
 .card-ingredient {
     font-size: 2rem;
     padding-right: 2rem;
-}
-
-.flags {
-    margin-left: auto;
+    letter-spacing: 0.3px;
 }
 
 .flag {
     height: 1.5rem;
-    width: 5rem;
+    width: 100%;
 }
 
-.flag-menu {
-    background-color: var(--menu-bg);
-}
-
-.flag-library {
-    background-color: var(--library-bg);
-}
+.flag-menu { background-color: var(--menu-bg); }
+.flag-library { background-color: var(--library-bg); }
 
 .line-left {
     border: 2px solid var(--fg);
@@ -293,23 +308,57 @@ main {
 
 #cocktail {
     white-space: pre-wrap;
+    background: whitesmoke; 
+    border-radius: 2rem;
 }
 
-#metadata {
-    margin-right: 8rem;
+#cocktail > * { padding: 5rem; }
+#cocktail > .header { margin-bottom: 10rem; }
+
+#cocktail > .illustration {
+    grid-column: span 4;
+    padding: 0;
 }
+
 .cocktail-body {
+    display: flex;
+    margin-bottom: 10rem;
+}
+.cocktail-body > .content {
+    display: grid;
+    grid-column-gap: 10rem;
+    grid-template-columns: repeat(3, 1fr);
 }
 
-.coccktail-ingredient {
+.cocktail-body > .content > aside > * { margin-bottom: 10rem; }
+.cocktail-body > .content > img { width: 100%; }
+#cocktail table { table-layout: fixed; }
+#cocktail td:first-child { min-width: 15rem; }
+
+#cocktail .metadata {
+    display: flex;
+    width: 10rem;
+    justify-content: space-between;
+    font-size: 3rem;
+    writing-mode: vertical-rl;
 }
 
 /* Strainer */
 
-#strainer {
+.strainer {
     background: var(--cocktails);
     padding: 10rem;
     display: flex;
+    flex-direction: column;
+}
+
+.strainer > div { display: flex; }
+.strainer > div:first-child { margin-bottom: 5rem; }
+
+.strainer select {
+    border: solid 0px black;
+    background: var(--cocktails);
+    font-family: "Suisse Intl";
 }
 
 input {
@@ -338,7 +387,6 @@ input {
 
 .strainer-bit:hover {
     text-decoration: line-through;
-    color: white;
 }
 
 #btn-strainer-clear {
@@ -349,5 +397,5 @@ input {
 }
 
 #btn-strainer-clear:hover {
-    color: white;
+    text-decoration: underline;
 }

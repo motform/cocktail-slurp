@@ -2,11 +2,11 @@
   (:require [cocktail.spit.components.catalouge :as catalouge]
             [cocktail.spit.components.strainer :as strainer]
             [cocktail.spit.routes :as routes]
+            [cocktail.stuff.illustration :as illustration]
             [cocktail.stuff.util :as util]
-            [re-frame.core :as rf]
-            [reagent.core :as r]))
+            [re-frame.core :as rf]))
 
-(declare card header title body buttons)
+(declare card illustration header title body buttons)
 
 ;; NOTE Dispatch and updating of the cocktails are now handled in the top
 ;;      level component, not sure if this let pattern is a good idea
@@ -22,23 +22,31 @@
          ^{:key (:id cocktail)} [card cocktail])]]]))
 
 (defn card [{:keys [ingredients] :as cocktail}]
-  [:div.card.hover-card.line-left
-   [header cocktail]
-   [catalouge/ingredient-list ingredients "card-ingredient"]
-   [body cocktail]])
+  [:section.card.hover-card
+   [illustration ingredients]
+   [:section.card-contents
+    [header cocktail]
+    [catalouge/ingredient-list ingredients "card-ingredient"]
+    [body cocktail]]
+   [catalouge/flags cocktail]])
+
+(defn illustration [ingredients]
+  (let [h "80px" w "100%"]
+    [:svg.illustration {:style {:height h :width w}}
+     (for [ingredient ingredients]
+       (illustration/header ingredient w h))]))
 
 (defn header [cocktail]
   [:div.card-header
-   [title cocktail]
-   [catalouge/flags cocktail]])
+   [title cocktail]])
 
 (defn title [{:keys [title id]}]
   [:a {:href (routes/cocktail-url-for id)} title])
 
 (defn body [{:keys [recipe preparation] :as cocktail}]
   [:div.card-body
-   [:p recipe] [:br]
-   [:p preparation] [:br] [:br]
+   [catalouge/recipe recipe]
+   [:p preparation]
    [buttons cocktail]])
 
 (defn buttons [cocktail]

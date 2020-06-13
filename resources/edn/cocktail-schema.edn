@@ -63,7 +63,7 @@
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/many}
 
- ;; -> cocktail/type
+ ;; -> cocktail/kind
  {:db/ident :kind
   :db/doc "The kind of cocktail - shaken, stirred or punch"
   :db/valueType :db.type/string 

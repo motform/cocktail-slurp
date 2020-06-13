@@ -61,3 +61,13 @@
                :value val
                :autoFocus true
                :on-change on-change})])))
+
+(defn recipe [recipe]
+  (let [ingredients (str/split-lines recipe)]
+    [:table>tbody
+     (for [ingredient ingredients]
+       (let [{:keys [measurement name]} (util/split-ingredient ingredient)]
+         ^{:key (str measurement name)}
+         [:tr
+          ^{:key measurement} [:td measurement]
+          ^{:key name} [:td name]]))]))

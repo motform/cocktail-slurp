@@ -1,5 +1,6 @@
 (ns cocktail.stuff.util
-  (:require #?(:cljs [cognitect.transit :as transit])
+  (:require [clojure.string :as str]
+            #?(:cljs [cognitect.transit :as transit])
             #?(:clj  [muuntaja.core :as muuntaja])))
 
 (defn gen-key
@@ -30,3 +31,29 @@
 (defn ->transit+json [data]
   #?(:cljs (transit/write (transit/writer :json) data)
      :clj (muuntaja/encode "application/transit+json" data)))
+
+(defn measurement? [s]
+  (let [measurements #{"oz" "jigger" "ml" "cl" "dl" "dash" "tsp" "tbsp" "scant" "spoon"
+                      "quart" "bsp" "heaping" "whole" "Whole" "drop" "drops"}]
+    (or (measurements (str/lower-case s))
+        (re-matches #"[\d/]+" s)
+        (re-matches #"\d+\-\d+" s))))
+
+(defn abbrev-measurement [measurement]
+  (case (str/lower-case measurement)
+    "jigger" "jig"
+    "dash" "ds"
+    "scant" "s" 
+    "heaping" "h"
+    "drops"  "dr" "drop"  "dr"
+    "spoon" "spn"
+    "whole" ""
+    (str/lower-case measurement)))
+
+(defn split-ingredient [ingredient]
+  (let [words (str/split ingredient " ")]
+    (assoc {} :measurement (->> words
+                               (take-while measurement?)
+                               (map abbrev-measurement)
+                               (str/join " "))
+           :name (str/join " " (drop-while measurement? words)))))

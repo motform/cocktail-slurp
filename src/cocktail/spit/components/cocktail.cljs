@@ -1,38 +1,45 @@
 (ns cocktail.spit.components.cocktail
-  (:require [re-frame.core :as rf]
-            [cocktail.spit.components.catalouge :as catalouge]))
+  (:require [clojure.string :as str]
+            [cocktail.spit.components.catalouge :as catalouge]
+            [cocktail.stuff.illustration :as illustration]
+            [cocktail.stuff.util :as util]
+            [re-frame.core :as rf]))
 
-(declare metadata header byline body)
+(declare illustration header body sidebar recipe metadata)
 
 (defn main []
-  (let [cocktail @(rf/subscribe [:active-cocktail])
-        _ (rf/dispatch [:cocktail-title (:title cocktail)])]
-    [:main#cocktail.dense-grid
-     [metadata cocktail]
-     [body cocktail]
-     [:img {:align :right :src "https://4.bp.blogspot.com/-VmEFTEAeqCo/XfkY_FnaWiI/AAAAAAAAMoc/aE-IrGPz5cwKdHK5eBxmLMkJV-I6_NknACLcBGAsYHQ/s320/dickensian5079.jpg"}]]))
+  (let [cocktail @(rf/subscribe [:active-cocktail])]
+    [:main>div#cocktail
+     [illustration cocktail]
+     [header cocktail]
+     [body cocktail]]))
 
-;; TODO refactor
-(defn metadata [{:keys [ingredients] :as cocktail}]
-  [:div#metadata
-   [header cocktail]
-   [catalouge/ingredient-list ingredients "cocktail-ingredient"]
-   [:p {:style {:margin-top "15rem"}} (:recipe cocktail)]
-   [:p {:style {:margin-top "5rem"}}  (:preparation cocktail)]
-   [:div {:style {:height "50rem"}}]
-   [byline cocktail]])
+(defn illustration [{:keys [ingredients]}]
+  (let [h "200px" w "100%"]
+    [:svg.illustration {:style {:height h :width w}}
+     (for [ingredient ingredients]
+       (illustration/header ingredient w h))]))
 
-(defn header [cocktail]
-  [:div.card-header
-   [:h1 (:title cocktail)]
-   [catalouge/flags cocktail]])
+(defn header [{:keys [ingredients title]}]
+  [:section.header
+   [:h1 title]
+   [catalouge/ingredient-list ingredients "cocktail-ingredient"]])
 
-(defn byline [{:keys [date author url]}]
-  [:div.cockail-footer
-   [:p #_date
-    [:br] "by " author
-    [:br] [:a {:href url} "view original"]]])
+(defn body [{:keys [story img] :as cocktail}]
+  [:section.cocktail-body 
+   [:div.content
+    [sidebar cocktail]
+    [:div (when story (str/trim story))]
+    [:img {:src img}]]
+   [metadata cocktail]])
 
-(defn body [cocktail]
+(defn sidebar [{:keys [recipe preparation]}]
+  [:aside
+   [catalouge/recipe recipe]
+   [:p preparation]])
+
+(defn metadata [{:keys [date author url]}]
   [:div.metadata
-   [:p.cocktail-body (:story cocktail)]])
+   [:p (subs (str date) 0 15)]
+   [:p "posted by " author]
+   [:a {:href url} "view original"]])

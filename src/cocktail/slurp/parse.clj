@@ -127,7 +127,7 @@
   (let [kind (cond (punch? post 300) "punch"
                    (stirred? post) "stirred"
                    (shaken? post) "shaken")]
-    (assoc post :cocktail/kind kind)))
+    (util/?assoc post :kind kind)))
 
 (defn cocktail?
   "Assumes that all non-cocktail posts have a leading ':: ' in the title or are

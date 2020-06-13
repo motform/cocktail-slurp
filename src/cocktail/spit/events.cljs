@@ -17,7 +17,7 @@
     (throw (ex-info (str "spec check failed: " (s/explain-str a-spec db)) {}))))
 
 (def check-spec-interceptor (after (partial check-and-throw :cocktail.spit.db/db)))
-(def spec-interceptor [#_check-spec-interceptor])
+(def spec-interceptor [check-spec-interceptor])
 
 (def ->local-storage (after db/collections->local-storage))
 (def local-storage-interceptor [->local-storage])
@@ -44,13 +44,24 @@
  [spec-interceptor]
  (fn [{:keys [db]} [_ page]]
    (let [page-name (routes/titles page)]
-     {:db (assoc db :active-page page)
-      :title page-name})))
+     (cond-> {:db (assoc db :active-page page)
+              :title page-name}
+       (= :cocktail page) (assoc :scroll [0 0])))))
 
 (reg-event-fx
  :cocktail-title
  (fn [_ [_ cocktail-title]]
    {:title cocktail-title}))
+
+(reg-fx
+ :scroll
+ (fn [[x y]]
+   (. js/window scrollTo x y)))
+
+(reg-event-fx
+ :scroll-to
+ (fn _ [_ points]
+   {:scroll points}))
 
 ;;; Menu
 
@@ -135,9 +146,8 @@
 
 (reg-event-fx
  :cocktail-by-id
- (fn [{:keys [db]} [_ id]]
-   {:db (assoc db :ajax-test true) ;; NOTE
-    :http-xhrio {:method :get
+ (fn [_ [_ id]]
+   {:http-xhrio {:method :get
                  :uri "http://localhost:3232/bartender/cocktail"
                  :params {:id id}
                  :body ""
@@ -146,10 +156,11 @@
                  :on-success [:success-cocktail-by-id]
                  :on-failure [:failure-http]}}))
 
-(reg-event-db
+(reg-event-fx
  :success-cocktail-by-id
- (fn [db [_ result]]
-   (assoc db :active-cocktail result)))
+ (fn [{:keys [db]} [_ result]]
+   {:db (assoc db :active-cocktail result)
+    :title (:title result)}))
 
 ;;; Meta
 

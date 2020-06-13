@@ -9,24 +9,29 @@
 
 (defn main []
   (let [bits @(rf/subscribe [:strainer-ingredients])]
-    [:div#strainer
+    [:section.strainer
 
-     [catalouge/text-input-auto
-      {:placeholder "Search…" :id "strain-input"
-       :sub :strainer-search
-       :on-change #(let [val (-> % .-target .-value str)]
-                     (rf/dispatch [:strainer-search val]))}]
-     [select-ingredient]
-     (for [bit bits] ^{:key bit} [strained-bit bit])
-     [clear-strainer]]))
+     [:div
+      [catalouge/text-input-auto
+       {:placeholder "Search…" :id "strain-input"
+        :sub :strainer-search
+        :on-change #(let [val (-> % .-target .-value str)]
+                      (rf/dispatch [:strainer-search val]))}]
+      (for [bit bits] ^{:key bit} [strained-bit bit])
+      [clear-strainer]]
+
+     [:div
+      [select-ingredient]]]))
 
 (defn select-ingredient []
   (let [ingredients (sort @(rf/subscribe [:meta-ingredients]))]
-    [:select {:name "ingredients"
-              :on-change #(rf/dispatch [:strainer-conj :ingredients (-> % .-target .-value)])}
-     (for [ingredient ingredients]
-       ^{:key ingredient :value ingredient}
-       [:option ingredient])]))
+    [:<>
+     [:p "+ ingredient"]
+     [:select {:name "ingredients"
+               :on-change #(rf/dispatch [:strainer-conj :ingredients (-> % .-target .-value)])}
+      (for [ingredient ingredients]
+        ^{:key ingredient :value ingredient}
+        [:option ingredient])]]))
 
 ;; TODO change this into an input button/submit?
 ;; TODO make they key dynamic or turn into cataloged component
