@@ -9,6 +9,7 @@
         http-kit                   {:mvn/version "2.4.0-alpha6"}
         ring                       {:mvn/version "1.8.0"}
         ring-cors                  {:mvn/version "0.1.13"}
+        ring-logger                {:mvn/version "1.0.1"}
         metosin/muuntaja           {:mvn/version "0.6.6"}
 
         ;; parsing

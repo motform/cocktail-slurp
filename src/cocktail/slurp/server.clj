@@ -4,6 +4,7 @@
             [cocktail.slurp.routes :as routes]
             [cocktail.stuff.config :as config]
             [org.httpkit.server :refer [run-server]]
+            [ring.logger :as logger]
             [ring.middleware.cors :refer [wrap-cors]]
             [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.not-modified :refer [wrap-not-modified]]
@@ -24,6 +25,7 @@
 ;; TODO clean up the handler
 (def bartender
   (-> #'routes/route-handler
+      logger/wrap-log-response
       (wrap-cors :access-control-allow-origin  [#"http://localhost:8020"]
                  :access-control-allow-methods [:post :get])
       (wrap-resource "public")
@@ -32,7 +34,8 @@
       wrap-session
       wrap-params
       wrap-reload
-      wrap-flash))
+      wrap-flash
+      logger/wrap-log-request-start))
 
 (defn -main []
   (let [{:keys [datomic http]} config/env]
