@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+npx shadow-cljs build app
+clojure -A:depstar -m hf.depstar.uberjar liquid-site.jar
