@@ -7,6 +7,12 @@
             [cocktail.stuff.util :as util]
             [clojure.string :as str]))
 
+;;;; Helpers
+
+(defn ->uri [route]
+  (let [host (.. js/window -location -host)]
+    (str "http://" host "/" route)))
+
 ;;;; Interceptors
 
 (defn- check-and-throw
@@ -129,7 +135,7 @@
  (fn [{:keys [db]} [_ data]]
    {:db (assoc db :ajax-test true) ;; NOTE
     :http-xhrio {:method :post
-                 :uri "http://localhost:3232/bartender/strain"
+                 :uri (->uri "bartender/strain")
                  :timeout 8000
                  :body data
                  :format (ajax/transit-request-format)
@@ -148,7 +154,7 @@
  :cocktail-by-id
  (fn [_ [_ id]]
    {:http-xhrio {:method :get
-                 :uri "http://localhost:3232/bartender/cocktail"
+                 :uri (->uri "bartender/cocktail")
                  :params {:id id}
                  :body ""
                  :timeout 8000
@@ -169,7 +175,7 @@
  (fn [{:keys [db]} [_ attribute]]
    {:db (assoc db :ajax-test true) ;; NOTE
     :http-xhrio {:method :get
-                 :uri "http://localhost:3232/bartender/all"
+                 :uri (->uri "bartender/all")
                  :params {:attribute attribute}
                  :body ""
                  :timeout 8000
