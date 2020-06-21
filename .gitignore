@@ -1,6 +1,8 @@
-.shadow-cljs/
-.clj-kondo/
-node_modules/
 !resources/public
-resources/public/js/
+.clj-kondo/
+.shadow-cljs/
+node_modules/
 package-lock.json
+resources/public/js/
+resources/public/fonts/
+target/
