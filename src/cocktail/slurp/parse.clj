@@ -146,7 +146,7 @@
         (filter cocktail?)))
 
 (defn posts->cocktails [posts]
-  (->> posts slurp read-string (into [] xf-cocktail)))
+  (into [] xf-cocktail posts))
 
 
 (comment

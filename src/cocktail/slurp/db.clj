@@ -17,8 +17,8 @@
   [{:keys [uri schema posts]}]
   (d/create-database uri)
   (init-conn! uri)
-  @(d/transact @*conn (-> schema slurp read-string))
-  @(d/transact @*conn (parse/posts->cocktails posts)))
+  @(d/transact @*conn (-> schema  slurp read-string))
+  @(d/transact @*conn (-> posts  slurp read-string parse/posts->cocktails)))
 
 ;;; queries
 
@@ -42,7 +42,7 @@
 
 (defn cocktail-by-id [id]
   (d/pull (d/db @*conn)
-          '[:id :title :recipe :preparation :ingredients :img :story :author :date :type]
+          '[:id :title :recipe :preparation :ingredients :img :story :author :date :type :url]
           [:id id]))
 
 (defn cocktail-feed []
