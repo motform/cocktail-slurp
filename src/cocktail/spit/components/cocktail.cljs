@@ -1,24 +1,17 @@
 (ns cocktail.spit.components.cocktail
   (:require [clojure.string :as str]
             [cocktail.spit.components.catalouge :as catalouge]
-            [cocktail.stuff.illustration :as illustration]
-            [cocktail.stuff.util :as util]
+            [cocktail.stuff.illustration :refer [illustration]]
             [re-frame.core :as rf]))
 
-(declare illustration header body sidebar recipe metadata)
+(declare header body sidebar recipe metadata)
 
 (defn main []
   (let [cocktail @(rf/subscribe [:active-cocktail])]
     [:main>div#cocktail
-     [illustration cocktail]
+     [illustration cocktail "200px"]
      [header cocktail]
      [body cocktail]]))
-
-(defn illustration [{:keys [ingredients]}]
-  (let [h "200px" w "100%"]
-    [:svg.illustration {:style {:height h :width w}}
-     (for [ingredient ingredients]
-       (illustration/header ingredient w h))]))
 
 (defn header [{:keys [ingredients title]}]
   [:section.header
@@ -29,7 +22,7 @@
   [:section.cocktail-body 
    [:div.content
     [sidebar cocktail]
-    [:div (when story (str/trim story))]
+    [:div.story (when story (str/trim story))]
     [:img {:src img}]]
    [metadata cocktail]])
 
@@ -42,4 +35,4 @@
   [:div.metadata
    [:p (subs (str date) 0 15)]
    [:p "posted by " author]
-   [:a {:href url} "view original"]])
+   [:a {:href url :target "_blank"} "view original"]])

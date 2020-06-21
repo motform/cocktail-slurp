@@ -39,8 +39,7 @@ a:hover {
 }
 
 ::selection {
-    color: white;
-    background-color: none;
+    background-color: lightgray;
 }
 
 h1 {
@@ -104,7 +103,7 @@ header {
 
 a.header-btn:link    { color: white; }
 a.header-btn:visited { color: white; }
-a.header-btn:hover   { text-decoration: underline;b }
+a.header-btn:hover   { text-decoration: underline; }
 a.header-btn:active  { color: white; }
 
 #title {
@@ -322,7 +321,6 @@ main {
 
 .cocktail-body {
     display: flex;
-    margin-bottom: 10rem;
 }
 .cocktail-body > .content {
     display: grid;
@@ -337,7 +335,7 @@ main {
 
 #cocktail .metadata {
     display: flex;
-    width: 10rem;
+    width: 8rem;
     justify-content: space-between;
     font-size: 3rem;
     writing-mode: vertical-rl;
@@ -398,4 +396,9 @@ input {
 
 #btn-strainer-clear:hover {
     text-decoration: underline;
+}
+
+hr {
+    border: 1px solid black;
+    border-width: 1px 0 0 0;
 }
