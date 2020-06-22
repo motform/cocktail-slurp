@@ -1,8 +1,7 @@
 (ns cocktail.spit.components.catalouge
   (:require [clojure.string :as str]
             [cocktail.stuff.util :as util]
-            [re-frame.core :as rf]
-            [reagent.core :as r]))
+            [re-frame.core :as rf]))
 
 (defn dispatch-btn [k label cocktail]
   (let [collection @(rf/subscribe [(keyword k)])
@@ -12,10 +11,6 @@
         e (keyword (str k f))]
     [:button.dispatch-btn {:class k :on-click #(rf/dispatch [e cocktail])}
      op label]))
-
-(defn message-empty [section]
-  [:div.empty
-   (str "your " section " is empty, add some slurps!")])
 
 (defn ingredient' [ingredient]
   [:li.ingredient.clickable-ingredient
@@ -29,38 +24,12 @@
            ;; WARN might result in a key collision when we have two drinks with identical ingredients
            [ingredient' ingredient]))])
 
-(defn flags [cocktail]
-  (let [menu @(rf/subscribe [:menu-cocktails])
-        library @(rf/subscribe [:library-cocktails])]
-    [:div.flags
-     (when (menu cocktail) [:div.flag-menu.flag])
-     (when (library cocktail) [:div.flag-library.flag])]))
-
-(defn text-input-submit [{:keys [title on-save]}]
-  (let [val (r/atom title)
-        stop #(reset! val "")
-        save #(let [v (-> @val str str/trim)]
-                (on-save v)
-                (stop))]
-    (fn [props]
-      [:input
-       (merge (dissoc props :on-save :title)
-              {:type "text" :value @val :on-blur save :autoFocus true
-               :on-change #(reset! val (-> % .-target .-value))
-               :on-key-down #(case (.-which %)
-                               13 (save)
-                               27 (stop)
-                               nil)})])))
-
-(defn text-input-auto [{:keys [on-change sub]}]
-  (fn [props]
-    (let [val @(rf/subscribe [sub])]
-      [:input
-       (merge (dissoc props :on-save :title)
-              {:type "text"
-               :value val
-               :autoFocus true
-               :on-change on-change})])))
+;; (defn flags [cocktail]
+;;   (let [menu @(rf/subscribe [:menu-cocktails])
+;;         library @(rf/subscribe [:library-cocktails])]
+;;     [:div.flags
+;;      (when (menu cocktail) [:div.flag-menu.flag])
+;;      (when (library cocktail) [:div.flag-library.flag])]))
 
 (defn recipe [recipe]
   (let [ingredients (str/split-lines recipe)]

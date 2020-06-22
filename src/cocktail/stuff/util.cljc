@@ -25,6 +25,11 @@
   [m f]
   (into {} (for [[k v] m] [k (f v)])))
 
+(defn toggle
+  "Toggle membership of `x` in `set`"
+  [set x]
+  (if (set x) (disj set x) (conj set x)))
+
 (defn remove-empty [m]
   (into {} (remove (comp empty? second) m)))
 

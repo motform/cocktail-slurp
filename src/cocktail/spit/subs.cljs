@@ -7,34 +7,19 @@
    (:active-page db)))
 
 (reg-sub
- :menu-cocktails
- (fn [db _]
-   (get-in db [:collections :menu :cocktails])))
+ :collection-cocktails
+ (fn [db [_ collection]]
+   (get-in db [:collections collection :cocktails])))
 
 (reg-sub
- :library-cocktails
- (fn [db _]
-   (get-in db [:collections :library :cocktails])))
+ :strainer-keys
+ (fn [db [_ ks]]
+   (select-keys (:strainer db) ks)))
 
 (reg-sub
- :strainer
- (fn [db _]
-   (select-keys (:strainer db) [:ingredients :search])))
-
-(reg-sub
- :strainer-ingredients
- (fn [db _]
-   (get-in db [:strainer :ingredients])))
-
-(reg-sub
- :strainer-search
- (fn [db _]
-   (get-in db [:strainer :search])))
-
-(reg-sub
- :meta-ingredients
- (fn [db _]
-   (get-in db [:meta :ingredients])))
+ :meta-keys
+ (fn [db [_ ks]]
+   (select-keys (:meta db) ks)))
 
 (reg-sub
  :strained-cocktails

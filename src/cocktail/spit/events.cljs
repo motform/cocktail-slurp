@@ -1,11 +1,10 @@
 (ns cocktail.spit.events
-  (:require [re-frame.core :refer [reg-event-db reg-event-fx reg-fx inject-cofx path after debug]]
-            [ajax.core :as ajax]
+  (:require [ajax.core :as ajax]
             [clojure.spec.alpha :as s]
+            [clojure.string :as str]
             [cocktail.spit.db :as db]
-            [cocktail.spit.routes :as routes]
             [cocktail.stuff.util :as util]
-            [clojure.string :as str]))
+            [re-frame.core :refer [reg-event-db reg-event-fx reg-fx inject-cofx path after debug]]))
 
 ;;;; Helpers
 
@@ -49,10 +48,9 @@
  :active-page
  [spec-interceptor]
  (fn [{:keys [db]} [_ page]]
-   (let [page-name (routes/titles page)]
-     (cond-> {:db (assoc db :active-page page)
-              :title page-name}
-       (= :cocktail page) (assoc :scroll [0 0])))))
+   (cond-> {:db (assoc db :active-page page)
+            :title nil}
+     (= :cocktail page) (assoc :scroll [0 0])))) ;; NOTE
 
 (reg-event-fx
  :cocktail-title
@@ -69,54 +67,33 @@
  (fn _ [_ points]
    {:scroll points}))
 
-;;; Menu
+;;; Collection
 
 (reg-event-db
- :menu-cocktails-conj
+ :collection-conj
  [spec-interceptor local-storage-interceptor]
- (fn [db [_ cocktail]]
-   (update-in db [:collections :menu :cocktails] conj cocktail)))
+ (fn [db [_ collection cocktail]]
+   (update-in db [:collections collection :cocktails] conj cocktail)))
 
 (reg-event-db
- :menu-cocktails-disj
+ :collection-disj
  [spec-interceptor local-storage-interceptor]
- (fn [db [_ cocktail]]
-   (update-in db [:collections :menu :cocktails] disj cocktail)))
-
-;;; Library
+ (fn [db [_ collection cocktail]]
+   (update-in db [:collections collection :cocktails] disj cocktail)))
 
 (reg-event-db
- :library-cocktails-conj
+ :collection-clear
  [spec-interceptor local-storage-interceptor]
- (fn [db [_ cocktail]]
-   (update-in db [:collections :library :cocktails] conj cocktail)))
-
-(reg-event-db
- :library-cocktails-disj
- [spec-interceptor local-storage-interceptor]
- (fn [db [_ cocktail]]
-   (update-in db [:collections :library :cocktails] disj cocktail)))
-
-(reg-event-db
- :library-clear
- [spec-interceptor local-storage-interceptor]
- (fn [db [_]]
-   (assoc-in db [:collections :library :cocktails] #{})))
+ (fn [db [_ collection]]
+   (assoc-in db [:collections collection :cocktails] #{})))
 
 ;;; Strainer
 
-;; TODO add an interceptor/spec that checks for valid ingredients
 (reg-event-db
  :strainer-conj
  [spec-interceptor]
  (fn [db [_ k v]]
    (update-in db [:strainer k] conj (str/lower-case v))))
-
-(reg-event-db
- :strainer-search
- [spec-interceptor]
- (fn [db [_ search]]
-   (assoc-in db [:strainer :search] search)))
 
 (reg-event-db
  :strainer-disj
@@ -125,23 +102,36 @@
    (update-in db [:strainer k] disj v)))
 
 (reg-event-db
+ :strainer-toggle
+ [spec-interceptor]
+ (fn [db [_ k v]]
+   (update-in db [:strainer k] util/toggle v)))
+
+(reg-event-db
+ :strainer-search
+ [spec-interceptor]
+ (fn [db [_ search]]
+   (assoc-in db [:strainer :search] search)))
+
+(reg-event-db
  :strainer-clear
  [spec-interceptor]
  (fn [db [_]]
-   (assoc db :strainer {:cocktails #{} :ingredients #{} :search #{}})))
+   (assoc db :strainer {:kind #{} :cocktails #{} :ingredients #{} :collection #{} :search ""})))
 
 (reg-event-fx
  :strain-cocktails
  (fn [{:keys [db]} [_ data]]
-   {:db (assoc db :ajax-test true) ;; NOTE
-    :http-xhrio {:method :post
-                 :uri (->uri "bartender/strain")
-                 :timeout 8000
-                 :body data
-                 :format (ajax/transit-request-format)
-                 :response-format (ajax/transit-response-format {:keywords? true})
-                 :on-success [:success-strained-cocktails]
-                 :on-failure [:failure-http]}}))
+   (let [_ (println data)]
+     {:db (assoc db :ajax-test true) ;; NOTE
+      :http-xhrio {:method :post
+                   :uri (->uri "bartender/strain")
+                   :timeout 8000
+                   :body data
+                   :format (ajax/transit-request-format)
+                   :response-format (ajax/transit-response-format {:keywords? true})
+                   :on-success [:success-strained-cocktails]
+                   :on-failure [:failure-http]}})))
 
 (reg-event-db
  :success-strained-cocktails

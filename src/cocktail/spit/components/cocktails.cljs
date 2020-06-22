@@ -6,44 +6,30 @@
             [cocktail.stuff.util :as util]
             [re-frame.core :as rf]))
 
-(declare card header title body buttons)
+;; (defn buttons [cocktail]
+;;   [:<>
+;;    [catalouge/dispatch-btn "menu-cocktails" "M" cocktail] "    "
+;;    (catalouge/dispatch-btn "library-cocktails" "L"  cocktail)])
+
+(defn card [{:keys [recipe preparation ingredients title id] :as cocktail}]
+  [:section.card
+   [illustration cocktail "60px"]
+   [:div.card-body
+    [:a.title {:href (routes/cocktail-url-for id)} title]
+    [catalouge/ingredient-list ingredients "card-ingredient"]
+    [catalouge/recipe recipe]
+    [:p preparation]
+    #_[buttons cocktail]
+    #_[catalouge/flags cocktail]]])
 
 ;; NOTE Dispatch and updating of the cocktails are now handled in the top
 ;;      level component, not sure if this let pattern is a good idea
 (defn main []
-  (let [cs (util/->transit+json @(rf/subscribe [:strainer]))
+  (let [cs (util/->transit+json @(rf/subscribe [:strainer-keys [:kind :collection :ingredients :search]]))
         _ (rf/dispatch [:strain-cocktails cs])
-        cocktails @(rf/subscribe [:strained-cocktails])]
-    [:<>
-     [strainer/main]
-     [:main.cocktails
-      [:section#cocktails.dense-grid 
-       (for [cocktail cocktails]
-         ^{:key (:id cocktail)} [card cocktail])]]]))
-
-(defn card [{:keys [ingredients] :as cocktail}]
-  [:section.card.hover-card
-   [illustration cocktail "80px"]
-   [:section.card-contents
-    [header cocktail]
-    [catalouge/ingredient-list ingredients "card-ingredient"]
-    [body cocktail]]
-   [catalouge/flags cocktail]])
-
-(defn header [cocktail]
-  [:div.card-header
-   [title cocktail]])
-
-(defn title [{:keys [title id]}]
-  [:a {:href (routes/cocktail-url-for id)} title])
-
-(defn body [{:keys [recipe preparation] :as cocktail}]
-  [:div.card-body
-   [catalouge/recipe recipe]
-   [:p preparation]
-   [buttons cocktail]])
-
-(defn buttons [cocktail]
-  [:<>
-   [catalouge/dispatch-btn "menu-cocktails" "M" cocktail] "    "
-   (catalouge/dispatch-btn "library-cocktails" "L"  cocktail)])
+        cocktails (:cocktails @(rf/subscribe [:strainer-keys [:cocktails]]))]
+    [:main.cocktails
+     [strainer/sidebar]
+     [:section.cards
+      (for [cocktail cocktails]
+        ^{:key (:id cocktail)} [card cocktail])]]))

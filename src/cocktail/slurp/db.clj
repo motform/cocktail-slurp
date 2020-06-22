@@ -42,7 +42,7 @@
 
 (defn cocktail-by-id [id]
   (d/pull (d/db @*conn)
-          '[:id :title :recipe :preparation :ingredients :img :story :author :date :type :url]
+          '[:id :title :recipe :preparation :ingredients :img :story :author :date :type :url :kind]
           [:id id]))
 
 (defn cocktail-feed []
@@ -52,7 +52,7 @@
     (->> result (sort-by :date compare) reverse (into []))))
 
 (def base-query
-  '{:query {:find [(pull ?e [:id :title :recipe :preparation :ingredients])]
+  '{:query {:find [(pull ?e [:id :title :recipe :preparation :ingredients :kind])]
             :in [$]
             :where []}
     :args []})
@@ -91,7 +91,7 @@
 
 (defn- wash-strainer
   "Homogenize & split strings, possibly do other processing to input"
-  [{:keys [search type ingredients] :as strainer}]
+  [{:keys [search kind ingredients] :as strainer}]
   (cond-> strainer
     (not (str/blank? search))
     (update :search
@@ -100,9 +100,9 @@
 (defn- parse-strainer
   "Builds a query map based on user input, excepts irrelevant keys to be falsy.
    Order of clause conj is preserved, so try and do fulltext last."
-  [{:keys [:ingredients :search :type]}]
+  [{:keys [:ingredients :search :kind]}]
   (cond-> base-query
-    type (and-query :type \t type)
+    kind (and-query :kind \k kind)
     ingredients (and-query :ingredients \i ingredients)
     search (fn-and-query :fulltext 'fulltext \f '$ search)))
 

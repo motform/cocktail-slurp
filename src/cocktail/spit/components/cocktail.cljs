@@ -8,7 +8,7 @@
 
 (defn main []
   (let [cocktail @(rf/subscribe [:active-cocktail])]
-    [:main>div#cocktail
+    [:main>div.cocktail
      [illustration cocktail "200px"]
      [header cocktail]
      [body cocktail]]))

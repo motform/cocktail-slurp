@@ -3,15 +3,8 @@
             [re-frame.core :as rf]
             [pushy.core :as pushy]))
 
-(def titles
-  {:about "about"
-   :library "library"
-   :menu "menu"})
-
+;; TODO does not work?
 (def routes ["/" {"" :cocktails
-                  "menu" :menu
-                  "library" :library
-                  "about" :about
                   ["cocktail/" :id] :cocktail}])
 
 (defn- parse-url [url]

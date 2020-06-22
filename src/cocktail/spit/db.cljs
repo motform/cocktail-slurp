@@ -16,11 +16,14 @@
 (s/def ::library (s/keys :req-un [::cocktails]))
 (s/def ::menu (s/keys :req-un [::cocktails]))
 
-(s/def ::strainer (s/keys :req-un [::ingredients ::cocktails ::search ::type]))
+(s/def ::strainer (s/keys :req-un [::ingredients ::cocktails ::search ::kind ::collection]))
 (s/def ::ingredients (s/coll-of ::ingredient))
 (s/def ::ingredient string?)
+(s/def ::search string?)
+(s/def ::collection set?)
+(s/def ::kind set?)
 
-(s/def ::cocktails (s/coll-of ::cocktail))
+(s/def ::cocktails (s/nilable (s/coll-of ::cocktail)))
 (s/def ::cocktail map?)
 
 ;;;; app-db
@@ -32,8 +35,9 @@
    :collections {:menu {:cocktails #{}}
                  :library {:cocktails #{}}}
    :strainer {:ingredients #{}
+              :collection #{}
               :search ""
-              :type #{}
+              :kind #{}
               :cocktails #{}}})
 
 ;;;; local-storage

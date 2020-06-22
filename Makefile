@@ -31,5 +31,4 @@ clean:
 dev:
 	npx shadow-cljs watch $(APP) & clojure -A:server
 
-.PHONY: clean cljr-compile uberjar runjar
-
+.PHONY: dev

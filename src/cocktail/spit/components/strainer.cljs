@@ -1,46 +1,59 @@
 (ns cocktail.spit.components.strainer
-  (:require [cocktail.spit.components.catalouge :as catalouge]
+  (:require [clojure.set :as set]
+            [clojure.string :as str]
+            [reagent.core :as r]
             [re-frame.core :as rf]))
 
 ;; TODO split the strain input on spaces, as it seems like we get better
 ;; results when matching on single words
 
-(declare select-ingredient strained-bit clear-strainer btn-strain)
-
-(defn main []
-  (let [bits @(rf/subscribe [:strainer-ingredients])]
-    [:section.strainer
-
-     [:div
-      [catalouge/text-input-auto
-       {:placeholder "Search…" :id "strain-input"
-        :sub :strainer-search
-        :on-change #(let [val (-> % .-target .-value str)]
-                      (rf/dispatch [:strainer-search val]))}]
-      (for [bit bits] ^{:key bit} [strained-bit bit])
-      [clear-strainer]]
-
-     [:div
-      [select-ingredient]]]))
-
-(defn select-ingredient []
-  (let [ingredients (sort @(rf/subscribe [:meta-ingredients]))]
-    [:<>
-     [:p "+ ingredient"]
-     [:select {:name "ingredients"
-               :on-change #(rf/dispatch [:strainer-conj :ingredients (-> % .-target .-value)])}
-      (for [ingredient ingredients]
-        ^{:key ingredient :value ingredient}
-        [:option ingredient])]]))
-
-;; TODO change this into an input button/submit?
-;; TODO make they key dynamic or turn into cataloged component
-(defn strained-bit [bit]
-  [:button.strainer-bit
-   {:on-click #(rf/dispatch [:strainer-disj :ingredients bit])}
-   bit])
-
 (defn clear-strainer []
-  [:input#btn-strainer-clear
-   {:type "button" :value "clear strainer"
-    :on-click #(rf/dispatch [:strainer-clear])}])
+  [:button.toggle.clear
+   {:on-click #(rf/dispatch [:strainer-clear])}
+   "clear strainer"])
+
+(defn strainer-toggle [item strainer k]
+  [:button.toggle
+   {:class (when (contains? strainer item) "toggle-active")
+    :on-click #(rf/dispatch [:strainer-toggle k item])}
+   item])
+
+(defn toggles [k list strainer]
+  [:div.toggles
+   (for [item (sort list)]
+     ^{:key item} [strainer-toggle item (k strainer) k])])
+
+(defn toggle [k list strainer]
+  [:section.strainer-category
+   [:p (name k)]
+   [toggles k list strainer]])
+
+(defn toggle-ingredients [list strainer]
+  (let [*filter (r/atom "")]
+    (fn [list strainer]
+      (let [ingredients (filter #(str/includes? % @*filter)
+                                (set/difference list (:ingredients strainer)))]
+        [:section
+         [:p "ingredients"]
+         [:input {:type "text" :placeholder "Filter…"
+                  :value @*filter 
+                  :on-change #(reset! *filter (-> % .-target .-value))}]
+         [toggles :ingredients (:ingredients strainer) strainer]
+         [toggles :ingredients ingredients strainer]]))))
+
+(defn search [{:keys [search]}]
+  [:input
+   {:type "text" :placeholder "Search…"
+    :value search :autoFocus true
+    :on-change #(let [val (-> % .-target .-value str)]
+                  (rf/dispatch [:strainer-search val]))}])
+
+(defn sidebar []
+  (let [strainer @(rf/subscribe [:strainer-keys [:kind :collection :ingredients :search]])
+        ingredients (:ingredients @(rf/subscribe [:meta-keys [:ingredients]]))]
+    [:aside.strainer
+     [search strainer]
+     [toggle :collection #{"library" "menu"} strainer]
+     [toggle :kind #{"stirred" "shaken" "punch"} strainer]
+     [toggle-ingredients ingredients strainer]
+     [clear-strainer]]))

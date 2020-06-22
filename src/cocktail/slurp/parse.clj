@@ -5,8 +5,6 @@
             [cocktail.stuff.util :as util]
             [hickory.select :as s]))
 
-;; TODO add parsing for type #{:strained :stirred :punch}
-
 (defn- id [post]
   (assoc post :id
          (-> (s/select (s/child (s/attr :name)) post)

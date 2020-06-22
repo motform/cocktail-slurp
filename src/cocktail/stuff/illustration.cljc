@@ -119,7 +119,7 @@
    "raspberry syrup" "pink"
    "simple syrup" "whitesmoke"
    "bianco vermouth" "whitesmoke"
-   "dry vermouth" "whitesmoke"
+   "dry vermouth" "yellow"
    "rose vermouth" "pink"
    "sweet vermouth" "red"
    "infused vodka" "whitesmoke"
