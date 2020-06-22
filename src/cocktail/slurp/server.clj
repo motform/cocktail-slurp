@@ -5,7 +5,6 @@
             [cocktail.stuff.config :as config]
             [org.httpkit.server :refer [run-server]]
             [ring.logger :as logger]
-            [ring.middleware.cors :refer [wrap-cors]]
             [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.not-modified :refer [wrap-not-modified]]
             [ring.middleware.params :refer [wrap-params]]
@@ -13,9 +12,6 @@
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.middleware.session :refer [wrap-session]]))
 
-(set! *warn-on-reflection* 1)
-
-;; TODO refactor, remove reflection from .bytes
 (defn- wrap-body-string [handler]
   (fn [request]
     (handler (if (:body request)
@@ -26,8 +22,6 @@
 (def bartender
   (-> #'routes/route-handler
       logger/wrap-log-response
-      (wrap-cors :access-control-allow-origin  [#"http://localhost:8020"]
-                 :access-control-allow-methods [:post :get])
       (wrap-resource "public")
       wrap-not-modified
       wrap-body-string
