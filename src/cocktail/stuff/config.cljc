@@ -4,7 +4,7 @@
   {:datomic {:uri "datomic:mem://cocktail.slurp/dev-server"
              :schema "resources/edn/cocktail-schema.edn"
              :posts "posts.edn"}
-   :http {:port 3232}})
+   :http {:port 3000}})
 
 (def prod
   {:datomic {:uri "datomic:mem://cocktail.slurp/prod"

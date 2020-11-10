@@ -1,41 +1,39 @@
 (ns cocktail.slurp.routes
-  (:require [bidi.ring :refer [make-handler]]
-            [cocktail.slurp.db :as db]
-            [cocktail.stuff.util :as util]
-            [muuntaja.core :as m]
-            [ring.util.response :as ring]))
+  (:require [cocktail.slurp.db :as db]))
 
-(defn- transit+json-response [data]
-  (-> data
-      util/->transit+json
-      ring/response
-      (ring/header "Content-Type" "application/transit+json")))
+;; TODO test all routes
+(def bartender
+  [["/all/{attribute}"
+    {:name :bartender/all
+     :doc "Returns all values for that :db/attribute."
+     :parameters {:path [:map [:attribute string?]]} ;; TODO spec
+     :get (fn [{{:keys [attribute]} :path-params}]
+            {:status 200
+             :body (db/all (keyword attribute))})}]
 
-(defn- home-page [_]
-  (ring/file-response "index.html" {:root "resources/public"}))
+   ["/strain"
+    {:name :bartender/strain
+     :doc "Parses and reruns a vector of cocktails filtered by the strainer."
+     ;; :parameters {:query [:map]} ;; TODO spec
+     :post (fn [{strainer :body-params}] ;; TODO 
+             {:status 200
+              :body (if-let [cocktails (db/paginate 0 20 db/strain strainer)]
+                      cocktails
+                      [])})}]
 
-(defn- all [{:keys [params]}]
-  (let [a (-> params (get "attribute") keyword)]
-    (transit+json-response (db/all a))))
+   ["/cocktail/{id}"
+    {:name :bartender/cocktail
+     :doc "Get a cocktail by its id."
+     :parameters {:path [:map [:id string?]]}
+     :get (fn [{{:keys [id]} :path-params}]
+            {:status 200
+             :body (db/cocktail-by-id id)})}]
 
-(defn- strain [{:keys [body]}]
-  (let [strainer (m/decode "application/transit+json" body)
-        result (db/paginate 0 20 db/strain strainer)]
-    (transit+json-response result)))
-
-(defn- cocktail-by-id [{:keys [params]}]
-  (transit+json-response (db/cocktail-by-id (params "id"))))
-
-(defn- cocktail-feed [{:keys [params]}]
-  (let [start (-> params (get "start") (Integer/parseInt))
-        end (-> params (get "end") (Integer/parseInt))]
-    (transit+json-response (db/paginate start end db/cocktail-feed))))
-
-(def route-handler
-  (make-handler
-   ["/" {"" home-page
-         "index.html" home-page
-         "bartender/" {"all" all
-                       "strain" strain
-                       "cocktail" cocktail-by-id
-                       "cocktails" cocktail-feed}}]))
+   ;; NOTE not in use - use /strain instead
+   ["/cocktails"
+    {:name :bartender/cocktails
+     :doc "Get default cocktail feed paginated by `start` and `end`, 
+           sorted by date added."
+     :post (fn [{{:keys [start end]} :query-params}]
+             {:status 200
+              :body (db/paginate start end db/cocktail-feed)})}]])

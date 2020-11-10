@@ -1,5 +1,5 @@
 (ns cocktail.spit.main
-  (:require [reagent.core :as r]
+  (:require [reagent.dom :as r]
             [re-frame.core :as rf]
             [goog.dom :as gdom]
             [cocktail.spit.routes :as routes]

@@ -25,7 +25,7 @@
 ;; NOTE Dispatch and updating of the cocktails are now handled in the top
 ;;      level component, not sure if this let pattern is a good idea
 (defn main []
-  (let [cs (util/->transit+json @(rf/subscribe [:strainer-keys [:kind :collection :ingredients :search]]))
+  (let [cs @(rf/subscribe [:strainer-keys [:kind :collection :ingredients :search]])
         _ (rf/dispatch [:strain-cocktails cs])
         cocktails (:cocktails @(rf/subscribe [:strainer-keys [:cocktails]]))]
     [:main.cocktails

@@ -6,11 +6,16 @@
             [cocktail.stuff.util :as util]
             [re-frame.core :refer [reg-event-db reg-event-fx reg-fx inject-cofx path after debug]]))
 
+;; TODO namespace keys
+
 ;;;; Helpers
 
-(defn ->uri [route]
-  (let [host (.. js/window -location -host)]
-    (str "http://" host "/" route)))
+(defn ->uri
+  "Used for running shadow-cljs in stand alone dev mode."
+  [route]
+  (if goog.DEBUG
+    (str "http://localhost:3000" route)
+    route))
 
 ;;;; Interceptors
 
@@ -122,12 +127,11 @@
 (reg-event-fx
  :strain-cocktails
  (fn [{:keys [db]} [_ data]]
-   (let [_ (println data)]
+   (let [_ (println (prn-str data))]
      {:db (assoc db :ajax-test true) ;; NOTE
       :http-xhrio {:method :post
-                   :uri (->uri "bartender/strain")
-                   :timeout 8000
-                   :body data
+                   :uri (->uri "/bartender/strain")
+                   :params data
                    :format (ajax/transit-request-format)
                    :response-format (ajax/transit-response-format {:keywords? true})
                    :on-success [:success-strained-cocktails]
@@ -144,10 +148,8 @@
  :cocktail-by-id
  (fn [_ [_ id]]
    {:http-xhrio {:method :get
-                 :uri (->uri "bartender/cocktail")
-                 :params {:id id}
-                 :body ""
-                 :timeout 8000
+                 :uri (->uri (str "/bartender/cocktail/" id))
+                 :format (ajax/transit-request-format)
                  :response-format (ajax/transit-response-format {:keywords? true})
                  :on-success [:success-cocktail-by-id]
                  :on-failure [:failure-http]}}))
@@ -165,10 +167,8 @@
  (fn [{:keys [db]} [_ attribute]]
    {:db (assoc db :ajax-test true) ;; NOTE
     :http-xhrio {:method :get
-                 :uri (->uri "bartender/all")
-                 :params {:attribute attribute}
-                 :body ""
-                 :timeout 8000
+                 :uri (->uri (str "/bartender/all/" attribute))
+                 :format (ajax/transit-request-format)
                  :response-format (ajax/transit-response-format {:keywords? true})
                  :on-success [:success-meta-all (keyword attribute)]
                  :on-failure [:failure-http]}}))
