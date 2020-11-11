@@ -2,9 +2,9 @@
   (:require [re-frame.core :refer [reg-sub subscribe]]))
 
 (reg-sub
- :page/active
+ ::route
  (fn [db _]
-   (:active-page db)))
+   (:route db)))
 
 ;; (reg-sub
 ;;  :collection/cocktails

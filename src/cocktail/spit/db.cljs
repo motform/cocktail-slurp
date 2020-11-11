@@ -5,9 +5,8 @@
 
 ;;;; specs
 
-(s/def ::db (s/keys :req-un [::active-page ::active-cocktail ::collections ::strainer ::meta]))
+(s/def ::db (s/keys :req-un [::route ::active-cocktail ::collections ::strainer ::meta]))
 
-(s/def ::active-page #{:cocktails :cocktail :library :menu :about})
 (s/def ::active-cocktail map?)
 
 (s/def ::meta (s/keys :req-un [::ingredients]))
@@ -29,7 +28,7 @@
 ;;;; app-db
 
 (def default-db
-  {:active-page :cocktails
+  {:route nil
    :active-cocktail {} ; not sure where this should be
    :meta {:ingredients #{}}
    :collections {:menu {:cocktails #{}}

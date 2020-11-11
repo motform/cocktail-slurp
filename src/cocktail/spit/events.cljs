@@ -4,6 +4,8 @@
             [clojure.string :as str]
             [cocktail.spit.db :as db]
             [cocktail.stuff.util :as util]
+            [reitit.frontend.controllers :as reitit.contollers]
+            [reitit.frontend.easy :as reitit.easy]
             [re-frame.core :refer [reg-event-db reg-event-fx reg-fx inject-cofx path after debug]]))
 
 ;; TODO namespace keys
@@ -40,7 +42,7 @@
  (fn [{:keys [local-store-collections]} _]
    {:db (util/?assoc db/default-db :collections local-store-collections)}))
 
-;;;; Page Events
+;;;; routes
 
 (reg-fx
  :title
@@ -49,28 +51,29 @@
          title (str "cocktail slurp" separator page-name)]
      (set! (.-title js/document) title))))
 
-(reg-event-fx
- :page/active
- [spec-interceptor]
- (fn [{:keys [db]} [_ page]]
-   (cond-> {:db (assoc db :active-page page)
-            :title nil}
-     (= :cocktail page) (assoc :scroll [0 0])))) ;; NOTE
-
-;; (reg-event-fx
-;;  :cocktail-title
-;;  (fn [_ [_ cocktail-title]]
-;;    {:title cocktail-title}))
+(reg-fx
+ ::navigate!
+ (fn [route]
+   (apply reitit.easy/push-state route)))
 
 (reg-fx
- :scroll
- (fn [[x y]]
-   (. js/window scrollTo x y)))
+ ::scroll-to-top!
+ (fn []
+   (. js/window scrollTo 0 0)))
 
-;; (reg-event-fx
-;;  :scroll-to
-;;  (fn _ [_ points]
-;;    {:scroll points}))
+(reg-event-fx
+ ::navigate
+ (fn [_ [_ & route]]
+   {::scroll-to-top! nil
+    ::navigate! route}))
+
+(reg-event-db
+ ::navigated
+ (fn [db [_ new-match]]
+   (let [old-match (-> db :route)
+         controllers (reitit.contollers/apply-controllers (:contollers old-match) new-match)]
+     (when-not goog.DEBUG (. js/window scrollTo 0 0)) ; don't scroll on hot-reloads
+     (assoc db :route (assoc new-match :contollers controllers)))))
 
 ;;; Collection
 
@@ -142,6 +145,12 @@
    (assoc-in db [:strainer :cocktails] result)))
 
 ;;; Cocktail
+
+(reg-event-fx
+ :cocktail/set-title
+ (fn [{:keys [db]} _]
+   (let [{:keys [name]} (:active-cocktail db)]
+     {:title name})))
 
 (reg-event-fx
  :cocktail/by-id

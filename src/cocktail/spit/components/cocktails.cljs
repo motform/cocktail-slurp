@@ -2,10 +2,9 @@
   (:require [cocktail.spit.components.catalouge :as catalouge]
             [cocktail.spit.components.strainer :as strainer]
             [cocktail.spit.events :as event]
-            [cocktail.spit.routes :as routes]
             [cocktail.stuff.illustration :refer [illustration]]
-            [cocktail.stuff.util :as util]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [reitit.frontend.easy :refer [href]]))
 
 ;; (defn buttons [cocktail]
 ;;   [:<>
@@ -16,7 +15,7 @@
   [:section.card
    [illustration cocktail "60px"]
    [:div.card-body
-    [:a.title {:href (routes/cocktail-url-for id)} title]
+    [:a.title {:href (href :route/cocktail {:id id})} title]
     [catalouge/ingredient-list ingredients "card-ingredient"]
     [catalouge/recipe recipe]
     [:p preparation]
