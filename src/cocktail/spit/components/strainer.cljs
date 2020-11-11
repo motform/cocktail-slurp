@@ -9,13 +9,13 @@
 
 (defn clear-strainer []
   [:button.toggle.clear
-   {:on-click #(rf/dispatch [:strainer-clear])}
+   {:on-click #(rf/dispatch [:strainer/clear])}
    "clear strainer"])
 
 (defn strainer-toggle [item strainer k]
   [:button.toggle
    {:class (when (contains? strainer item) "toggle-active")
-    :on-click #(rf/dispatch [:strainer-toggle k item])}
+    :on-click #(rf/dispatch [:strainer/toggle k item])}
    item])
 
 (defn toggles [k list strainer]
@@ -46,11 +46,11 @@
    {:type "text" :placeholder "Search…"
     :value search :autoFocus true
     :on-change #(let [val (-> % .-target .-value str)]
-                  (rf/dispatch [:strainer-search val]))}])
+                  (rf/dispatch [:strainer/search val]))}])
 
 (defn sidebar []
-  (let [strainer @(rf/subscribe [:strainer-keys [:kind :collection :ingredients :search]])
-        ingredients (:ingredients @(rf/subscribe [:meta-keys [:ingredients]]))]
+  (let [strainer @(rf/subscribe [:strainer/keys [:kind :collection :ingredients :search]])
+        ingredients (:ingredients @(rf/subscribe [:meta/keys [:ingredients]]))]
     [:aside.strainer
      [search strainer]
      [toggle :collection #{"library" "menu"} strainer]

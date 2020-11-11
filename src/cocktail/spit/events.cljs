@@ -35,7 +35,7 @@
 ;;;; Default-db
 
 (reg-event-fx
- :initialize-db
+ :db/initialize
  [(inject-cofx :local-store-collections)]
  (fn [{:keys [local-store-collections]} _]
    {:db (util/?assoc db/default-db :collections local-store-collections)}))
@@ -50,44 +50,44 @@
      (set! (.-title js/document) title))))
 
 (reg-event-fx
- :active-page
+ :page/active
  [spec-interceptor]
  (fn [{:keys [db]} [_ page]]
    (cond-> {:db (assoc db :active-page page)
             :title nil}
      (= :cocktail page) (assoc :scroll [0 0])))) ;; NOTE
 
-(reg-event-fx
- :cocktail-title
- (fn [_ [_ cocktail-title]]
-   {:title cocktail-title}))
+;; (reg-event-fx
+;;  :cocktail-title
+;;  (fn [_ [_ cocktail-title]]
+;;    {:title cocktail-title}))
 
 (reg-fx
  :scroll
  (fn [[x y]]
    (. js/window scrollTo x y)))
 
-(reg-event-fx
- :scroll-to
- (fn _ [_ points]
-   {:scroll points}))
+;; (reg-event-fx
+;;  :scroll-to
+;;  (fn _ [_ points]
+;;    {:scroll points}))
 
 ;;; Collection
 
 (reg-event-db
- :collection-conj
+ :collection/conj
  [spec-interceptor local-storage-interceptor]
  (fn [db [_ collection cocktail]]
    (update-in db [:collections collection :cocktails] conj cocktail)))
 
 (reg-event-db
- :collection-disj
+ :collection/disj
  [spec-interceptor local-storage-interceptor]
  (fn [db [_ collection cocktail]]
    (update-in db [:collections collection :cocktails] disj cocktail)))
 
 (reg-event-db
- :collection-clear
+ :collection/clear
  [spec-interceptor local-storage-interceptor]
  (fn [db [_ collection]]
    (assoc-in db [:collections collection :cocktails] #{})))
@@ -95,67 +95,66 @@
 ;;; Strainer
 
 (reg-event-db
- :strainer-conj
+ :strainer/conj
  [spec-interceptor]
  (fn [db [_ k v]]
    (update-in db [:strainer k] conj (str/lower-case v))))
 
 (reg-event-db
- :strainer-disj
+ :strainer/disj
  [spec-interceptor]
  (fn [db [_ k v]]
    (update-in db [:strainer k] disj v)))
 
 (reg-event-db
- :strainer-toggle
+ :strainer/toggle
  [spec-interceptor]
  (fn [db [_ k v]]
    (update-in db [:strainer k] util/toggle v)))
 
 (reg-event-db
- :strainer-search
+ :strainer/search
  [spec-interceptor]
  (fn [db [_ search]]
    (assoc-in db [:strainer :search] search)))
 
 (reg-event-db
- :strainer-clear
+ :strainer/clear
  [spec-interceptor]
  (fn [db [_]]
    (assoc db :strainer {:kind #{} :cocktails #{} :ingredients #{} :collection #{} :search ""})))
 
 (reg-event-fx
- :strain-cocktails
+ :strainer/request-cocktails
  (fn [{:keys [db]} [_ data]]
-   (let [_ (println (prn-str data))]
-     {:db (assoc db :ajax-test true) ;; NOTE
-      :http-xhrio {:method :post
-                   :uri (->uri "/bartender/strain")
-                   :params data
-                   :format (ajax/transit-request-format)
-                   :response-format (ajax/transit-response-format {:keywords? true})
-                   :on-success [:success-strained-cocktails]
-                   :on-failure [:failure-http]}})))
+   {:db (assoc db :ajax-test true) ;; NOTE
+    :http-xhrio {:method :post
+                 :uri (->uri "/bartender/strain")
+                 :params data
+                 :format (ajax/transit-request-format)
+                 :response-format (ajax/transit-response-format {:keywords? true})
+                 :on-success [:success/strained-cocktails]
+                 :on-failure [:http/failure]}}))
 
 (reg-event-db
- :success-strained-cocktails
+ :success/strained-cocktails
  (fn [db [_ result]]
    (assoc-in db [:strainer :cocktails] result)))
 
 ;;; Cocktail
 
 (reg-event-fx
- :cocktail-by-id
+ :cocktail/by-id
  (fn [_ [_ id]]
    {:http-xhrio {:method :get
                  :uri (->uri (str "/bartender/cocktail/" id))
                  :format (ajax/transit-request-format)
                  :response-format (ajax/transit-response-format {:keywords? true})
-                 :on-success [:success-cocktail-by-id]
-                 :on-failure [:failure-http]}}))
+                 :on-success [:success/cocktail-by-id]
+                 :on-failure [:http/failure]}}))
 
 (reg-event-fx
- :success-cocktail-by-id
+ :success/cocktail-by-id
  (fn [{:keys [db]} [_ result]]
    {:db (assoc db :active-cocktail result)
     :title (:title result)}))
@@ -163,30 +162,25 @@
 ;;; Meta
 
 (reg-event-fx
- :meta-all
+ :meta/all
  (fn [{:keys [db]} [_ attribute]]
    {:db (assoc db :ajax-test true) ;; NOTE
     :http-xhrio {:method :get
                  :uri (->uri (str "/bartender/all/" attribute))
                  :format (ajax/transit-request-format)
                  :response-format (ajax/transit-response-format {:keywords? true})
-                 :on-success [:success-meta-all (keyword attribute)]
-                 :on-failure [:failure-http]}}))
+                 :on-success [:success/all (keyword attribute)]
+                 :on-failure [:http/failure]}}))
 
 (reg-event-db
- :success-meta-all
+ :success/all
  (fn [db [_ attribute result]]
    (assoc-in db [:meta attribute] result)))
 
 ;;; Ajax helpers
 
 (reg-event-db
- :success-http
+ :http/failure
  (fn [db [_ result]]
-   (assoc db :success-http result)))
-
-(reg-event-db
- :failure-http
- (fn [db [_ result]]
-   (assoc db :failure-http result)))
+   (assoc db :http/failure result)))
 

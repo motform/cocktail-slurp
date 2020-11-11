@@ -4,7 +4,7 @@
             [goog.dom :as gdom]
             [cocktail.spit.routes :as routes]
             [cocktail.spit.components.app :as app]
-            [cocktail.spit.events]
+            [cocktail.spit.events :as event]
             [cocktail.spit.subs]
             [day8.re-frame.http-fx]))
 
@@ -22,6 +22,6 @@
 
 (defn ^:export mount []
   (routes/app-routes)
-  (rf/dispatch-sync [:initialize-db])
-  (rf/dispatch-sync [:meta-all "ingredients"])
+  (rf/dispatch-sync [:db/initialize])
+  (rf/dispatch-sync [:meta/all "ingredients"])
   (render))

@@ -13,8 +13,8 @@
 (defn- dispatch-route [matched-route]
   (let [page (:handler matched-route)]
     (if-let [id (get-in matched-route [:route-params :id])]
-      (rf/dispatch [:cocktail-by-id id]))
-    (rf/dispatch [:active-page page])))
+      (rf/dispatch [:cocktail/by-id id]))
+    (rf/dispatch [:page/active page])))
 
 (defn app-routes []
   (pushy/start! (pushy/pushy dispatch-route parse-url)))

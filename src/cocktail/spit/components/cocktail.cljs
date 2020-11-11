@@ -7,7 +7,7 @@
 (declare header body sidebar recipe metadata)
 
 (defn main []
-  (let [cocktail @(rf/subscribe [:active-cocktail])]
+  (let [cocktail @(rf/subscribe [:cocktail/active])]
     [:main>div.cocktail
      [illustration cocktail "200px"]
      [header cocktail]

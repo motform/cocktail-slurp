@@ -1,6 +1,7 @@
 (ns cocktail.spit.components.cocktails
   (:require [cocktail.spit.components.catalouge :as catalouge]
             [cocktail.spit.components.strainer :as strainer]
+            [cocktail.spit.events :as event]
             [cocktail.spit.routes :as routes]
             [cocktail.stuff.illustration :refer [illustration]]
             [cocktail.stuff.util :as util]
@@ -25,9 +26,9 @@
 ;; NOTE Dispatch and updating of the cocktails are now handled in the top
 ;;      level component, not sure if this let pattern is a good idea
 (defn main []
-  (let [cs @(rf/subscribe [:strainer-keys [:kind :collection :ingredients :search]])
-        _ (rf/dispatch [:strain-cocktails cs])
-        cocktails (:cocktails @(rf/subscribe [:strainer-keys [:cocktails]]))]
+  (let [cs @(rf/subscribe [:strainer/keys [:kind :collection :ingredients :search]])
+        _ (rf/dispatch [:strainer/request-cocktails cs])
+        cocktails (:cocktails @(rf/subscribe [:strainer/keys [:cocktails]]))] ;; NOTE this line looks a bit off
     [:main.cocktails
      [strainer/sidebar]
      [:section.cards
