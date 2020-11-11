@@ -81,19 +81,19 @@
  :collection/conj
  [spec-interceptor local-storage-interceptor]
  (fn [db [_ collection cocktail]]
-   (update-in db [:collections collection :cocktails] conj cocktail)))
+   (update-in db [:collections collection] conj cocktail)))
 
 (reg-event-db
  :collection/disj
  [spec-interceptor local-storage-interceptor]
  (fn [db [_ collection cocktail]]
-   (update-in db [:collections collection :cocktails] disj cocktail)))
+   (update-in db [:collections collection] disj cocktail)))
 
 (reg-event-db
  :collection/clear
  [spec-interceptor local-storage-interceptor]
  (fn [db [_ collection]]
-   (assoc-in db [:collections collection :cocktails] #{})))
+   (assoc-in db [:collections collection] #{})))
 
 ;;; Strainer
 

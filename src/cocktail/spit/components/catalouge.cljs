@@ -3,15 +3,6 @@
             [cocktail.stuff.util :as util]
             [re-frame.core :as rf]))
 
-(defn dispatch-btn [k label cocktail]
-  (let [collection @(rf/subscribe [(keyword k)])
-        in? (collection cocktail)
-        op (if-not in? "+ " "– ")
-        f (if-not in? "-conj" "-disj")
-        e (keyword (str k f))]
-    [:button.dispatch-btn {:class k :on-click #(rf/dispatch [e cocktail])}
-     op label]))
-
 (defn ingredient' [ingredient]
   [:li.ingredient.clickable-ingredient
    {:on-click #(rf/dispatch [:strainer/conj :ingredients ingredient])}

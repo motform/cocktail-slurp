@@ -29,7 +29,7 @@
 (defn on-navigate [new-match]
   (if new-match
     (rf/dispatch [::event/navigated new-match])
-    (rf/dispatch [::event/navigate :route/home])))
+    (rf/dispatch [::event/navigate :route/cocktails])))
 
 (defn init-routes! []
   (reitit.easy/start!

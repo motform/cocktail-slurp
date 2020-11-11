@@ -12,8 +12,8 @@
 (s/def ::meta (s/keys :req-un [::ingredients]))
 
 (s/def ::collections (s/keys :req-un [::library ::menu]))
-(s/def ::library (s/keys :req-un [::cocktails]))
-(s/def ::menu (s/keys :req-un [::cocktails]))
+(s/def ::library set?)
+(s/def ::menu set?)
 
 (s/def ::strainer (s/keys :req-un [::ingredients ::cocktails ::search ::kind ::collection]))
 (s/def ::ingredients (s/coll-of ::ingredient))
@@ -27,12 +27,13 @@
 
 ;;;; app-db
 
+;; TODO namespace these
 (def default-db
   {:route nil
    :active-cocktail {} ; not sure where this should be
    :meta {:ingredients #{}}
-   :collections {:menu {:cocktails #{}}
-                 :library {:cocktails #{}}}
+   :collections {:menu #{} ;; TODO move this to be a set of ids
+                 :library #{}}
    :strainer {:ingredients #{}
               :collection #{}
               :search ""

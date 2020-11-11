@@ -53,7 +53,7 @@
         ingredients (:ingredients @(rf/subscribe [:meta/keys [:ingredients]]))]
     [:aside.strainer
      [search strainer]
-     [toggle :collection #{"library" "menu"} strainer]
-     [toggle :kind #{"stirred" "shaken" "punch"} strainer]
+     [toggle :collection #{:library :menu} strainer]
+     [toggle :kind #{"stirred" "shaken" "punch"} strainer] ;; TODO make into a radio button
      [toggle-ingredients ingredients strainer]
      [clear-strainer]]))
