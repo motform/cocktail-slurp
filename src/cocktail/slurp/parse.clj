@@ -132,8 +132,8 @@
   "Assumes that all non-cocktail posts have a leading ':: ' in the title or are
    correctly tagged in the original source
    There might some collateral, but we accept that as we need correct cocktails."
-  [{:cocktail/keys [title categories]}]
-  (and (set/subset? categories #{"*hot" "*original" "*room temperature"})
+  [{:cocktail/keys [title category]}]
+  (and (set/subset? category #{"*hot" "*original" "*room temperature"})
        (not (re-find #"::" title))))
 
 (defn post->cocktail [post]
