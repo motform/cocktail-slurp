@@ -1,7 +1,5 @@
 (ns cocktail.stuff.util
-  (:require [clojure.string :as str]
-            #?(:cljs [cognitect.transit :as transit])
-            #?(:clj  [muuntaja.core :as muuntaja])))
+  (:require [clojure.string :as str]))
 
 (defn gen-key
   "Generates a React key by hashing the str representation of `o`
@@ -33,13 +31,9 @@
 (defn remove-empty [m]
   (into {} (remove (comp empty? second) m)))
 
-(defn ->transit+json [data]
-  #?(:cljs (transit/write (transit/writer :json) data)
-     :clj (muuntaja/encode "application/transit+json" data)))
-
 (defn measurement? [s]
   (let [measurements #{"oz" "jigger" "ml" "cl" "dl" "dash" "tsp" "tbsp" "scant" "spoon"
-                      "quart" "bsp" "heaping" "whole" "Whole" "drop" "drops"}]
+                       "quart" "bsp" "heaping" "whole" "Whole" "drop" "drops"}]
     (or (measurements (str/lower-case s))
         (re-matches #"[\d/]+" s)
         (re-matches #"\d+\-\d+" s))))
