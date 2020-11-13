@@ -17,7 +17,7 @@
   [{:keys [uri schema posts]}]
   (d/create-database uri)
   (init-conn! uri)
-  @(d/transact @*conn (-> schema  slurp read-string))
+  @(d/transact @*conn (-> schema slurp read-string))
   @(d/transact @*conn (-> posts  slurp read-string parse/posts->cocktails)))
 
 ;;; queries
@@ -42,17 +42,17 @@
 
 (defn cocktail-by-id [id]
   (d/pull (d/db @*conn)
-          '[:id :title :recipe :preparation :ingredients :img :story :author :date :type :url :kind]
-          [:id id]))
+          '[*]
+          [:cocktail/id id]))
 
 (defn cocktail-feed []
-  (let [result (d/q '[:find [(pull ?e [:date :id :title :recipe :preparation :ingredients]) ...]
-                      :where [?e :id]]
+  (let [result (d/q '[:find [(pull ?e [:cocktail/date :cocktail/id :cocktail/title :cocktail/recipe :cocktail/preparation :cocktail/ingredient]) ...]
+                      :where [?e :cocktail/id]]
                     (d/db @*conn))]
-    (->> result (sort-by :date compare) reverse (into []))))
+    (->> result (sort-by :cocktail/date compare) reverse (into []))))
 
 (def base-query
-  '{:query {:find [(pull ?e [:id :title :recipe :preparation :ingredients :kind])]
+  '{:query {:find [(pull ?e [:cocktail/id :cocktail/title :cocktail/recipe :cocktail/preparation :cocktail/ingredient :cocktail/kind])]
             :in [$]
             :where []}
     :args []})

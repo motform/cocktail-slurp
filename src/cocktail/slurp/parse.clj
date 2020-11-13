@@ -105,7 +105,7 @@
     ingredient))
 
 (defn- prefix-ingredients [post]
-  (update post :coccktail/ingredient #(into #{} (map prefix-ingredient %))))
+  (update post :cocktail/ingredient #(into #{} (map prefix-ingredient %))))
 
 (defn- fulltext [post]
   (let [fulltext (->> post vals (filter string?) (str/join " ") str/lower-case)]
@@ -153,9 +153,7 @@
 
   (posts->cocktails "posts.edn")
   
-  ;; Get the first cocktail
   (->> "posts.edn" slurp read-string first post->cocktail)
-
   (->> "posts.edn" slurp read-string posts->cocktails)
 
   )

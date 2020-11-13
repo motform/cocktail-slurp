@@ -19,7 +19,7 @@
    [dispatch-btn "M" cocktail menu :menu]
    [dispatch-btn "L" cocktail library :library]])
 
-(defn card [{:keys [recipe preparation ingredients title id] :as cocktail} collections]
+(defn card [{:cocktail/keys [recipe preparation ingredients title id] :as cocktail} collections]
   [:section.card
    [illustration cocktail "60px"]
    [:div.card-body
