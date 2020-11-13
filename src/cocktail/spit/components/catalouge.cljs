@@ -29,7 +29,13 @@
        (let [{:keys [measurement name]} (util/split-ingredient ingredient)]
          ^{:key (str measurement name)}
          [:tr
-          ;; NOTE Some recipes are very annoying as they have irregular formats for the measurements, causing them to parse as empty strings - a valid React key but a problem if we have two or more. For these cases, we generate a random that most likely won't collide. The fact that this is not deterministic should not be a problem as these components, as of this comment, never re-render.
+          ;; NOTE Some recipes are very annoying as they have irregular
+          ;; formats for the measurements, causing them to parse as
+          ;; empty strings - a valid React key but a problem if we
+          ;; have two or more. For these cases, we generate a random
+          ;; that most likely won't collide. The fact that this is not
+          ;; deterministic should not be a problem as these
+          ;; components, as of this comment, never re-render.
           ^{:key (if-not (str/blank? measurement)
                    measurement
                    (* (rand-int 999) (rand-int 999)))}

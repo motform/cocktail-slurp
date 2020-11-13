@@ -41,18 +41,23 @@
          [toggles :ingredient (:ingredient strainer) strainer]
          [toggles :ingredient ingredients strainer]]))))
 
-(defn search [{:keys [search]}]
-  [:input
-   {:type "text" :placeholder "Search…"
-    :value search :autoFocus true
-    :on-change #(let [val (-> % .-target .-value str)]
-                  (rf/dispatch [:strainer/search val]))}])
+(defn search []
+  (let [*state (r/atom {:timer 0 :search ""})]
+    (fn [] 
+      (js/setTimeout #(swap! *state update :timer inc) 1000)
+      (when (and (not (str/blank? (:search @*state)))
+                 (= (:timer @*state) 3))
+        (rf/dispatch [:strainer/search (:search @*state)]))
+      [:input
+       {:type "text" :placeholder "Search…"
+        :value (:search @*state)
+        :on-change #(swap! *state assoc :timer 0 :search (.. % -target -value))}])))
 
 (defn sidebar []
   (let [strainer @(rf/subscribe [:strainer/all])
         ingredients @(rf/subscribe [:meta/ingredent])]
     [:aside.strainer
-     [search strainer]
+     [search]
      [toggle :collection #{:library :menu} strainer]
      [toggle :kind #{"stirred" "shaken" "punch"} strainer] ;; TODO make into a radio button
      [toggle-ingredients ingredients strainer]

@@ -47,6 +47,10 @@ button {
     cursor: pointer;
 }
 
+input {
+    outline: none;
+}
+
 /* General */
 
 main { padding: 10rem; }
