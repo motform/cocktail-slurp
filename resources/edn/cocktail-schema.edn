@@ -1,76 +1,76 @@
-[{:db/ident :id
+[{:db/ident :cocktail/id
   :db/doc "(Blogspot) id of the cocktail."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one
   :db/unique :db.unique/identity}
 
- {:db/ident :title
+ {:db/ident :cocktail/title
   :db/doc "Cocktail title. Note that we allow for/have multiple cocktails with the same title."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
 
- {:db/ident :date
+ {:db/ident :cocktail/date
   :db/doc "Date when the cocktail was posted, in YYMMDD."
   :db/valueType :db.type/instant
   :db/cardinality :db.cardinality/one}
 
  ;; -> author/name
- {:db/ident :author
+ {:db/ident :cocktail/author
   :db/doc "Author, should be replaced with a ?v pointing to an ?e."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
 
- {:db/ident :recipe
+ {:db/ident :cocktail/recipe
   :db/doc "List of ingredients required for the cocktail."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
 
- {:db/ident :preparation
+ {:db/ident :cocktail/preparation
   :db/doc "Instructions on how to mix the cocktail."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
 
- {:db/ident :story
+ {:db/ident :cocktail/story
   :db/doc "Everything else from the post body."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
 
- {:db/ident :fulltext
+ {:db/ident :cocktail/fulltext
   :db/doc "Concatenation of all string attributes to assist in fulltext search."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one
   :db/fulltext true}
 
- {:db/ident :img
+ {:db/ident :cocktail/img
   :db/doc "URL for the img from Blogspot, not always available."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
 
- {:db/ident :url
+ {:db/ident :cocktail/url
   :db/doc "URL to the original post."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
 
  ;; -> bar/name
- {:db/ident :bars
+ {:db/ident :cocktail/bar
   :db/doc "Bars tagged in the post."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/many}
 
  ;; -> category/name
- {:db/ident :categories
+ {:db/ident :cocktail/category
   :db/doc "Categories tagged in the post."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/many}
 
  ;; -> cocktail/kind
- {:db/ident :kind
+ {:db/ident :cocktail/kind
   :db/doc "The kind of cocktail - shaken, stirred or punch"
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
 
  ;; -> coll-of ingredient/name
- {:db/ident :ingredients
+ {:db/ident :cocktail/ingredient
   :db/doc "Ingredients used in the cocktail."
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/many}]

@@ -6,22 +6,22 @@
             [hickory.select :as s]))
 
 (defn- id [post]
-  (assoc post :id
+  (assoc post :cocktail/id
          (-> (s/select (s/child (s/attr :name)) post)
              first :attrs :name)))
 
 (defn- url [post]
-  (assoc post :url
+  (assoc post :cocktail/url
          (-> (s/select (s/child (s/class :timestamp-link)) post)
              first :attrs :href)))
 
 (defn- title [post]
-  (assoc post :title
+  (assoc post :cocktail/title
          (-> (s/select (s/child (s/class :post-title)) post)
              first :content second :content first)))
 
 (defn- author [post]
-  (assoc post :author
+  (assoc post :cocktail/author
          (-> (s/select (s/child (s/class :post-author)) post)
              first :content second :content first)))
 
@@ -29,7 +29,7 @@
 (defn- date [post]
   (let [date (-> (s/select (s/child (s/class :timestamp-link)) post)
                  first :content first :attrs :title)]
-    (assoc post :date (instant/read-instant-date date))))
+    (assoc post :cocktail/date (instant/read-instant-date date))))
 
 (defn- flatten-anchors
   "Takes a vec of text nodes Hickory has extracted from a <p> and
@@ -55,7 +55,7 @@
   (let [body (-> (s/select (s/child (s/class :post-body)) post)
                  first :content body->str str/trim)
         [recipe prep story] (split-body body)]
-    (assoc post :recipe recipe :preparation (or prep " ") :story (or story " "))))
+    (assoc post :cocktail/recipe recipe :cocktail/preparation (or prep " ") :cocktail/story (or story " "))))
 
 (defn- nested-img [post]
   (-> (s/select (s/child (s/class :post-body) (s/tag :center) (s/tag :img)) post)
@@ -68,7 +68,7 @@
 (defn- img [post]
   (let [img (or (nested-img post)
                 (flat-img post))]
-    (util/?assoc post :img img)))
+    (util/?assoc post :cocktail/img img)))
 
 (defn- parse-tag-by [pred k]
   (fn [post]
@@ -90,13 +90,13 @@
   (re-matches #"\w.+" tag))
 
 (defn- categories [post]
-  ((parse-tag-by category? :categories) post))
+  ((parse-tag-by category? :cocktail/category) post))
 
 (defn- bars [post]
-  ((parse-tag-by bar? :bars) post))
+  ((parse-tag-by bar? :cocktail/bar) post))
 
 (defn- ingredients [post]
-  ((parse-tag-by ingredient? :ingredients) post))
+  ((parse-tag-by ingredient? :cocktail/ingredient) post))
 
 (defn- prefix-ingredient [ingredient]
   (if-let [prefix (re-find #"\([\w\p{Punct}]+\)" ingredient)]
@@ -105,38 +105,40 @@
     ingredient))
 
 (defn- prefix-ingredients [post]
-  (update post :ingredients #(into #{} (map prefix-ingredient %))))
+  (update post :coccktail/ingredient #(into #{} (map prefix-ingredient %))))
 
 (defn- fulltext [post]
   (let [fulltext (->> post vals (filter string?) (str/join " ") str/lower-case)]
-    (assoc post :fulltext fulltext)))
+    (assoc post :cocktail/fulltext fulltext)))
 
+;; TODO broken, just filters everything away?
 (defn- punch? [post min]
   (let [xf (comp (filter number?) (map read-string))]
-    (< min (transduce xf + (str/split-lines (:recipe post))))))
+    (< min (transduce xf + (str/split-lines (:cocktail/recipe post))))))
 
 (defn- stirred? [post]
-  (str/includes? (str/lower-case (:fulltext post)) "stir"))
+  (str/includes? (str/lower-case (:cocktail/fulltext post)) "stir"))
 
 (defn- shaken? [post]
-  (str/includes? (str/lower-case (:fulltext post)) "shake"))
+  (str/includes? (str/lower-case (:cocktail/fulltext post)) "shake"))
 
 (defn- kind [post]
   (let [kind (cond (punch? post 300) "punch"
                    (stirred? post) "stirred"
                    (shaken? post) "shaken")]
-    (util/?assoc post :kind kind)))
+    (util/?assoc post :cocktail/kind kind)))
 
 (defn cocktail?
   "Assumes that all non-cocktail posts have a leading ':: ' in the title or are
    correctly tagged in the original source
    There might some collateral, but we accept that as we need correct cocktails."
-  [{:keys [title categories]}]
+  [{:cocktail/keys [title categories]}]
   (and (set/subset? categories #{"*hot" "*original" "*room temperature"})
        (not (re-find #"::" title))))
 
 (defn post->cocktail [post]
-  (-> post id url title author date body img categories bars ingredients prefix-ingredients fulltext kind
+  (-> post
+      id url title author date body img categories bars ingredients prefix-ingredients fulltext kind
       (dissoc :type :attrs :tag :content)))
 
 (def xf-cocktail
@@ -153,5 +155,7 @@
   
   ;; Get the first cocktail
   (->> "posts.edn" slurp read-string first post->cocktail)
+
+  (->> "posts.edn" slurp read-string posts->cocktails)
 
   )
