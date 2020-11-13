@@ -28,18 +28,18 @@
    [:p (name k)]
    [toggles k list strainer]])
 
-(defn toggle-ingredients [list strainer]
+(defn toggle-ingredients []
   (let [*filter (r/atom "")]
     (fn [list strainer]
       (let [ingredients (filter #(str/includes? % @*filter)
-                                (set/difference list (:ingredients strainer)))]
+                                (set/difference list (:ingredient strainer)))]
         [:section
          [:p "ingredients"]
          [:input {:type "text" :placeholder "Filter…"
                   :value @*filter 
                   :on-change #(reset! *filter (-> % .-target .-value))}]
-         [toggles :ingredients (:ingredients strainer) strainer]
-         [toggles :ingredients ingredients strainer]]))))
+         [toggles :ingredient (:ingredient strainer) strainer]
+         [toggles :ingredient ingredients strainer]]))))
 
 (defn search [{:keys [search]}]
   [:input
@@ -49,8 +49,8 @@
                   (rf/dispatch [:strainer/search val]))}])
 
 (defn sidebar []
-  (let [strainer @(rf/subscribe [:strainer/keys [:kind :collection :ingredients :search]])
-        ingredients (:ingredients @(rf/subscribe [:meta/keys [:ingredients]]))]
+  (let [strainer @(rf/subscribe [:strainer/all])
+        ingredients @(rf/subscribe [:meta/ingredent])]
     [:aside.strainer
      [search strainer]
      [toggle :collection #{:library :menu} strainer]

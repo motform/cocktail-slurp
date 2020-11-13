@@ -29,6 +29,7 @@
 
 (defn ^:export mount []
   (rf/dispatch-sync [:db/initialize])
-  (rf/dispatch-sync [:meta/all "ingredients"])
+  (rf/dispatch-sync [:meta/all "ingredient"])
+  (rf/dispatch-sync [:strainer/request-cocktails])
   (dev-setup)
   (render))

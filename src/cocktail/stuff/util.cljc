@@ -31,6 +31,11 @@
 (defn remove-empty [m]
   (into {} (remove (comp empty? second) m)))
 
+(defn ?subvec [v start end]
+  (if (> end (count v))
+    (subvec v start)
+    (subvec v start end)))
+
 (defn measurement? [s]
   (let [measurements #{"oz" "jigger" "ml" "cl" "dl" "dash" "tsp" "tbsp" "scant" "spoon"
                        "quart" "bsp" "heaping" "whole" "Whole" "drop" "drops"}]

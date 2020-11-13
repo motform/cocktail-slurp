@@ -3,7 +3,7 @@
     --fg: #000000;
 }
 
-* { box-sizing: border-box; }  
+* { box-sizing: border-box; transition: 0.25s; }
 
 html {
     font-size: 5px;
@@ -128,6 +128,19 @@ footer {
     font-size: 2rem;
     padding-right: 2rem;
     letter-spacing: 0.3px;
+}
+
+.next-page {
+    border: 1px solid gray;
+    cursor: pointer;
+    font: 4rem "Suisse Intl";
+    padding: 3rem;
+    background: var(--bg);
+    border-radius: 1rem;
+}
+
+.next-page:hover {
+    background: darkgray;
 }
 
 .flag {

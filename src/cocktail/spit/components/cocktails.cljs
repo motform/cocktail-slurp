@@ -19,20 +19,20 @@
    [dispatch-btn "M" cocktail menu :menu]
    [dispatch-btn "L" cocktail library :library]])
 
-(defn card [{:cocktail/keys [recipe preparation ingredients title id] :as cocktail} collections]
+(defn card [{:cocktail/keys [recipe preparation ingredient title id] :as cocktail} collections]
   [:section.card
    [illustration cocktail "60px"]
    [:div.card-body
     [:a.title {:href (href :route/cocktail {:id id})} title]
-    [catalouge/ingredient-list ingredients "card-ingredient"]
+    [catalouge/ingredient-list ingredient "card-ingredient"]
     [catalouge/recipe recipe]
     [:p preparation]
     [buttons cocktail collections]]])
 
 (defn main []
-  (let [strainer @(rf/subscribe [:strainer/keys [:kind :collection :ingredients :search]])
-        _ (rf/dispatch [:strainer/request-cocktails strainer]) ;; TODO move to route-controller
-        cocktails @(rf/subscribe [:strainer/cocktails])
+  (let [strainer @(rf/subscribe [:strainer/keys [:kind :ingredient :search]])
+        cocktails @(rf/subscribe [:cocktails/strained])
+        cursor @(rf/subscribe [:cocktails/cursor])
 
         ;; NOTE We get the collections at top level to save local sub-calls
         menu @(rf/subscribe [:collection/cocktails :menu])   
@@ -41,4 +41,9 @@
      [strainer/sidebar]
      [:section.cards
       (for [cocktail cocktails]
-        ^{:key (:id cocktail)} [card cocktail [library menu]])]]))
+        ^{:key (:cocktail/id cocktail)} [card cocktail [library menu]])
+      (when cursor 
+        [:div>input.next-page
+         {:type "button"
+          :value "But wait, there is more!"
+          :on-click #(rf/dispatch [:strainer/next-page strainer cursor])}])]]))

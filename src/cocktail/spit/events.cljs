@@ -97,52 +97,69 @@
 
 ;;; Strainer
 
-(reg-event-db
+(reg-event-fx
  :strainer/conj
  [spec-interceptor]
- (fn [db [_ k v]]
-   (update-in db [:strainer k] conj (str/lower-case v))))
+ (fn [{:keys [db]} [_ k v]]
+   {:db (update-in db [:strainer k] conj (str/lower-case v))
+    :dispatch [:strainer/request-cocktails]}))
 
-(reg-event-db
- :strainer/disj
- [spec-interceptor]
- (fn [db [_ k v]]
-   (update-in db [:strainer k] disj v)))
-
-(reg-event-db
+(reg-event-fx
  :strainer/toggle
  [spec-interceptor]
- (fn [db [_ k v]]
-   (update-in db [:strainer k] util/toggle v)))
+ (fn [{:keys [db]} [_ k v]]
+   {:db (update-in db [:strainer k] util/toggle v)
+    :dispatch [:strainer/request-cocktails]}))
 
-(reg-event-db
+(reg-event-fx
  :strainer/search
  [spec-interceptor]
- (fn [db [_ search]]
-   (assoc-in db [:strainer :search] search)))
+ (fn [{:keys [db]} [_ search]]
+   {:db (assoc-in db [:strainer :search] search)
+    :dispatch [:strainer/request-cocktails]}))
 
-(reg-event-db
+(reg-event-fx
  :strainer/clear
  [spec-interceptor]
- (fn [db [_]]
-   (assoc db :strainer {:kind #{} :cocktails #{} :ingredients #{} :collection #{} :search ""})))
+ (fn [{:keys [db]} [_]]
+   {:db (assoc db :strainer {:kind #{} :cocktails #{} :ingredients #{} :collection #{} :search ""})
+    :dispatch [:strainer/request-cocktails]}))
 
 (reg-event-fx
  :strainer/request-cocktails
- (fn [{:keys [db]} [_ data]]
-   {:db (assoc db :ajax-test true) ;; NOTE
-    :http-xhrio {:method :post
-                 :uri (->uri "/bartender/strain")
-                 :params data
-                 :format (ajax/transit-request-format)
-                 :response-format (ajax/transit-response-format {:keywords? true})
-                 :on-success [:success/strained-cocktails]
-                 :on-failure [:http/failure]}}))
+ (fn [{:keys [db]} _]
+   (let [strainer (-> db :strainer (dissoc :collection))]
+     {:db (assoc db :ajax-test true) ;; NOTE
+      :http-xhrio {:method :post
+                   :uri (->uri "/bartender/strain")
+                   :params strainer
+                   :format (ajax/transit-request-format)
+                   :response-format (ajax/transit-response-format {:keywords? true})
+                   :on-success [:success/strained-cocktails]
+                   :on-failure [:http/failure]}})))
 
 (reg-event-db
  :success/strained-cocktails
  (fn [db [_ result]]
-   (assoc-in db [:strainer :cocktails] result)))
+   (merge db result)))
+
+(reg-event-fx
+ :strainer/next-page
+ (fn [{:keys [db]} [_ strainer cursor]]
+   {:db (assoc db :ajax-test true) ;; NOTE
+    :http-xhrio {:method :post
+                 :uri (->uri "/bartender/strain")
+                 :params (assoc strainer :cursor cursor)
+                 :format (ajax/transit-request-format)
+                 :response-format (ajax/transit-response-format {:keywords? true})
+                 :on-success [:success/next-page]
+                 :on-failure [:http/failure]}}))
+(reg-event-db
+ :success/next-page
+ (fn [db [_ {:keys [cursor cocktails]}]]
+   (-> db
+       (assoc :cursor cursor)
+       (update :cocktails concat cocktails))))
 
 ;;; Cocktail
 

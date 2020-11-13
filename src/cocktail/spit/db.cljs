@@ -9,15 +9,15 @@
 
 (s/def ::active-cocktail map?)
 
-(s/def ::meta (s/keys :req-un [::ingredients]))
+(s/def ::meta (s/keys :req-un [::ingredient]))
 
 (s/def ::collections (s/keys :req-un [::library ::menu]))
 (s/def ::library set?)
 (s/def ::menu set?)
 
-(s/def ::strainer (s/keys :req-un [::ingredients ::cocktails ::search ::kind ::collection]))
-(s/def ::ingredients (s/coll-of ::ingredient))
-(s/def ::ingredient string?)
+(s/def ::strainer (s/keys :req-un [::ingredient ::search ::kind ::collection]))
+(s/def ::ingredient (s/coll-of ::i))
+(s/def ::i string?)
 (s/def ::search string?)
 (s/def ::collection set?)
 (s/def ::kind set?)
@@ -30,15 +30,16 @@
 ;; TODO namespace these
 (def default-db
   {:route nil
+   :cursor nil
+   :cocktails []
    :active-cocktail {} ; not sure where this should be
-   :meta {:ingredients #{}}
+   :meta {:ingredient #{}}
    :collections {:menu #{} ;; TODO move this to be a set of ids
                  :library #{}}
-   :strainer {:ingredients #{}
+   :strainer {:ingredient #{}
               :collection #{}
               :search ""
-              :kind #{}
-              :cocktails #{}}})
+              :kind #{}}})
 
 ;;;; local-storage
 

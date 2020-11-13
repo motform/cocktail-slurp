@@ -11,7 +11,9 @@
   ["/" 
    [""
     {:name :route/cocktails
-     :view cocktails/main}]
+     :view cocktails/main
+     ;; :contollers [{:start (rf/dispatch [:strainer/request-cocktails])}]
+     }]
 
    ["cocktail/:id"
     {:name :route/cocktail

@@ -5,7 +5,7 @@
 
 (defn ingredient' [ingredient]
   [:li.ingredient.clickable-ingredient
-   {:on-click #(rf/dispatch [:strainer/conj :ingredients ingredient])}
+   {:on-click #(rf/dispatch [:strainer/conj :ingredient ingredient])}
    ingredient])
 
 (defn ingredient-list [ingredients class]

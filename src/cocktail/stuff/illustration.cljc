@@ -137,7 +137,6 @@
           :fill-opacity "0.3"}])
 
 (defn illustration [{ingredients :cocktail/ingredient :as c} h]
-  (println (keys c))
   (let [w "100%"]
     [:svg.illustration {:style {:height h :width w}}
      (for [ingredient ingredients]

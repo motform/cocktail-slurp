@@ -23,15 +23,14 @@
 ;;; queries
 
 (defn paginate
-  "Simple functional pagination of query results.
-   Returns nil on fail, for use with `when` or reagent."
-  [start limit q & args]
+  "Returns `amount` of whatever `q` yields when called with `args`
+   counting from zero-indexed `start`, along with a :cursor."
+  [cursor amount q & args]
   (let [result (apply q args)
-        stop (+ start limit)]
-    (when (seq result)
-      (if (< stop (count result))
-        (subvec result start stop)
-        (subvec result start)))))
+        end (+ cursor amount)]
+    (cond-> {:cocktails [] :cursor nil}
+      result                 (assoc :cocktails (util/?subvec result cursor end))
+      (< end (count result)) (assoc :cursor end))))
 
 (defn all
   "Lists all `v` for `a`."
@@ -86,12 +85,12 @@
         (update-in [:query :where] concat (gen-fn-where f db k syms))
         (update-in [:args] concat xs))))
 
-(defn append-* [strings]
+(defn- append-* [strings]
   (map #(str % \*) strings))
 
 (defn- wash-strainer
   "Homogenize & split strings, possibly do other processing to input"
-  [{:keys [search kind ingredients] :as strainer}]
+  [{:keys [search] :as strainer}]
   (cond-> strainer
     (not (str/blank? search))
     (update :search
@@ -100,11 +99,11 @@
 (defn- parse-strainer
   "Builds a query map based on user input, excepts irrelevant keys to be falsy.
    Order of clause conj is preserved, so try and do fulltext last."
-  [{:keys [:ingredients :search :kind]}]
+  [{:keys [ingredient search kind]}]
   (cond-> base-query
-    kind (and-query :kind \k kind)
-    ingredients (and-query :ingredients \i ingredients)
-    search (fn-and-query :fulltext 'fulltext \f '$ search)))
+    kind (and-query :cocktail/kind \k kind)
+    ingredient (and-query :cocktail/ingredient \i ingredient)
+    search (fn-and-query :cocktail/fulltext 'fulltext \f '$ search))) ; put `search` in vec so we can reuse the same fn
 
 (defn strain [strainer]
   (let [{:keys [query args]} (-> strainer util/remove-empty wash-strainer parse-strainer)]
@@ -120,7 +119,7 @@
 
   (d/delete-database "datomic:mem://cocktail.slurp/repl")
 
-  (strain {:ingredients ["rum" "cream"] :search "russian"})
+  (strain {:ingredient ["rum" "cream"] :search "russian"})
 
   ;; export the cocktails
   (spit "resources/edn/formatted-posts.edn" (pr-str (parse/posts->cocktails "posts.edn"))))

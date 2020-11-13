@@ -9,17 +9,15 @@
      :parameters {:path [:map [:attribute string?]]} ;; TODO spec
      :get (fn [{{:keys [attribute]} :path-params}]
             {:status 200
-             :body (db/all (keyword attribute))})}]
+             :body (db/all (keyword "cocktail" attribute))})}]
 
    ["/strain"
     {:name :bartender/strain
-     :doc "Parses and reruns a vector of cocktails filtered by the strainer."
+     :doc "Parses a strainer used to filter and reruns a vector of cocktails."
      ;; :parameters {:query [:map]} ;; TODO spec
-     :post (fn [{strainer :body-params}] ;; TODO 
+     :post (fn [{{:keys [cursor amount] :or {cursor 0 amount 20} :as strainer} :body-params}]
              {:status 200
-              :body (if-let [cocktails (db/paginate 0 20 db/strain strainer)]
-                      cocktails
-                      [])})}]
+              :body (db/paginate cursor amount db/strain (dissoc strainer :cursor :amount))})}]
 
    ["/cocktail/{id}"
     {:name :bartender/cocktail
@@ -27,13 +25,4 @@
      :parameters {:path [:map [:id string?]]}
      :get (fn [{{:keys [id]} :path-params}]
             {:status 200
-             :body (db/cocktail-by-id id)})}]
-
-   ;; NOTE not in use - use /strain instead
-   ["/cocktails"
-    {:name :bartender/cocktails
-     :doc "Get default cocktail feed paginated by `start` and `end`, 
-           sorted by date added."
-     :post (fn [{{:keys [start end]} :query-params}]
-             {:status 200
-              :body (db/paginate start end db/cocktail-feed)})}]])
+             :body (db/cocktail-by-id id)})}]])

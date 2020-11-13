@@ -17,22 +17,28 @@
    (select-keys (:strainer db) ks)))
 
 (reg-sub
- :strainer/cocktails
- (fn [{{:keys [collection cocktails]} :strainer
+ :strainer/all
+ (fn [db _]
+   (:strainer db)))
+
+(reg-sub
+ :cocktails/strained
+ (fn [{:keys  [cocktails]
+       {:keys [collection]}   :strainer
        {:keys [menu library]} :collections} _]
    (cond->> cocktails
-     (:menu collection)    (filter menu)
+     (:menu    collection) (filter menu)
      (:library collection) (filter library))))
 
 (reg-sub
- :meta/keys
- (fn [db [_ ks]]
-   (select-keys (:meta db) ks)))
+ :cocktails/cursor
+ (fn [db _]
+   (:cursor db)))
 
-;; (reg-sub
-;;  :strainer/cocktails
-;;  (fn [db _]
-;;    (get-in db [:strainer :cocktails])))
+(reg-sub
+ :meta/ingredent
+ (fn [db _]
+   (get-in db [:meta :ingredient])))
 
 (reg-sub
  :cocktail/active
