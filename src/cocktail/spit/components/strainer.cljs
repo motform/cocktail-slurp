@@ -41,12 +41,11 @@
          [toggles :ingredient (:ingredient strainer) strainer]
          [toggles :ingredient ingredients strainer]]))))
 
-(defn search []
-  (let [*state (r/atom {:timer 0 :search ""})]
+(defn search [{:keys [search]}]
+  (let [*state (r/atom {:timer 0 :search search})]
     (fn [] 
       (js/setTimeout #(swap! *state update :timer inc) 1000)
-      (when (and (not (str/blank? (:search @*state)))
-                 (= (:timer @*state) 3))
+      (when (= (:timer @*state) 3)
         (rf/dispatch [:strainer/search (:search @*state)]))
       [:input
        {:type "text" :placeholder "Search…"
@@ -57,7 +56,7 @@
   (let [strainer @(rf/subscribe [:strainer/all])
         ingredients @(rf/subscribe [:meta/ingredent])]
     [:aside.strainer
-     [search]
+     [search strainer]
      [toggle :collection #{:library :menu} strainer]
      [toggle :kind #{"stirred" "shaken" "punch"} strainer] ;; TODO make into a radio button
      [toggle-ingredients ingredients strainer]
