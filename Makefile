@@ -7,7 +7,8 @@ docker: clean cljs-compile uberjar container
 jar: clean cljs-compile uberjar runjar
 
 cljs-compile:
-	@npx shadow-cljs compile $(APP)
+	@npm install
+	@npx shadow-cljs release $(APP)
 
 uberjar:
 	@clojure -A:depstar -m hf.depstar.uberjar $(JAR) -S

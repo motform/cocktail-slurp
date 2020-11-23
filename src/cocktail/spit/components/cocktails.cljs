@@ -1,33 +1,34 @@
 (ns cocktail.spit.components.cocktails
   (:require [cocktail.spit.components.catalouge :as catalouge]
             [cocktail.spit.components.strainer :as strainer]
-            [cocktail.spit.events :as event]
             [cocktail.stuff.illustration :refer [illustration]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :refer [href]]))
 
-(defn dispatch-btn [label cocktail collection coll-k]
+(defn toggle [label cocktail collection coll-k]
   (let [in? (collection cocktail)
-        op (if-not in? "+" "–")
         event (keyword :collection (if-not in? :conj :disj))]
-    [:button.dispatch-btn
-     {:on-click #(rf/dispatch [event coll-k cocktail])}
-     op label]))
+    [:button.toggle.collection.collection-inactive
+     {:on-click #(rf/dispatch [event coll-k cocktail])
+      :class (when in? "in-collection")}
+     label]))
 
 (defn buttons [cocktail [library menu]]
-  [:<>
-   [dispatch-btn "M" cocktail menu :menu]
-   [dispatch-btn "L" cocktail library :library]])
+  [:div.collections
+   [toggle "Menu" cocktail menu :menu]
+   [toggle "Library" cocktail library :library]])
 
 (defn card [{:cocktail/keys [recipe preparation ingredient title id] :as cocktail} collections]
   [:section.card
    [illustration cocktail "60px"]
    [:div.card-body
-    [:a.title {:href (href :route/cocktail {:id id})} title]
+    [:a.title
+     {:href (href :route/cocktail {:id id}) :target "_blank"}
+     title]
     [catalouge/ingredient-list ingredient "card-ingredient"]
     [catalouge/recipe recipe]
-    [:p preparation]
-    [buttons cocktail collections]]])
+    [:p preparation]]
+   [buttons cocktail collections]])
 
 (defn main []
   (let [strainer @(rf/subscribe [:strainer/keys [:kind :ingredient :search]])
@@ -39,7 +40,7 @@
         library @(rf/subscribe [:collection/cocktails :library])]
     [:main.cocktails
      [strainer/sidebar]
-     [:section.cards
+     [:div>section.cards
       (for [cocktail cocktails]
         ^{:key (:cocktail/id cocktail)} [card cocktail [library menu]])
       (when cursor 

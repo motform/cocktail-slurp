@@ -33,12 +33,12 @@
     (fn [list strainer]
       (let [ingredients (filter #(str/includes? % @*filter)
                                 (set/difference list (:ingredient strainer)))]
-        [:section
+        [:section.toggle-ingredients
          [:p "ingredients"]
+         [toggles :ingredient (:ingredient strainer) strainer]
          [:input {:type "text" :placeholder "Filter…"
                   :value @*filter 
                   :on-change #(reset! *filter (-> % .-target .-value))}]
-         [toggles :ingredient (:ingredient strainer) strainer]
          [toggles :ingredient ingredients strainer]]))))
 
 (defn search [{:keys [search]}]
@@ -47,7 +47,7 @@
       (js/setTimeout #(swap! *state update :timer inc) 1000)
       (when (= (:timer @*state) 3)
         (rf/dispatch [:strainer/search (:search @*state)]))
-      [:input
+      [:input.search
        {:type "text" :placeholder "Search…"
         :value (:search @*state)
         :on-change #(swap! *state assoc :timer 0 :search (.. % -target -value))}])))
@@ -57,7 +57,12 @@
         ingredients @(rf/subscribe [:meta/ingredent])]
     [:aside.strainer
      [search strainer]
-     [toggle :collection #{:library :menu} strainer]
-     [toggle :kind #{"stirred" "shaken" "punch"} strainer] ;; TODO make into a radio button
-     [toggle-ingredients ingredients strainer]
-     [clear-strainer]]))
+     [:div.show-filters
+      [:input
+       {:type "button"
+        :value "Filters"}]]
+     [:div.filters 
+      [toggle :collection #{:library :menu} strainer]
+      [toggle :kind #{"stirred" "shaken" "punch"} strainer] ;; TODO make into a radio button
+      [toggle-ingredients ingredients strainer]
+      [clear-strainer]]]))
