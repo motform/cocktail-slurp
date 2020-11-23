@@ -250,10 +250,16 @@ footer {
 .cocktail-body {
     display: flex;
 }
+
 .cocktail-body > .content {
     display: grid;
     grid-column-gap: 10rem;
     grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 900px) {
+    .cocktail-body > .content { grid-template-columns: 1fr; }
+    .cocktail-body > .content > img { margin-top: 10rem; }
 }
 
 .cocktail-body > .content > aside > * { margin-bottom: 10rem; }
