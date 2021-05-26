@@ -173,17 +173,31 @@ footer {
 
 .filters > * { margin-bottom: 5rem; }
 
-.show-filters { display: none; }
+.sidebar {
+    display: flex;
+}
 
 .strainer input {
     font-family: "Suisse Intl";
     color: var(--fg);
     font-size: 4rem;
+    background: none;
     border: 1px solid gray;
     border-width: 0 0 1px 0;
-    background: none;
-    padding: 1rem;
     width: 100%;
+}
+
+.show-filters {
+    display: none;
+}
+
+.btn-filters {
+    margin-left: 10rem;
+    margin-top: 1rem;
+    padding-left: 4rem;
+    font-size: 4rem;
+    border: 1px solid gray;
+    border-width: 0 0 0 1px;
 }
 
 .strainer p { margin-bottom: 1rem; }
@@ -228,7 +242,9 @@ footer {
     .cocktails    { grid-template-columns: 1fr; grid-gap: 5rem; }
     .filters      { display: none; }
     .show-filters { display: block; }
-    .strainer     { display: flex; }
+    .strainer     { display: flex; margin-right: 0; }
+    .strainer input { border-bottom: 0px; }
+
 }
 
 /* Cocktail */

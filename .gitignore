@@ -1,5 +1,5 @@
 !resources/public
-.clj-kondo/
+.clj-kondo/.cache/
 .shadow-cljs/
 node_modules/
 package-lock.json
