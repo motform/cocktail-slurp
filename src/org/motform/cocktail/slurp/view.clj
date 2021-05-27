@@ -49,24 +49,12 @@
 
 (defn card-recipe [recipe]
   (let [ingredients (str/split-lines recipe)]
-    [:table
-     [:tbody
-      (for [ingredient ingredients]
-        (let [{:keys [measurement name]} (util/split-ingredient ingredient)]
-          [:tr
-           [:td measurement] 
-           [:td name]]))]]))
-
-(defn cocktail-card [{:cocktail/keys [title id ingredient preparation recipe]  :as cocktail}]
-  [:section.card
-   (illustration/illustration cocktail "60px")
-   [:div.card-body
-    [:a.title {:href ""} title]
-    [:ul.card-ingredients
-     (sort (for [i ingredient]
-             [:li.card-ingredient i]))]
-    (card-recipe recipe)
-    [:p preparation]]])
+    [:section.card-recipe
+     (for [ingredient ingredients]
+       (let [{:keys [measurement name]} (util/split-ingredient ingredient)]
+         [:span.card-recipe-row 
+          [:span.card-recipe-measurement measurement] 
+          [:span.card-recipe-ingredient name]]))]))
 
 (defn cocktail-cards
   "Call with zero arity for the latest cocktails."
@@ -74,8 +62,13 @@
   ([strainer]
    (let [{:keys [cursor cocktails]} (db/paginate 0 20 db/strain strainer)]
      [:section.cards
-      (for [cocktail cocktails]
-        (cocktail-card cocktail))])))
+      (for [{:cocktail/keys [title id preparation recipe] :as c} cocktails]
+        [:section.card
+         (illustration/illustration c "60px")
+         [:div.card-body
+          [:a.card-title {:href id} title]
+          (card-recipe recipe)
+          [:p preparation]]])])))
 
 ;;; PAGES
 

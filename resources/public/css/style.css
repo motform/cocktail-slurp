@@ -1,9 +1,11 @@
 :root {
-    --bg1: hsl(0 0% 100%);
-    --bg2: hsl(0 0% 97%);
+    --bg1: hsl(40 50% 95%);
+    --bg2: hsl(0 0% 100%);
+    --bg3: hsl(40 50% 70%);
     --fg1: hsl(0 0% 0%);
     --fg2: hsl(0 0% 30%);
     --fg3: hsl(0 0% 50%);
+    --fg4: hsl(0 0% 80%);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,18 +18,17 @@
     }
 }
 
-* { box-sizing: border-box; transition: 0.25s; }
+* { box-sizing: border-box; }
 
 html {
     -webkit-font-smoothing: antialiased;
     font-size: 5px;
-    font-family: "Marionette";
     color: var(--fg1);
 }
 
 body {
     background: var(--bg1);
-    font-size: 4rem;
+    font: 4rem/5rem "Marionette";
     line-height: 5rem;
 }
 
@@ -42,56 +43,23 @@ a {
     /* background-color: var(--fg); */
 }
 
-h1 {
-    font-size: 16rem;
-    line-height: 13rem;
-    margin-bottom: 4rem;
-    text-transform: capitalize;
-}
-
-button {
-    background: none;
-    color: var(--fg1);
-    font-family: "Marionette";
-    border: 0;
-    padding: 0;
-    cursor: pointer;
-}
-
 input {
     outline: none;
 }
 
-/* General */
-
-main { padding: 10rem; }
-
-/* Catalouge */
-
-.collections {
-    display: flex;
-    margin: auto 3rem 3rem 0;
+main {
+    padding: 10rem;
 }
-
-.ingredient {
-}
-
-.ingredient label {
-    padding-left: 1rem;
-}
-
-.clickable-ingredient { cursor: pointer; }
-.clickable-ingredient:hover{ text-decoration: underline; }
 
 /* Cocktails */
 
 .cocktails {
     display: grid;
-    grid-template-columns: 20% 80%;
+    grid-template-columns: 18% 82%;
 }
 
-@media (max-width: 1600px) {.cocktails { grid-template-columns: 30% 70%; }}
-@media (max-width: 1250px) {.cocktails { grid-template-columns: 45% 55%; }}
+@media (max-width: 1600px) {.cocktails { grid-template-columns: 20% 80%; }}
+@media (max-width: 1250px) {.cocktails { grid-template-columns: 20% 80%; }}
 
 .cards {
     display: grid;
@@ -113,61 +81,34 @@ main { padding: 10rem; }
 }
 
 .card-body {
-    padding: 1rem 3rem 3rem 3rem;
+    padding: 2rem 3rem 3rem 3rem;
     white-space: pre-wrap;
     font-size: 3rem;
 }
 
-.card .title {
-    font: 12rem "Margo";
-    margin-bottom: 2rem;
-    padding-top: -1rem;
+.card-title {
+    font: 12rem/11rem "Margo";
+    padding-top: 1rem;
     text-transform: capitalize;
 }
 
-.card-ingredients {
-    margin: 1rem 0 5rem 0;
-    display: flex;
-    text-transform: uppercase;
-    font-size: 2;
-}
-.card-ingredient {
-    font-size: 2rem;
-    padding-right: 2rem;
-    letter-spacing: 0.3px;
-    color: var(--fg2);
-}
-
-.card-body > table {
-    margin-bottom: 6rem;
-    table-layout: fixed;
-}
-
-.card-body td:first-child { min-width: 12rem; }
-
-.next-page {
-    border: 1px solid gray;
-    cursor: pointer;
-    font: 4rem "Marionette";
-    padding: 3rem;
-    background: var(--bg1);
-    border-radius: 1rem;
-}
-
-.next-page:hover {
-    background: darkgray;
-}
-
-.flag {
-    height: 1.5rem;
+.card-recipe {
     width: 100%;
+    margin: 3rem 0;
+    padding: 2.5rem 0 3rem 0;
+    border: 1px solid var(--fg4);
+    border-width: 1px 0;
 }
 
-.flag-menu { background-color: var(--menu-bg); }
-.flag-library { background-color: var(--library-bg); }
+.card-recipe-row {
+    display: flex;
+    flex-direction: row;
+}
 
-.card-add-menu { margin-left: auto; }
-.card-add-library { margin-left: auto; }
+.card-recipe-measurement {
+    max-width: 12rem;
+    min-width: 12rem;
+}
 
 /* Strainer */
 
@@ -175,6 +116,7 @@ main { padding: 10rem; }
     font-size: 3rem;
     margin-right: 10rem;
     text-transform: capitalize;
+    grid-row: span 2;
 }
 
 .strainer h3 {
@@ -195,9 +137,22 @@ main { padding: 10rem; }
 }
 
 .strainer section {
-    padding: 2rem 0 0 0;
+    padding: 0 0 2rem 0;
 }
 
+
+
+.ingredient:hover          { background-color: var(--bg3); cursor: pointer; }
+.ingredient:hover > input  { background-color: var(--bg3); cursor: pointer; }
+.ingredient:hover > label  { background-color: var(--bg3); cursor: pointer; }
+
+.search {
+    padding-top: 0;
+}
+
+.strainer label {
+    margin-left: 2rem;
+}
 .strainer input[type=text] {
     font-family: "marionette";
     color: var(--fg1);
@@ -209,64 +164,14 @@ main { padding: 10rem; }
     padding: 2rem 0rem;
 }
 
-/* .strainer input[type=submit] { */
-/*     font-family: "marionette"; */
-/*     color: var(--fg1); */
-/*     font-size: 3.5rem; */
-/*     background: none; */
-/*     border: 1px solid var(--fg3); */
-/*     padding: 2rem; */
-/* } */
-
-.show-filters {
-    display: none;
-}
-
-.btn-filters {
-    margin-left: 10rem;
-    margin-top: 1rem;
-    padding-left: 4rem;
-    font-size: 4rem;
-    border: 1px solid gray;
-    border-width: 0 0 0 1px;
-}
-
-.strainer p { margin-bottom: 1rem; }
-
-.strainer > section > input {
+.strainer input[type=submit] {
+    font-family: "marionette";
+    color: var(--fg3);
     font-size: 3rem;
-    border-width: 1px;
-    border-radius: 0.5rem;
-    margin: 1rem 0 3rem 0;
-}
-
-.toggles { margin: 0 0 0 -1rem;}
-
-.toggle {
-    border: 1px solid gray;
-    border-radius: 0.5rem;
-    color: gray;
-    font-size: 2.5rem;
-    text-transform: lowercase;
-    letter-spacing: 0.2px;
-    padding: 1rem 2rem 1rem 2rem;
-    margin: 1rem;
-}
-
-.toggle-active:hover { text-decoration: line-through; }
-.toggle:hover  { color: black; border-color: black; }
-.toggle-active { color: black; border-color: black; }
-
-.clear {
-    color: darkred;
-    border-color: darkred;
-    margin-left: -1rem;
-}
-
-.clear:hover {
-    color: white;
-    background: darkred;
-    border-color: darkred;
+    background: none;
+    border: 1px solid var(--fg3);
+    margin-top: 3rem;
+    padding: 1rem 2rem;
 }
 
 @media (max-width: 900px) {
@@ -320,16 +225,3 @@ main { padding: 10rem; }
     writing-mode: vertical-rl;
 }
 
-.collection {
-    color: lightgray;
-    border-color: lightgray;
-}
-
-.in-collection {
-    color: var(--fg1);
-    border-color: var(--fg1);
-}
-
-.collection:first-child {
-    margin-left: auto;
-}
