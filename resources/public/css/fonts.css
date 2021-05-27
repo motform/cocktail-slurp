@@ -5,3 +5,19 @@
     font-style: normal;
     font-weight: 300;
 }
+
+@font-face {
+    src: url('/fonts/Marionette_v0.1-Medium.woff2') format("woff2"),
+         url('/fonts/Marionette_v0.1-Medium.woff')  format("woff");
+    font-family: "Marionette";
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    src: url('/fonts/MintGroteskV1.0-Medium.woff2') format("woff2"),
+         url('/fonts/MintGroteskV1.0-Medium.woff')  format("woff");
+    font-family: "Mint Grotesk";
+    font-style: normal;
+    font-weight: 400;
+}

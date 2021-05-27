@@ -1,18 +1,31 @@
 :root {
-    --bg: #C0C0C0;
-    --fg: #000000;
+    --bg1: hsl(0 0% 100%);
+    --bg2: hsl(0 0% 80%);
+    --fg1: hsl(0 0% 0%);
+    --fg2: hsl(0 0% 30%);
+    --fg3: hsl(0 0% 50%);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg1: hsl(0 0% 5%);
+        --bg2: hsl(0 0% 10%);
+        --fg1: hsl(0 0% 100%);
+        --fg2: hsl(0 0% 70%);
+        --fg3: hsl(0 0% 50%);
+    }
 }
 
 * { box-sizing: border-box; transition: 0.25s; }
 
 html {
     font-size: 5px;
-    font-family: "Suisse Intl";
-    color: var(--fg);
+    font-family: "Marionette";
+    color: var(--fg1);
 }
 
 body {
-    background: var(--bg);
+    background: var(--bg1);
     font-size: 4rem;
     line-height: 5rem;
     font-variant-numeric: diagonal-fractions;
@@ -23,12 +36,13 @@ body {
 
 a {
     text-decoration: none;
-    color: var(--fg);
+    color: var(--fg1);
     cursor: pointer;
 }
 
 ::selection {
-    background-color: lightgray;
+    /* color: var(--bg); */
+    /* background-color: var(--fg); */
 }
 
 h1 {
@@ -40,8 +54,8 @@ h1 {
 
 button {
     background: none;
-    color: var(--fg);
-    font-family: "Suisse Intl";
+    color: var(--fg1);
+    font-family: "Marionette";
     border: 0;
     padding: 0;
     cursor: pointer;
@@ -55,11 +69,6 @@ input {
 
 main { padding: 10rem; }
 
-footer {
-    margin: 20rem 10rem 10rem 10rem;
-    color: white;
-}
-
 /* Catalouge */
 
 .collections {
@@ -68,9 +77,10 @@ footer {
 }
 
 .ingredient {
-    text-transform: lowercase;
-    display: inline;
-    margin-right: 3rem;
+}
+
+.ingredient label {
+    padding-left: 1rem;
 }
 
 .clickable-ingredient { cursor: pointer; }
@@ -138,9 +148,9 @@ footer {
 .next-page {
     border: 1px solid gray;
     cursor: pointer;
-    font: 4rem "Suisse Intl";
+    font: 4rem "Marionette";
     padding: 3rem;
-    background: var(--bg);
+    background: var(--bg1);
     border-radius: 1rem;
 }
 
@@ -162,30 +172,51 @@ footer {
 /* Strainer */
 
 .strainer {
-    text-transform: uppercase;
     font-size: 3rem;
     margin-right: 10rem;
+    text-transform: capitalize;
 }
 
-.search {
-    margin-bottom: 5rem;
+.strainer h3 {
+    font-size: 3rem;
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0;
 }
 
-.filters > * { margin-bottom: 5rem; }
-
-.sidebar {
-    display: flex;
+.strainer h4 {
+    font-size: 2rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 1rem 0;
+    color: var(--fg3);
+    border: 1px solid var(--fg3);
+    border-width: 1px 0 0 0;
 }
 
-.strainer input {
-    font-family: "Suisse Intl";
-    color: var(--fg);
-    font-size: 4rem;
+.strainer section {
+    padding: 2rem 0 0 0;
+}
+
+.strainer input[type=text] {
+    font-family: "marionette";
+    color: var(--fg1);
+    font-size: 3.5rem;
     background: none;
-    border: 1px solid gray;
-    border-width: 0 0 1px 0;
+    border: 1px solid var(--fg3);
+    border-width: 1px 0 0 0px;
     width: 100%;
+    padding: 2rem 0rem;
 }
+
+/* .strainer input[type=submit] { */
+/*     font-family: "marionette"; */
+/*     color: var(--fg1); */
+/*     font-size: 3.5rem; */
+/*     background: none; */
+/*     border: 1px solid var(--fg3); */
+/*     padding: 2rem; */
+/* } */
 
 .show-filters {
     display: none;
@@ -295,8 +326,8 @@ footer {
 }
 
 .in-collection {
-    color: var(--fg);
-    border-color: var(--fg);
+    color: var(--fg1);
+    border-color: var(--fg1);
 }
 
 .collection:first-child {
