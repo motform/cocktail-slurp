@@ -1,6 +1,6 @@
 :root {
     --bg1: hsl(0 0% 100%);
-    --bg2: hsl(0 0% 80%);
+    --bg2: hsl(0 0% 97%);
     --fg1: hsl(0 0% 0%);
     --fg2: hsl(0 0% 30%);
     --fg3: hsl(0 0% 50%);
@@ -19,6 +19,7 @@
 * { box-sizing: border-box; transition: 0.25s; }
 
 html {
+    -webkit-font-smoothing: antialiased;
     font-size: 5px;
     font-family: "Marionette";
     color: var(--fg1);
@@ -28,10 +29,6 @@ body {
     background: var(--bg1);
     font-size: 4rem;
     line-height: 5rem;
-    font-variant-numeric: diagonal-fractions;
-    -moz-font-feature-settings: "frac";
-    -webkit-font-feature-settings: "frac";
-    font-feature-settings: "frac";
 }
 
 a {
@@ -108,29 +105,38 @@ main { padding: 10rem; }
     border-radius: 2rem;
     flex-direction: column;
     line-height: 4rem;
-    background: whitesmoke;
+    background: var(--bg2);
 }
-
-
-.card:hover .dispatch-btn { visibility: visible; }
 
 .illustration {
     border-radius: 2rem 2rem 0 0;
 }
 
 .card-body {
-    padding: 4rem 3rem 3rem 3rem;
+    padding: 1rem 3rem 3rem 3rem;
     white-space: pre-wrap;
     font-size: 3rem;
 }
 
 .card .title {
-    font-size: 6rem;
+    font: 12rem "Margo";
     margin-bottom: 2rem;
+    padding-top: -1rem;
     text-transform: capitalize;
 }
 
-.card .ingredients { margin: 1rem 0 5rem 0; }
+.card-ingredients {
+    margin: 1rem 0 5rem 0;
+    display: flex;
+    text-transform: uppercase;
+    font-size: 2;
+}
+.card-ingredient {
+    font-size: 2rem;
+    padding-right: 2rem;
+    letter-spacing: 0.3px;
+    color: var(--fg2);
+}
 
 .card-body > table {
     margin-bottom: 6rem;
@@ -138,12 +144,6 @@ main { padding: 10rem; }
 }
 
 .card-body td:first-child { min-width: 12rem; }
-
-.card-ingredient {
-    font-size: 2rem;
-    padding-right: 2rem;
-    letter-spacing: 0.3px;
-}
 
 .next-page {
     border: 1px solid gray;

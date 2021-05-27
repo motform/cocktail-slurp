@@ -10,11 +10,11 @@
 (defn init-db
   "Initialize and populate the in-memory Datomic db.
    Expects `posts` to be the relative path to an .edn of scraped posts."
-  [{:keys [uri]}]
+  [{:keys [schema posts uri]}]
   (d/create-database uri)
   (let [conn (d/connect uri)]
-    (d/transact conn (-> "resources/edn/cocktail-schema.edn" slurp read-string))
-    (d/transact conn (-> "posts.edn"  slurp read-string parse/posts->cocktails))
+    (d/transact conn (-> schema slurp read-string))
+    (d/transact conn (-> posts slurp read-string parse/posts->cocktails))
     conn))
 
 (mount/defstate conn
@@ -92,7 +92,7 @@
   (map #(str % \*) strings))
 
 (defn- wash-strainer
-  "Homogenize & split strings, possibly do other processing to input"
+  "Homogenize & split strings, possibly do other processing to input."
   [{:keys [search] :as strainer}]
   (cond-> strainer
     (not    (str/blank? search))

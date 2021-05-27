@@ -1,12 +1,6 @@
 (ns org.motform.cocktail.stuff.util
   (:require [clojure.string :as str]))
 
-(defn gen-key
-  "Generates a React key by hashing the str representation of `o`
-  `rest`, and a random int to prevent collisions."
-  [o & rest]
-  (hash (str (rand-int 255) o rest)))
-
 (defn ?assoc
   "Associates the `k` into the `m` if the `v` is truthy, otherwise returns `m`.
   NOTE: this version of ?assoc only does a single kv pair."
@@ -45,22 +39,20 @@
 
 (defn abbrev-measurement [measurement]
   (case (str/lower-case measurement)
-    "jigger" "jig"
-    "dash" "ds"
-    "scant" "s" 
+    "jigger"  "jig"
+    "dash"    "ds"
+    "scant"   "s" 
     "heaping" "h"
-    "drops"  "dr" "drop"  "dr"
-    "spoon" "spn"
-    "whole" ""
+    "drops"   "dr"
+    "drop"    "dr"
+    "spoon"   "spn"
+    "whole"   ""
     (str/lower-case measurement)))
 
 (defn split-ingredient [ingredient]
-  (let [words (str/split ingredient " ")]
-    (assoc {} :measurement (->> words
-                                (take-while measurement?)
-                                (map abbrev-measurement)
-                                (str/join " "))
-           :name (str/join " " (drop-while measurement? words)))))
+  (let [words (str/split ingredient #" ")]
+    (assoc {} :measurement (->> words (take-while measurement?) (map abbrev-measurement) (str/join " "))
+           :name (->> words (drop-while measurement?) (str/join " ")))))
 
 
 (def ingredients
