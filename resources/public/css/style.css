@@ -12,9 +12,11 @@
     :root {
         --bg1: hsl(0 0% 5%);
         --bg2: hsl(0 0% 10%);
+        --bg3: hsl(0 0% 6%);
         --fg1: hsl(0 0% 100%);
         --fg2: hsl(0 0% 70%);
         --fg3: hsl(0 0% 50%);
+        --fg4: hsl(0 0% 30%);
     }
 }
 
@@ -28,6 +30,7 @@ html {
 
 body {
     background: var(--bg1);
+    color: var(--fg1);
     font: 4rem/5rem "Marionette";
     line-height: 5rem;
 }
@@ -36,6 +39,7 @@ a {
     text-decoration: none;
     color: var(--fg1);
     cursor: pointer;
+    white-space: pre-wrap;
 }
 
 ::selection {
@@ -58,8 +62,12 @@ main {
 @media (max-width: 1600px) {.cocktails { grid-template-columns: 20% 80%; }}
 @media (max-width: 1250px) {.cocktails { grid-template-columns: 20% 80%; }}
 
+.container {
+    margin-left: 50rem;
+}
+
 .cards {
-    margin: 5rem 5rem 5rem 55rem;
+    margin: 5rem;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     grid-gap: 5rem;
@@ -81,14 +89,15 @@ main {
     background-color: var(--bg3);
     border: 1px solid var(--fg4);
     border-width: 0 1px 1px 1px;
-    padding: 2rem 3rem 3rem 3rem;
     white-space: pre-wrap;
     font-size: 3rem;
+    padding-top: 2rem;
 }
 
 .card-title {
+    width: 100%;
     font: 12rem/11rem "Margo";
-    padding-top: 1rem;
+    padding: 4rem 2rem 2rem 2rem;
     text-transform: capitalize;
 }
 
@@ -103,11 +112,43 @@ main {
 .card-recipe-row {
     display: flex;
     flex-direction: row;
+    margin-left: 2rem;
 }
 
 .card-recipe-measurement {
     max-width: 12rem;
     min-width: 12rem;
+}
+
+.card-preparation {
+    padding: 0 2rem 2rem 2rem;
+}
+
+footer {
+    margin: 5rem 0 0 0;
+    padding: 5rem;
+    background-color: var(--bg3);
+    border: 1px solid var(--fg4);
+    border-width: 1px 0 0 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.paginate {
+    font-size: 6rem;
+    padding: 0 5rem;
+    color: var(--fg4);
+}
+
+.paginate:hover {
+    color: var(--fg1);
+}
+
+
+.tagline {
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    color: var(--fg4);
 }
 
 /* Strainer */
@@ -166,9 +207,16 @@ main {
     color: var(--fg3);
 }
 
-
 .nameplate {
-    margin: 2rem;
+    margin: 0 auto;
+    font: 10rem "Margo";
+    color: var(--fg3);
+    text-align: center;
+    display: block;
+}
+
+.nameplate:hover {
+    color: var(--fg1);
 }
 
 .strainer label {

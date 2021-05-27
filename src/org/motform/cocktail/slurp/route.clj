@@ -5,9 +5,9 @@
   [["/"
     {:name ::home
      :doc  "Home page, what the kids might call a 'feed'."
-     :get  (fn [_]
+     :get  (fn [{:keys [query-params]}]
              {:status 200
-              :body   (view/home {})})}]
+              :body   (view/home (query-params "cursor"))})}]
 
    ["/cocktail/{id}"
     {:name ::cocktail

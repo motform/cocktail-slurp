@@ -5,6 +5,8 @@
             [org.motform.cocktail.stuff.illustration :as illustration]
             [org.motform.cocktail.stuff.util         :as util]))
 
+(def pagination-step 51)
+
 ;;; COMPONENTS 
 
 (defn- page
@@ -24,7 +26,7 @@
 
 (defn- sidebar []
   [:aside.strainer
-   [:p.nameplate "cocktail slurp"]
+   [:a.nameplate {:href "/"} "CS"]
    [:form {:action "/cocktails" :method "get"}
 
     [:section.search
@@ -58,17 +60,27 @@
 
 (defn- cocktail-cards
   "Call with zero arity for the latest cocktails."
-  ([] (cocktail-cards {}))
-  ([strainer]
-   (let [{:keys [cursor cocktails]} (db/paginate 0 20 db/strain strainer)]
-     [:section.cards
-      (for [{:cocktail/keys [title id preparation recipe] :as c} cocktails]
-        [:section.card
-         (illustration/illustration c "60px")
-         [:div.card-body
-          [:a.card-title {:href (str "/cocktail/" id)} title]
-          (card-recipe recipe)
-          [:p preparation]]])])))
+  ([opts]
+   (cocktail-cards {} opts))
+  ([strainer {:keys [:pagination/cursor :pagination/origin]}]
+   (let [{:keys [cursor cocktails]} (db/paginate cursor pagination-step db/strain strainer)]
+     [:div.container
+      [:section.cards
+       (for [{:cocktail/keys [title id preparation recipe] :as c} cocktails]
+         [:section.card
+          (illustration/illustration c "60px")
+          [:div.card-body
+           [:a.card-title {:href (str "/cocktail/" id)} title]
+           (card-recipe recipe)
+           [:p.card-preparation preparation]]])]
+      [:footer
+       [:a.paginate {:href (if (= origin :home) 
+                             (str "?cursor=" (max 0 (- cursor (* 2 pagination-step))))
+                             (str "&cursor=" (max 0 (- cursor (* 2 pagination-step)))))}
+        "←"]
+       [:p.tagline "quality versus quantity does not have to be a winner-take-all proposition"]
+       [:a.paginate {:href (if origin (str "?cursor=" cursor) (str "&cursor=" cursor))}
+        "→"]]])))
 
 (defn- cocktail-page [{:cocktail/keys [ingredient title date author preparation story url img] :as c}]
   [:section.cocktail
@@ -94,15 +106,16 @@
 
 ;;; PAGES
 
-(defn home [_]
+(defn home [cursor]
   (page "Home" 
     [:main.cocktails
      (sidebar)
-     (cocktail-cards)]))
+     (cocktail-cards {:pagination/cursor (if cursor (Integer. cursor) 0)
+                      :pagination/origin :home})]))
 
 (defn cocktail [id]
   (let [cocktail (db/cocktail-by-id id)]
-    (page "(:cocktail/title cocktail)"
+    (page (str/capitalize (:cocktail/title cocktail))
       [:main.cocktail
        (cocktail-page cocktail)])))
 
