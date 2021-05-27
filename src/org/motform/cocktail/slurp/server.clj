@@ -1,18 +1,12 @@
 (ns org.motform.cocktail.slurp.server
-  (:gen-class)
-  (:require [muuntaja.core :as m]
-            [mount.core :as mount]
-            [reitit.coercion.malli :as malli]
-            [reitit.dev.pretty :as pretty]
-            [reitit.ring :as ring]
-            [reitit.ring.coercion :as coersion]
-            [reitit.ring.middleware.dev :as dev]
-            [reitit.ring.middleware.exception :as exception]
-            [reitit.ring.middleware.muuntaja :as muuntaja]
+  (:require [mount.core                        :as mount]
+            [reitit.dev.pretty                 :as pretty]
+            [reitit.ring                       :as ring]
+            [reitit.ring.middleware.dev        :as dev]
+            [reitit.ring.middleware.exception  :as exception]
             [reitit.ring.middleware.parameters :as parameters]
-            [reitit.spec :as spec]
-            [ring.adapter.jetty :as jetty]
-            [org.motform.cocktail.slurp.route :as route]))
+            [ring.adapter.jetty                :as jetty]
+            [org.motform.cocktail.slurp.route  :as route]))
 
 (def app
   (ring/ring-handler
@@ -36,10 +30,6 @@
     (mount/stop  #'org.motform.cocktail.slurp.server/server)
     (mount/start #'org.motform.cocktail.slurp.server/server))
 
-
-  (app {:request-method :get
-        :uri "/ping/"})
-  
   (app {:request-method :get
         :uri ""})
 

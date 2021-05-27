@@ -1,12 +1,9 @@
-{:paths   ["src" "test" "resources"]
+{:paths   ["src" "resources"]
  :deps    {com.datomic/datomic-free {:mvn/version "0.9.5703.21"}
            hiccup/hiccup            {:mvn/version "2.0.0-alpha2"}
            hickory/hickory          {:mvn/version "0.7.1"}
            ring/ring-jetty-adapter  {:mvn/version "1.9.3"}
-           metosin/malli            {:mvn/version "0.2.1"}
-           metosin/muuntaja         {:mvn/version "0.6.7"}
            metosin/reitit           {:mvn/version "0.5.13"}
-           mount/mount              {:mvn/version "0.1.16"}
-           org.clojure/spec.alpha   {:mvn/version "0.2.187"}}
- :aliases {:server  {:main-opts ["-m" "cocktail.slurp.server"]}
-           :depstar {:extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}}}}
+           mount/mount              {:mvn/version "0.1.16"}}
+ :aliases {:server  {:main-opts ["-m" "org.motform.cocktail.slurp.core"]}
+           :depstar {:extra-deps {seancorfield/depstar {:mvn/version "2.0.216"}}}}}
