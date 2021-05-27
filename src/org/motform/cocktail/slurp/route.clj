@@ -1,17 +1,27 @@
 (ns org.motform.cocktail.slurp.route
-  (:require [org.motform.cocktail.slurp.db   :as db]
-            [org.motform.cocktail.slurp.view :as view]))
+  (:require [org.motform.cocktail.slurp.view :as view]))
 
 (def routes
-  [["/" {:name ::home
-         :doc  "Home page, what the kids might call a 'splash'."
-         :get  (fn [_]
-                 {:status 200
-                  :body   (view/home {})})}]
-   ["/cocktails" {:get (fn [{:keys [query-params]}]
-                         {:status 200
-                          :body   (view/cocktails query-params)})}]
-   ])
+  [["/"
+    {:name ::home
+     :doc  "Home page, what the kids might call a 'feed'."
+     :get  (fn [_]
+             {:status 200
+              :body   (view/home {})})}]
+
+   ["/cocktail/{id}"
+    {:name ::cocktail
+     :doc  "A single cocktail view."
+     :get  (fn [{{:keys [id]} :path-params}]
+             {:status 200
+              :body (view/cocktail id)})}]
+
+   ["/cocktails"
+    {:name ::cocktails
+     :doc  "The primary cocktail card grid."
+     :get (fn [{:keys [query-params]}]
+            {:status 200
+             :body   (view/cocktails query-params)})}]])
 
 ;; [["/all/{attribute}"
 ;;   {:name :bartender/all

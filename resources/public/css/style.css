@@ -1,7 +1,7 @@
 :root {
-    --bg1: hsl(40 50% 95%);
-    --bg2: hsl(0 0% 100%);
-    --bg3: hsl(40 50% 70%);
+    --bg1: hsl(0 0% 100%);
+    --bg2: hsl(0 0% 95%);
+    --bg3: hsl(0 0% 99%);
     --fg1: hsl(0 0% 0%);
     --fg2: hsl(0 0% 30%);
     --fg3: hsl(0 0% 50%);
@@ -48,20 +48,18 @@ input {
 }
 
 main {
-    padding: 10rem;
 }
 
 /* Cocktails */
 
 .cocktails {
-    display: grid;
-    grid-template-columns: 18% 82%;
 }
 
 @media (max-width: 1600px) {.cocktails { grid-template-columns: 20% 80%; }}
 @media (max-width: 1250px) {.cocktails { grid-template-columns: 20% 80%; }}
 
 .cards {
+    margin: 5rem 5rem 5rem 55rem;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     grid-gap: 5rem;
@@ -73,7 +71,6 @@ main {
     border-radius: 2rem;
     flex-direction: column;
     line-height: 4rem;
-    background: var(--bg2);
 }
 
 .illustration {
@@ -81,6 +78,9 @@ main {
 }
 
 .card-body {
+    background-color: var(--bg3);
+    border: 1px solid var(--fg4);
+    border-width: 0 1px 1px 1px;
     padding: 2rem 3rem 3rem 3rem;
     white-space: pre-wrap;
     font-size: 3rem;
@@ -94,8 +94,8 @@ main {
 
 .card-recipe {
     width: 100%;
-    margin: 3rem 0;
-    padding: 2.5rem 0 3rem 0;
+    margin: 2rem 0;
+    padding: 2rem 0 3rem 0;
     border: 1px solid var(--fg4);
     border-width: 1px 0;
 }
@@ -113,17 +113,18 @@ main {
 /* Strainer */
 
 .strainer {
+    position: fixed;
+    width: 50rem;
+    overflow-y: scroll;
+    top: 0;
+    bottom: 0;
     font-size: 3rem;
-    margin-right: 10rem;
+    margin-right: 5rem;
     text-transform: capitalize;
-    grid-row: span 2;
-}
-
-.strainer h3 {
-    font-size: 3rem;
-    text-transform: uppercase;
-    margin: 0;
-    padding: 0;
+    border: 1px solid var(--fg4);
+    border-width: 0 1px 0 0;
+    background-color: var(--bg1);
+    overflow: scroll;
 }
 
 .strainer h4 {
@@ -131,8 +132,9 @@ main {
     letter-spacing: 1px;
     text-transform: uppercase;
     margin: 1rem 0;
+    padding: 1rem 0 0 2rem;
     color: var(--fg3);
-    border: 1px solid var(--fg3);
+    border: 1px solid var(--fg4);
     border-width: 1px 0 0 0;
 }
 
@@ -140,14 +142,33 @@ main {
     padding: 0 0 2rem 0;
 }
 
+.kind > input              { margin-left: 3rem; }
+.ingredient > input        { margin-left: 3rem; }
+.ingredient:hover          { background-color: var(--bg2); cursor: pointer; }
+.ingredient:hover > input  { background-color: var(--bg2); cursor: pointer; }
+.ingredient:hover > label  { background-color: var(--bg2); cursor: pointer; }
+
+.ii {
+    display: none;
+}
+
+.ii:checked + .il {
+    color: var(--fg1);
+}
+
+.ii:checked + .il::after {
+    content: "   ←";
+    color: var(--fg1);
+    margin-left: 1rem;
+}
+
+.il {
+    color: var(--fg3);
+}
 
 
-.ingredient:hover          { background-color: var(--bg3); cursor: pointer; }
-.ingredient:hover > input  { background-color: var(--bg3); cursor: pointer; }
-.ingredient:hover > label  { background-color: var(--bg3); cursor: pointer; }
-
-.search {
-    padding-top: 0;
+.nameplate {
+    margin: 2rem;
 }
 
 .strainer label {
@@ -158,10 +179,10 @@ main {
     color: var(--fg1);
     font-size: 3.5rem;
     background: none;
-    border: 1px solid var(--fg3);
+    border: 1px solid var(--fg4);
     border-width: 1px 0 0 0px;
     width: 100%;
-    padding: 2rem 0rem;
+    padding: 3rem 2rem 0rem 2rem;
 }
 
 .strainer input[type=submit] {
@@ -169,9 +190,17 @@ main {
     color: var(--fg3);
     font-size: 3rem;
     background: none;
-    border: 1px solid var(--fg3);
-    margin-top: 3rem;
-    padding: 1rem 2rem;
+    border: 1px solid var(--fg4);
+    border-width: 1px 0 0 0;
+    width: 100%;
+    margin: 1rem 0 0 0;
+    padding: 3rem 2rem;
+}
+
+.strainer input[type=submit]:hover {
+    color: var(--fg1);
+    background-color: var(--bg2);
+    cursor: pointer;
 }
 
 @media (max-width: 900px) {

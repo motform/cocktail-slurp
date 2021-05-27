@@ -14,9 +14,9 @@
   (hiccup/html5
    {:lang "en"}
    [:head
-    (hiccup/include-css "css/reset.css")
-    (hiccup/include-css "css/fonts.css")
-    (hiccup/include-css "css/style.css")
+    (hiccup/include-css "/css/reset.css")
+    (hiccup/include-css "/css/fonts.css")
+    (hiccup/include-css "/css/style.css")
     [:title (str "Cocktail Slurp | " title)]
     [:meta  {:content "text/html;" :charset "utf-8"}]
     [:body
@@ -24,6 +24,7 @@
 
 (defn- sidebar []
   [:aside.strainer
+   [:p.nameplate "cocktail slurp"]
    [:form {:action "/cocktails" :method "get"}
 
     [:section.search
@@ -32,22 +33,21 @@
     [:section.kinds
      [:h4 "Style"]
      (for [kind (sort (db/all :cocktail/kind))]
-       [:div.kind
-        [:input {:type "radio" :id kind :name "kind" :value kind}]
-        [:label {:for kind} kind]])]
+       [:div.ingredient
+        [:input.ii {:type "checkbox" :id kind :name "kind" :value kind}]
+        [:label.il {:for kind} kind]])]
 
     (for [[category ingredients] util/ingredients]
       [:section.category
        [:h4 (name category)]
        (for [ingredient ingredients]
          [:div.ingredient 
-          [:input {:type "checkbox" :id ingredient :name "ingredient" :value ingredient}]
-          [:label {:for ingredient} ingredient]])])
+          [:input.ii {:type "checkbox" :id ingredient :name "ingredient" :value ingredient}]
+          [:label.il {:for ingredient} ingredient]])])
 
-    [:section.submit
-     [:input {:type "submit" :value "Strain"}]]]])
+    [:input {:type "submit" :value "Strain"}]]])
 
-(defn card-recipe [recipe]
+(defn- card-recipe [recipe]
   (let [ingredients (str/split-lines recipe)]
     [:section.card-recipe
      (for [ingredient ingredients]
@@ -56,7 +56,7 @@
           [:span.card-recipe-measurement measurement] 
           [:span.card-recipe-ingredient name]]))]))
 
-(defn cocktail-cards
+(defn- cocktail-cards
   "Call with zero arity for the latest cocktails."
   ([] (cocktail-cards {}))
   ([strainer]
@@ -66,9 +66,31 @@
         [:section.card
          (illustration/illustration c "60px")
          [:div.card-body
-          [:a.card-title {:href id} title]
+          [:a.card-title {:href (str "/cocktail/" id)} title]
           (card-recipe recipe)
           [:p preparation]]])])))
+
+(defn- cocktail-page [{:cocktail/keys [ingredient title date author preparation story url img] :as c}]
+  [:section.cocktail
+   (illustration/illustration c "200px")
+   [:section.cocktail-header
+    [:h1 title]]
+   [:section.cocktail-body
+    [:div.content
+     [:aside
+      [:section.card-recipe
+       (for [i ingredient]
+         (let [{:keys [measurement name]} (util/split-ingredient i)]
+           [:span.card-recipe-row 
+            [:span.card-recipe-measurement measurement] 
+            [:span.card-recipe-ingredient name]]))]
+      [:p preparation]]
+     [:div.story (when story (str/trim story))]
+     [:img {:src img}]]
+    [:div.metadata
+     [:p (subs (str date) 0 15)]
+     [:p "posted by " author]
+     [:a {:href url :target "_blank"} "view original"]]]])
 
 ;;; PAGES
 
@@ -77,6 +99,12 @@
     [:main.cocktails
      (sidebar)
      (cocktail-cards)]))
+
+(defn cocktail [id]
+  (let [cocktail (db/cocktail-by-id id)]
+    (page "(:cocktail/title cocktail)"
+      [:main.cocktail
+       (cocktail-page cocktail)])))
 
 (defn cocktails [{:strs [kind ingredient search]}]
   (page (str (or kind "Buncha") "Cocktails") 
