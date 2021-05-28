@@ -58,12 +58,15 @@
           [:span.card-recipe-measurement measurement] 
           [:span.card-recipe-ingredient name]]))]))
 
+(defn- pagination-query-string [query-string]
+  (str "cocktails?" (str/replace query-string #"&cursor=\d+$" "") "&"))
+
 (defn- cocktail-cards
   "Call with zero arity for the latest cocktails."
   ([opts]
    (cocktail-cards {} opts))
-  ([strainer {:keys [:pagination/cursor :pagination/origin]}]
-   (let [{:keys [cursor cocktails]} (db/paginate cursor pagination-step db/strain strainer)]
+  ([strainer {:pagination/keys [cursor origin query-string]}]
+   (let [{:keys [cursor cocktails end?]} (db/paginate cursor pagination-step db/strain strainer)]
      [:div.container
       [:section.cards
        (for [{:cocktail/keys [title id preparation recipe] :as c} cocktails]
@@ -73,13 +76,13 @@
            [:a.card-title {:href (str "/cocktail/" id)} title]
            (card-recipe recipe)
            [:p.card-preparation preparation]]])]
-      [:footer
-       [:a.paginate {:href (if (= origin :home) 
-                             (str "?cursor=" (max 0 (- cursor (* 2 pagination-step))))
-                             (str "&cursor=" (max 0 (- cursor (* 2 pagination-step)))))}
+      [:footer ; eeek
+       [:a.paginate {:href  (str (if (= origin :home) "?" (pagination-query-string query-string)) "cursor=" (max 0 (- cursor (* 2 pagination-step))))
+                     :class (when (>= 0 (- cursor pagination-step)) "hide")}
         "←"]
        [:p.tagline "quality versus quantity does not have to be a winner-take-all proposition"]
-       [:a.paginate {:href (if origin (str "?cursor=" cursor) (str "&cursor=" cursor))}
+       [:a.paginate {:href  (str (if (= origin :home) "?" (pagination-query-string query-string)) "cursor=" cursor)
+                     :class (when end? "hide")}
         "→"]]])))
 
 (defn- cocktail-page [{:cocktail/keys [ingredient title date author preparation story url img] :as c}]
@@ -119,11 +122,13 @@
       [:main.cocktail
        (cocktail-page cocktail)])))
 
-(defn cocktails [{:strs [kind ingredient search]}]
-  (page (str (or kind "Buncha") "Cocktails") 
+(defn cocktails [{{:strs [cursor] :as strainer} :query-params query-string :query-string}]
+  (page (str "Cocktails") 
     [:main.cocktails
-     (sidebar)
-     "huh"]))
+     (sidebar) ; todo pass strainer to retain selections
+     (cocktail-cards strainer {:pagination/cursor (if cursor (Integer. cursor) 0)
+                               :pagination/origin :strainer
+                               :pagination/query-string query-string})]))
 
 (comment
   )

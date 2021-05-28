@@ -30,10 +30,10 @@
    counting from zero-indexed `start`, along with a :cursor."
   [cursor amount q & args]
   (let [result (apply q args)
-        end    (+ cursor amount)]
-    (cond-> {:cocktails [] :cursor nil}
-      result                 (assoc :cocktails (util/?subvec result cursor end))
-      (< end (count result)) (assoc :cursor end))))
+        next   (+ cursor amount)
+        len    (count result)
+        stop   (if (>= len next) next (+ cursor (- len cursor)))]
+    {:cocktails (util/?subvec result cursor stop) :cursor next :end? (not (>= len next))}))
 
 (defn all
   "Lists all `v` for `a`."
@@ -93,10 +93,12 @@
 
 (defn- wash-strainer
   "Homogenize & split strings, possibly do other processing to input."
-  [{:keys [search] :as strainer}]
-  (cond-> strainer
-    (not    (str/blank? search))
-    (update :search #(-> % str/lower-case str/trim (str/replace #" +" " ") (str/split #" ") append-*))))
+  [strainer]
+  (let [{:keys [search kind ingredient] :as strainer} (util/keywordize strainer)]
+    (cond-> strainer
+      (not (str/blank? search)) (update :search #(-> % str/lower-case str/trim (str/replace #" +" " ") (str/split #" ") append-*))
+      (util/?coll? ingredient) (update :ingredient #(conj [] %))
+      (util/?coll? kind)       (update :kind #(conj [] %)))))
 
 (defn- parse-strainer
   "Builds a query map based on user input, excepts irrelevant keys to be falsy.
@@ -124,7 +126,7 @@
 
   (d/delete-database "datomic:mem://cocktail.slurp/repl")
 
-  (strain {:ingredient ["rum" "cream"] :search "russian"})
+  (strain {:ingredient "rum" :kind "shaken" :search "russian"}) ; strainer supports both str and [str]
 
   (all :cocktail/ingredient)
   ;; export the cocktails

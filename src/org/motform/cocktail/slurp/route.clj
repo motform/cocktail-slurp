@@ -1,5 +1,6 @@
 (ns org.motform.cocktail.slurp.route
-  (:require [org.motform.cocktail.slurp.view :as view]))
+  (:require [org.motform.cocktail.slurp.view :as view]
+            [org.motform.cocktail.stuff.util :as util]))
 
 (def routes
   [["/"
@@ -19,9 +20,9 @@
    ["/cocktails"
     {:name ::cocktails
      :doc  "The primary cocktail card grid."
-     :get (fn [{:keys [query-params]}]
+     :get (fn [request]
             {:status 200
-             :body   (view/cocktails query-params)})}]])
+             :body   (view/cocktails (select-keys request [:query-params :query-string]))})}]])
 
 ;; [["/all/{attribute}"
 ;;   {:name :bartender/all

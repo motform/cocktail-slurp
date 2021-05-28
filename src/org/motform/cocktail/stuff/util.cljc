@@ -17,6 +17,19 @@
   [m f]
   (into {} (for [[k v] m] [k (f v)])))
 
+(defn map-keys [m f]
+  (reduce-kv
+   (fn [m k v]
+     (assoc m (f k) v))
+   {}
+   m))
+
+(defn keywordize [m]
+  (map-keys m keyword))
+
+(defn ?coll? [x]
+  ((every-pred identity #(not (coll? %))) x))
+
 (defn toggle
   "Toggle membership of `x` in `set`"
   [set x]
@@ -25,10 +38,13 @@
 (defn remove-empty [m]
   (into {} (remove (comp empty? second) m)))
 
-(defn ?subvec [v start end]
+(defn ?subvec
+  "Returns a vec of items from start to end if possible.
+  If end is further than the last item, returns the rest of the vec."
+  [v start end]
   (if (> end (count v))
     (subvec v start)
-    (subvec v start end)))
+    (subvec v start )))
 
 (defn measurement? [s]
   (let [measurements #{"oz" "jigger" "ml" "cl" "dl" "dash" "tsp" "tbsp" "scant" "spoon"
@@ -63,3 +79,4 @@
    :syrup   ["cinnamon simple syrup" "grenadine" "gum syrup" "maple syrup" "mint simple syrup" "orgeat"  "passion fruit syrup" "pineapple syrup" "raspberry syrup" "rock candy syrup" "simple syrup" "vanilla simple syrup" "other simple syrup"]
    :wine    ["bianco vermouth" "dry vermouth" "rose vermouth" "sweet vermouth"  "chinato"  "dubonnet" "lillet"  "punt e mes" "quinquina" "madeira" "sherry" "ruby port"  "tawny port" "white port" "champagne" "red wine" "rose wine" "white wine"]
    :pantry  ["apple cider" "beer" "cocoa" "cream" "creme de peche" "egg" "egg white" "ginger beer" "honey" "soda" "sugar" "tea"]})
+
