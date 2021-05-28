@@ -1,9 +1,9 @@
 (ns org.motform.cocktail.slurp.db
   (:require [clojure.string :as str]
-            [datomic.api :as d]
-            [mount.core :as mount]
+            [datomic.api    :as d]
+            [mount.core     :as mount]
             [org.motform.cocktail.slurp.parse :as parse]
-            [org.motform.cocktail.stuff.util :as util]))
+            [org.motform.cocktail.stuff.util  :as util]))
 
 ;;; db
 
@@ -116,9 +116,6 @@
       (cocktail-feed))))
 
 (comment
-  (mount/start #'org.motform.cocktail.slurp.db/conn)
-  (mount/stop #'org.motform.cocktail.slurp.db/conn)
-
   ;; datomic
   (init-db {:uri "datomic:mem://cocktail.slurp/repl"
             :posts "posts.edn"

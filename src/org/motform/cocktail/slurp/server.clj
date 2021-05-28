@@ -1,10 +1,10 @@
 (ns org.motform.cocktail.slurp.server
-  (:require [mount.core                        :as mount]
-            [reitit.dev.pretty                 :as pretty]
-            [reitit.ring                       :as ring]
+  (:require [mount.core         :as mount]
+            [reitit.dev.pretty  :as pretty]
+            [reitit.ring        :as ring]
+            [ring.adapter.jetty :as jetty]
             [reitit.ring.middleware.exception  :as exception]
             [reitit.ring.middleware.parameters :as parameters]
-            [ring.adapter.jetty                :as jetty]
             [org.motform.cocktail.slurp.view   :as view]))
 
 (def app
@@ -27,11 +27,11 @@
      ["/cocktails"
       {:name ::cocktails
        :doc  "The primary cocktail card grid."
-       :get (fn [request]
-              {:status 200
-               :body   (view/cocktails (select-keys request [:query-params :query-string]))})}]]
+       :get  (fn [request]
+               {:status 200
+                :body   (view/cocktails (select-keys request [:query-params :query-string]))})}]]
+
     {:exception pretty/exception
-     ;; :reitit.middleware/transform dev/print-request-diffs ;; TODO add debug switch
      :data {:middleware [parameters/parameters-middleware
                          exception/exception-middleware]}})
    (ring/routes

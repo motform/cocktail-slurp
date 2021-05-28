@@ -73,7 +73,8 @@
          [:section.card
           (illustration/illustration c "60px")
           [:div.card-body
-           [:a.card-title {:href (str "/cocktail/" id)} title]
+           [:div.card-title-container
+            [:a.card-title {:href (str "/cocktail/" id)} title]]
            (card-recipe recipe)
            [:p.card-preparation preparation]]])]
       [:footer ; eeek
@@ -85,27 +86,29 @@
                      :class (when end? "hide")}
         "→"]]])))
 
-(defn- cocktail-page [{:cocktail/keys [ingredient title date author preparation story url img] :as c}]
-  [:section.cocktail
+(defn- cocktail-page [{:cocktail/keys [recipe title date author preparation story url img] :as c}]
+  [:main.cocktail-page
    (illustration/illustration c "200px")
-   [:section.cocktail-header
-    [:h1 title]]
-   [:section.cocktail-body
-    [:div.content
-     [:aside
-      [:section.card-recipe
-       (for [i ingredient]
-         (let [{:keys [measurement name]} (util/split-ingredient i)]
-           [:span.card-recipe-row 
-            [:span.card-recipe-measurement measurement] 
-            [:span.card-recipe-ingredient name]]))]
-      [:p preparation]]
-     [:div.story (when story (str/trim story))]
-     [:img {:src img}]]
-    [:div.metadata
-     [:p (subs (str date) 0 15)]
-     [:p "posted by " author]
-     [:a {:href url :target "_blank"} "view original"]]]])
+   [:section.cocktail 
+    [:section.cocktail-header
+     [:h1.page-title title]]
+    [:section.cocktail-body
+     [:div.page-content
+      [:aside.page-preparation
+       [:section.page-recipe
+        (for [ingredient (str/split-lines recipe)]
+          (let [{:keys [measurement name]} (util/split-ingredient ingredient)]
+            [:span.page-recipe-row 
+             [:span.page-recipe-measurement measurement] 
+             [:span.page-recipe-ingredient name]]))]
+       [:p preparation]]
+      [:div.page-story (when story (str/trim story))]
+      [:div.page-img
+       [:img {:src img}]]]
+     [:div.page-metadata
+      [:p (str (subs (str date) 0 11) (subs (str date) 24 28))]
+      [:p  author]
+      [:a {:href url :target "_blank"} "view original"]]]]])
 
 ;;; PAGES
 
@@ -119,8 +122,7 @@
 (defn cocktail [id]
   (let [cocktail (db/cocktail-by-id id)]
     (page (str/capitalize (:cocktail/title cocktail))
-      [:main.cocktail
-       (cocktail-page cocktail)])))
+      (cocktail-page cocktail))))
 
 (defn cocktails [{{:strs [cursor] :as strainer} :query-params query-string :query-string}]
   (page (str "Cocktails") 
