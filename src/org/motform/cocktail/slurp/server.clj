@@ -2,16 +2,34 @@
   (:require [mount.core                        :as mount]
             [reitit.dev.pretty                 :as pretty]
             [reitit.ring                       :as ring]
-            [reitit.ring.middleware.dev        :as dev]
             [reitit.ring.middleware.exception  :as exception]
             [reitit.ring.middleware.parameters :as parameters]
             [ring.adapter.jetty                :as jetty]
-            [org.motform.cocktail.slurp.route  :as route]))
+            [org.motform.cocktail.slurp.view   :as view]))
 
 (def app
   (ring/ring-handler
    (ring/router
-    route/routes
+    [["/"
+      {:name ::home
+       :doc  "Home page, what the kids might call a 'feed'."
+       :get  (fn [{:keys [query-params]}]
+               {:status 200
+                :body   (view/home (query-params "cursor"))})}]
+
+     ["/cocktail/{id}"
+      {:name ::cocktail
+       :doc  "A single cocktail view."
+       :get  (fn [{{:keys [id]} :path-params}]
+               {:status 200
+                :body (view/cocktail id)})}]
+
+     ["/cocktails"
+      {:name ::cocktails
+       :doc  "The primary cocktail card grid."
+       :get (fn [request]
+              {:status 200
+               :body   (view/cocktails (select-keys request [:query-params :query-string]))})}]]
     {:exception pretty/exception
      ;; :reitit.middleware/transform dev/print-request-diffs ;; TODO add debug switch
      :data {:middleware [parameters/parameters-middleware
@@ -26,17 +44,6 @@
   :stop  (.stop server))
 
 (comment
-  (do
-    (mount/stop  #'org.motform.cocktail.slurp.server/server)
-    (mount/start #'org.motform.cocktail.slurp.server/server))
-
   (app {:request-method :get
         :uri ""})
-
-  (app {:request-method :get
-        :uri "/bartender/cocktail/4459043163866934583"})
-
-  (app {:request-method :get
-        :uri "/bartender/cocktail/4459043163866934583"})
-
   )
