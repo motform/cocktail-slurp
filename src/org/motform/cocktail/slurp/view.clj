@@ -101,28 +101,30 @@
           "→"]]]))))
 
 (defn- cocktail-page [{:cocktail/keys [recipe title date author preparation story url img] :as c}]
-  [:main.cocktail-page
-   (illustration/illustration c "200px")
-   [:section.cocktail 
-    [:section.cocktail-header
-     [:h1.page-title title]]
-    [:section.cocktail-body
-     [:div.page-content
-      [:aside.page-preparation
-       [:section.page-recipe
-        (for [ingredient (str/split-lines recipe)]
-          (let [{:keys [measurement name]} (util/split-ingredient ingredient)]
-            [:span.page-recipe-row 
-             [:span.page-recipe-measurement measurement] 
-             [:span.page-recipe-ingredient name]]))]
-       [:p preparation]]
-      [:div.page-story (when story (str/trim story))]
-      [:div.page-img
-       [:img {:src img}]]]
-     [:div.page-metadata
-      [:p (str (subs (str date) 0 11) (subs (str date) 24 28))]
-      [:p  author]
-      [:a {:href url :target "_blank"} "view original"]]]]])
+  (list [:main.cocktail-page
+         (illustration/illustration c "200px")
+         [:section.cocktail 
+          [:section.cocktail-header
+           [:h1.page-title title]]
+          [:section.cocktail-body
+           [:div.page-content
+            [:aside.page-preparation
+             [:section.page-recipe
+              (for [ingredient (str/split-lines recipe)]
+                (let [{:keys [measurement name]} (util/split-ingredient ingredient)]
+                  [:span.page-recipe-row 
+                   [:span.page-recipe-measurement measurement] 
+                   [:span.page-recipe-ingredient name]]))]
+             [:p preparation]]
+            [:div.page-story (when story (str/trim story))]
+            [:div.page-img
+             [:img {:src img}]]]
+           [:div.page-metadata
+            [:p (str (subs (str date) 0 11) (subs (str date) 24 28))]
+            [:p  author]
+            [:a {:href url :target "_blank"} "view original"]]]]]
+        [:footer
+         [:a.nameplate {:href "/"} "CS"]]))
 
 ;;; PAGES
 
