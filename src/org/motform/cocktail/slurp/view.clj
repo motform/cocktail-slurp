@@ -82,31 +82,30 @@
 
 (defn- cocktail-cards
   "Call with zero arity for the latest cocktails."
-  ([opts]
-   (cocktail-cards {} opts))
-  ([strainer {:pagination/keys [cursor origin query-string]}]
-   (let [{:keys [cursor cocktails end?]} (db/paginate cursor pagination-step db/strain strainer)]
-     (if (empty? cocktails)
-       [:div#cards.container
-        [:div.empty (util/empty-quip)]]
-       [:div#cards.container
-        [:section.cards
-         (for [{:cocktail/keys [title id preparation recipe] :as c} cocktails]
-           [:section.card
-            (illustration/illustration c "60px")
-            [:div.card-body
-             [:div.card-title-container
-              [:a.card-title {:href (str "/cocktail/" id)} title]]
-             (card-recipe recipe)
-             [:p.card-preparation preparation]]])]
-        [:footer
-         [:a.paginate {:href  (str (if (= origin :home) "?" (pagination-query-string query-string)) "cursor=" (max 0 (- cursor (* 2 pagination-step))))
-                       :class (when (>= 0 (- cursor pagination-step)) "hide")}
-          "←"]
-         [:p.tagline "quality versus quantity does not have to be a winner-take-all proposition"]
-         [:a.paginate {:href  (str (if (= origin :home) "?" (pagination-query-string query-string)) "cursor=" cursor)
-                       :class (when end? "hide")}
-          "→"]]]))))
+  [strainer {:pagination/keys [cursor origin query-string] :as c}]
+  (def c c)
+  (let [{:keys [cursor cocktails end?]} (db/paginate cursor pagination-step db/strain strainer)]
+    (if (empty? cocktails)
+      [:div#cards.container
+       [:div.empty (util/empty-quip)]]
+      [:div#cards.container
+       [:section.cards
+        (for [{:cocktail/keys [title id preparation recipe] :as c} cocktails]
+          [:section.card
+           (illustration/illustration c "60px")
+           [:div.card-body
+            [:div.card-title-container
+             [:a.card-title {:href (str "/cocktail/" id)} title]]
+            (card-recipe recipe)
+            [:p.card-preparation preparation]]])]
+       [:footer
+        [:a.paginate {:href  (str (if (= origin :home) "?" (pagination-query-string query-string)) "cursor=" (max 0 (- cursor (* 2 pagination-step))))
+                      :class (when (>= 0 (- cursor pagination-step)) "hide")}
+         "←"]
+        [:p.tagline "quality versus quantity does not have to be a winner-take-all proposition"]
+        [:a.paginate {:href  (str (if (= origin :home) "?" (pagination-query-string query-string)) "cursor=" cursor)
+                      :class (when end? "hide")}
+         "→"]]])))
 
 (defn- cocktail-page [{:cocktail/keys [recipe title date author preparation story url img] :as c}]
   (list [:main.cocktail-page
