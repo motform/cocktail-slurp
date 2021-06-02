@@ -37,12 +37,17 @@
   str {meta} in a vec, with :content holding the anchor str in
   cases of that tag, which we would otherwise miss by just
   filtering for the strings. Does not preserve URLs."
-  [x]
-  (cond 
-    (string? x) (str/trim x)
-    (get x :content) "\n\n"
-    (map? x)    (or (-> x :content first) "\n")
-    :else (throw (Exception. "invalid input to `flatten-anchors`"))))
+  [node]
+  (if (string? node)
+    (str/trim node)
+    (let [tag (:tag node)]
+      (cond (= :br tag) "\n"
+            (= :p  tag) (apply str (map flatten-anchors (:content node)))
+            (= :i  tag) (str " <em>" (-> node :content first) "</em> ")
+            (= :a  tag) (str " <a href=" (-> node :attrs :href) ">" (-> node :content first) "</a> ")
+            (:attrs node)       ""
+            (:content node)     "\n\n"
+            :else (or (-> node :content first) "\n")))))
 
 (defn- body->str [body]
   (->> body (map flatten-anchors) (filter string?) (apply str)))
@@ -50,14 +55,18 @@
 (defn- split-body [body]
   (map #(str/replace % #"  " "\n\n") (str/split body #"\n\n")))
 
+(defn- leading-newline? [body]
+  (if (= "\n" (first body))
+    (rest body)
+    body))
+
 ;; WARN does not cover cases where there is only one \n before story
 ;; WARN as we cant have nil in the db, we mock it out with ""
 (defn- body [post]
   (def p post)
   (let [body (-> (select/select (select/child (select/class :post-body)) post)
-                 first :content body->str str/trim)
+                 first :content leading-newline? body->str str/trim)
         [recipe prep story] (split-body body)]
-    (def b body)
     (assoc post :cocktail/recipe recipe :cocktail/preparation (or prep " ") :cocktail/story (or story " "))))
 
 (defn- nested-img [post]
@@ -153,14 +162,11 @@
 
 
 (comment
-
-  (posts->cocktails "posts.edn")
-  
-  (def p1 (->> "new-posts.edn" slurp read-string first)) ; new style
+  (def p1 (->> "resources/edn/posts.edn" slurp read-string first))
   (post->cocktail p1)
-  (def p2 (->> "new-posts.edn" slurp read-string (drop 300) first)) ; old style
+  (def p2 (->> "resources/edn/posts.edn" slurp read-string (drop 38) first))
   (post->cocktail p2)
 
-  (->> "posts.edn" slurp read-string posts->cocktails)
+  (->> "new-posts.edn" slurp read-string posts->cocktails)
 
   )

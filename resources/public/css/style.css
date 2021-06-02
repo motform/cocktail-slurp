@@ -282,6 +282,15 @@ footer {
     margin: 5rem 5rem 10rem 5rem; 
 }
 
+.cocktail-page a {
+    text-decoration: underline;
+    text-decoration-color: var(--fg4);
+}
+
+.cocktail-page a:hover {
+    text-decoration-color: var(--fg1);
+}
+
 .cocktail {
     white-space: pre-wrap;
     background-color: var(--bg3);

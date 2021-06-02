@@ -52,6 +52,7 @@
     (or (measurements (str/lower-case s))
         (re-matches #"\d+ [\d/\-]+" s) 
         (re-matches #"[\d/]+"   s) 
+        (re-matches #"\d+%+"   s) 
         (re-matches #"\d+\-\d+" s)))) 
 
 (defn abbrev-measurement [measurement]
@@ -91,3 +92,4 @@
 
 (defn empty-quip []
   (rand-nth ["Fresh out!" "Nothing of that sort." "Strange combination kiddo." "To boldly go where no-one has mixed before." "Bar is closed." "Someone missed the last call." "That's not an appropriate use for Chartreuse."]))
+
