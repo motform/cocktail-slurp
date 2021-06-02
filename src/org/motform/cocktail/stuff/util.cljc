@@ -88,3 +88,6 @@
    :syrup   ["cinnamon simple syrup" "grenadine" "gum syrup" "maple syrup" "mint simple syrup" "orgeat"  "passion fruit syrup" "pineapple syrup" "raspberry syrup" "rock candy syrup" "simple syrup" "vanilla simple syrup" "other simple syrup"]
    :pantry  ["apple cider" "beer" "cocoa" "cream" "creme de peche" "egg" "egg white" "ginger beer" "honey" "soda" "sugar" "tea"]})
 
+
+(defn empty-quip []
+  (rand-nth ["Fresh out!" "Nothing of that sort." "Strange combination kiddo." "To boldly go where no-one has mixed before." "Bar is closed." "Someone missed the last call." "That's not an appropriate use for Chartreuse."]))

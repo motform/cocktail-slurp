@@ -58,6 +58,13 @@ main {
 .cocktails {
 }
 
+.empty {
+    margin: 10rem;
+    font: 12rem/11rem "Margo", "Optima", times;
+    color: var(--fg3);
+    text-align: center;
+}
+
 .container {
     margin-left: 50rem;
 }
