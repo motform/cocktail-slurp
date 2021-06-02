@@ -40,7 +40,7 @@
   [x]
   (cond 
     (string? x) x
-    (map? x) (-> x :content first)
+    (map? x)    (-> x :content first)
     :else (throw (Exception. "invalid input to `flatten-anchors`"))))
 
 (defn- body->str [body]
@@ -99,7 +99,7 @@
   ((parse-tag-by ingredient? :cocktail/ingredient) post))
 
 (defn- prefix-ingredient [ingredient]
-  (if-let [prefix (re-find #"\([\w\p{Punct}]+\)" ingredient)]
+  (if-let [prefix (re-find #"\([\w\p{Punch}]+\)" ingredient)]
     (str/join " " (cons (str/replace prefix #"\(|\)" "")
                         (drop-last (str/split ingredient #" "))))
     ingredient))
@@ -123,9 +123,9 @@
   (str/includes? (str/lower-case (:cocktail/fulltext post)) "shake"))
 
 (defn- kind [post]
-  (let [kind (cond (punch? post 300) "punch"
-                   (stirred? post) "stirred"
-                   (shaken? post) "shaken")]
+  (let [kind (cond (punch? post 50) "punch"
+                   (stirred? post)  "stirred"
+                   (shaken? post)   "shaken")]
     (util/?assoc post :cocktail/kind kind)))
 
 (defn cocktail?

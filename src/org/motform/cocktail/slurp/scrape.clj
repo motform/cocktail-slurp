@@ -22,3 +22,7 @@
           (recur (next-page cursor)
                  (concat pages (posts cursor))))
       (spit path (pr-str (into [] pages))))))
+
+(comment
+  (scrape! "https://cocktailvirgin.blogspot.com" "new-posts.edn")
+  )

@@ -11,8 +11,8 @@
 @media (prefers-color-scheme: dark) {
     :root {
         --bg1: hsl(0 0% 5%);
-        --bg2: hsl(0 0% 10%);
-        --bg3: hsl(0 0% 6%);
+        --bg2: hsl(0 0% 20%);
+        --bg3: hsl(0 0% 10%);
         --fg1: hsl(0 0% 100%);
         --fg2: hsl(0 0% 70%);
         --fg3: hsl(0 0% 50%);
@@ -31,8 +31,7 @@ html {
 body {
     background: var(--bg1);
     color: var(--fg1);
-    font: 4rem/5rem "Marionette";
-    line-height: 5rem;
+    font: 4rem/6rem "Marionette";
 }
 
 a {
@@ -59,9 +58,6 @@ main {
 .cocktails {
 }
 
-@media (max-width: 1600px) {.cocktails { grid-template-columns: 20% 80%; }}
-@media (max-width: 1250px) {.cocktails { grid-template-columns: 20% 80%; }}
-
 .container {
     margin-left: 50rem;
 }
@@ -83,6 +79,8 @@ main {
 
 .illustration {
     border-radius: 2rem 2rem 0 0;
+    border: 1px solid var(--fg4);
+    border-width: 1px;
 }
 
 .card-body {
@@ -91,6 +89,7 @@ main {
     border-width: 0 1px 1px 1px;
     white-space: pre-wrap;
     font-size: 3rem;
+    line-height: 4.5rem;
     padding-top: 2rem;
 }
 
@@ -169,6 +168,7 @@ footer {
     top: 0;
     bottom: 0;
     font-size: 3rem;
+    line-height: 5rem;
     margin-right: 5rem;
     text-transform: capitalize;
     border: 1px solid var(--fg4);
@@ -194,9 +194,9 @@ footer {
 
 .kind > input              { margin-left: 3rem; }
 .ingredient > input        { margin-left: 3rem; }
-.ingredient:hover          { background-color: var(--bg2); cursor: pointer; }
-.ingredient:hover > input  { background-color: var(--bg2); cursor: pointer; }
-.ingredient:hover > label  { background-color: var(--bg2); cursor: pointer; }
+.ingredient:hover          { background-color: var(--bg2); cursor: pointer; color: var(--fg1); }
+.ingredient:hover > input  { background-color: var(--bg2); cursor: pointer; color: var(--fg1); }
+.ingredient:hover > label  { background-color: var(--bg2); cursor: pointer; color: var(--fg1); }
 
 .ii {
     display: none;
@@ -239,7 +239,7 @@ footer {
     border: 1px solid var(--fg4);
     border-width: 1px 0 0 0px;
     width: 100%;
-    padding: 3rem 2rem 0rem 2rem;
+    padding: 4rem 2rem 0rem 2rem;
 }
 
 .strainer input[type=submit] {
@@ -308,12 +308,12 @@ footer {
 }
 
 .page-preparation p {
-    padding: 5rem;
+    padding: 6rem;
 }
 
 .page-recipe {
     width: 100%;
-    padding: 5rem 2rem 5rem 0;
+    padding: 5rem 2rem 6rem 0;
     border: 1px solid var(--fg4);
     border-width: 0 0 1px 0;
 }
@@ -325,8 +325,8 @@ footer {
 }
 
 .page-recipe-measurement {
-    max-width: 15rem;
-    min-width: 15rem;
+    max-width: 17rem;
+    min-width: 17rem;
 }
 
 .page-content {
@@ -346,6 +346,7 @@ footer {
     display: flex;          
     align-items: center;    
     justify-content: center;
+    padding: 5rem;
 }
 
 .page-img img {
@@ -358,7 +359,7 @@ footer {
     justify-content: space-between;
     font-size: 2rem;
     writing-mode: vertical-rl;
-    padding: 2rem 1rem;
+    padding: 2rem 1rem 2rem 2rem;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -373,7 +374,15 @@ footer {
     text-decoration-color: var(--fg1);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
+    .cocktail-page { margin: 0rem; }
+    .cocktail { border-width: 0 0 1px 0; background-color: var(--bg1); }
+    .page-recipe { font-size: 6rem; line-height: 8rem; }
+    .page-recipe-measurement {max-width: 20rem; min-width: 20rem;}
+    .page-content  { grid-template-columns: 1fr; }
+    .page-content { border-width: 0 0 1px 0; }
+    .page-story { border-width: 0 1px 1px 0; }
+    .page-preparation { border-width: 0 1px 1px 0; }
     .cocktail-body > .content { grid-template-columns: 1fr; }
     .cocktail-body > .content > img { margin-top: 10rem; }
 }

@@ -1,8 +1,8 @@
 (ns org.motform.cocktail.slurp.core
-  (:gen-class)
   (:require [mount.core :as mount]
             [org.motform.cocktail.slurp.db]
-            [org.motform.cocktail.slurp.server]))
+            [org.motform.cocktail.slurp.server])
+  (:gen-class))
 
 (defn -main [_]
   (mount/start))
