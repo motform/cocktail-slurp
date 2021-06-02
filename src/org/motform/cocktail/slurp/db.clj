@@ -20,7 +20,7 @@
 (mount/defstate conn
   :start (init-db {:uri    "datomic:mem://cocktail.slurp/dev-server"
                    :schema "resources/edn/cocktail-schema.edn"
-                   :posts  "new-posts.edn"})
+                   :posts  "resources/edn/posts.edn"})
   :stop (d/shutdown false))
 
 ;;; queries
@@ -117,8 +117,8 @@
 
 (comment
   ;; datomic
-  (init-db {:uri "datomic:mem://cocktail.slurp/repl"
-            :posts "posts.edn"
+  (init-db {:uri    "datomic:mem://cocktail.slurp/repl"
+            :posts  "resources/edn/posts.edn"
             :schema "resources/edn/cocktail-schema.edn"})
 
   (d/delete-database "datomic:mem://cocktail.slurp/repl")
@@ -126,5 +126,6 @@
   (strain {:ingredient "rum" :kind "shaken" :search "russian"}) ; strainer supports both str and [str]
 
   (all :cocktail/ingredient)
+
   ;; export the cocktails
-  (spit "resources/edn/formatted-posts.edn" (pr-str (parse/posts->cocktails "posts.edn"))))
+  (spit "resources/edn/formatted-posts.edn" (pr-str (parse/posts->cocktails "resources/edn/posts.edn"))))

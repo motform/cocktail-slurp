@@ -24,5 +24,5 @@
       (spit path (pr-str (into [] pages))))))
 
 (comment
-  (scrape! "https://cocktailvirgin.blogspot.com" "new-posts.edn")
+  (scrape! "https://cocktailvirgin.blogspot.com" "resources/edn/posts.edn")
   )

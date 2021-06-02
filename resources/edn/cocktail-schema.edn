@@ -51,25 +51,21 @@
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
 
- ;; -> bar/name
  {:db/ident :cocktail/bar
   :db/doc "Bars tagged in the post."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/many}
 
- ;; -> category/name
  {:db/ident :cocktail/category
   :db/doc "Categories tagged in the post."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/many}
 
- ;; -> cocktail/kind
  {:db/ident :cocktail/kind
   :db/doc "The kind of cocktail - shaken, stirred or punch"
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
 
- ;; -> coll-of ingredient/name
  {:db/ident :cocktail/ingredient
   :db/doc "Ingredients used in the cocktail."
   :db/valueType :db.type/string
