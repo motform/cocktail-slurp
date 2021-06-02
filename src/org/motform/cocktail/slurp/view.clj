@@ -20,15 +20,23 @@
     (hiccup/include-css "/css/reset.css")
     (hiccup/include-css "/css/fonts.css")
     (hiccup/include-css "/css/style.css")
-    [:title (str "Cocktail Slurp | " title)]
-    [:meta  {:content "text/html;" :charset "utf-8"}]
+    [:title title]
+    [:meta  {:content "width=device-width, initial-scale=1"
+             :name    "viewport"
+             :charset "utf-8"}]
     [:body
-     (hiccup2/html content)]]))
+     (hiccup2/html content)]
+    (hiccup/include-js  "/js/script.js")]))
+
+(defn- sidebar-mobile [{:strs [ingredient kind search]}]
+  [:header.strainer-mobile
+   [:a.nameplate {:href "/"} "CS"]
+   [:div#ftoggle.filter-mobile {:id "ftoggle"} "search"]])
 
 (defn- sidebar [{:strs [ingredient kind search]}]
   (let [selected-ingredients (if (string? ingredient) #{ingredient} (into #{} ingredient))
         selected-kinds       (if (string? kind) #{kind} (into #{} kind))]
-    [:aside.strainer
+    [:aside#strainer.strainer
      [:a.nameplate {:href "/"} "CS"]
      [:form {:action "/cocktails" :method "get"}
 
@@ -58,7 +66,7 @@
                     :checked (selected-ingredients ingredient)}]
                   [:label.ingredient {:for ingredient} ingredient]))])]
 
-      [:input {:type "submit" :value "Strain"}]]]))
+      [:input {:type "submit" :value "STRAIN"}]]]))
 
 (defn- card-recipe [recipe]
   (let [ingredients (str/split-lines recipe)]
@@ -79,9 +87,9 @@
   ([strainer {:pagination/keys [cursor origin query-string]}]
    (let [{:keys [cursor cocktails end?]} (db/paginate cursor pagination-step db/strain strainer)]
      (if (empty? cocktails)
-       [:div.container
+       [:div#cards.container
         [:div.empty (util/empty-quip)]]
-       [:div.container
+       [:div#cards.container
         [:section.cards
          (for [{:cocktail/keys [title id preparation recipe] :as c} cocktails]
            [:section.card
@@ -91,7 +99,7 @@
               [:a.card-title {:href (str "/cocktail/" id)} title]]
              (card-recipe recipe)
              [:p.card-preparation preparation]]])]
-        [:footer ; eeek
+        [:footer
          [:a.paginate {:href  (str (if (= origin :home) "?" (pagination-query-string query-string)) "cursor=" (max 0 (- cursor (* 2 pagination-step))))
                        :class (when (>= 0 (- cursor pagination-step)) "hide")}
           "←"]
@@ -128,25 +136,20 @@
 
 ;;; PAGES
 
-(defn home [cursor]
-  (page "Home" 
+(defn cocktails [{{:strs [cursor] :as strainer} :query-params query-string :query-string} 
+                 origin]
+  (page "Cocktail Slurp"
     [:main.cocktails
-     (sidebar {})
-     (cocktail-cards {:pagination/cursor (if cursor (Integer. cursor) 0)
-                      :pagination/origin :home})]))
+     (sidebar strainer)
+     (sidebar-mobile strainer)
+     (cocktail-cards strainer {:pagination/cursor (if cursor (Integer. cursor) 0)
+                               :pagination/origin origin
+                               :pagination/query-string query-string})]))
 
 (defn cocktail [id]
   (let [cocktail (db/cocktail-by-id id)]
-    (page (str/capitalize (:cocktail/title cocktail))
+    (page (str "Cocktail Slurp | " (str/capitalize (:cocktail/title cocktail)))
       (cocktail-page cocktail))))
-
-(defn cocktails [{{:strs [cursor] :as strainer} :query-params query-string :query-string}]
-  (page (str "Search") 
-    [:main.cocktails
-     (sidebar strainer)
-     (cocktail-cards strainer {:pagination/cursor (if cursor (Integer. cursor) 0)
-                               :pagination/origin :strainer
-                               :pagination/query-string query-string})]))
 
 (comment
   )

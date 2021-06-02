@@ -15,7 +15,7 @@
        :doc  "Home page, what the kids might call a 'feed'."
        :get  (fn [{:keys [query-params]}]
                {:status 200
-                :body   (view/home (query-params "cursor"))})}]
+                :body   (view/cocktails (query-params "cursor") :home)})}]
 
      ["/cocktail/{id}"
       {:name ::cocktail
@@ -29,7 +29,9 @@
        :doc  "The primary cocktail card grid."
        :get  (fn [request]
                {:status 200
-                :body   (view/cocktails (select-keys request [:query-params :query-string]))})}]]
+                :body   (view/cocktails
+                         (select-keys request [:query-params :query-string])
+                         :strainer)})}]]
 
     {:exception pretty/exception
      :data {:middleware [parameters/parameters-middleware
