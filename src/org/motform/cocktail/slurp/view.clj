@@ -1,6 +1,7 @@
 (ns org.motform.cocktail.slurp.view
   (:require [clojure.string :as str]
             [hiccup.page    :as hiccup]
+            [hiccup2.core   :as hiccup2]
             [org.motform.cocktail.slurp.db           :as db]
             [org.motform.cocktail.stuff.illustration :as illustration]
             [org.motform.cocktail.stuff.util         :as util]))
@@ -22,32 +23,42 @@
     [:title (str "Cocktail Slurp | " title)]
     [:meta  {:content "text/html;" :charset "utf-8"}]
     [:body
-     content]]))
+     (hiccup2/html content)]]))
 
-(defn- sidebar []
-  [:aside.strainer
-   [:a.nameplate {:href "/"} "CS"]
-   [:form {:action "/cocktails" :method "get"}
+(defn- sidebar [{:strs [ingredient kind search]}]
+  (let [selected-ingredients (if (string? ingredient) #{ingredient} (into #{} ingredient))
+        selected-kinds       (if (string? kind) #{kind} (into #{} kind))]
+    [:aside.strainer
+     [:a.nameplate {:href "/"} "CS"]
+     [:form {:action "/cocktails" :method "get"}
 
-    [:section.search
-     [:input {:type "text" :name "search" :id "search" :placeholder "Search"}]]
+      [:section.search
+       [:input {:type "text" :name "search" :id "search" :placeholder "Search" :value search}]]
 
-    [:section.kinds
-     [:h4 "Style"]
-     (for [kind (sort (db/all :cocktail/kind))]
-       [:div.ingredient
-        [:input.ii {:type "checkbox" :id kind :name "kind" :value kind}]
-        [:label.il {:for kind} kind]])]
+      [:section.kinds
+       [:h4 "Style"]
+       (for [kind (sort (db/all :cocktail/kind))]
+         [:div.ingredient
+          [:input.ii {:type    "checkbox"
+                      :id      kind
+                      :name    "kind"
+                      :value   kind
+                      :checked (selected-kinds kind)}]
+          [:label.il {:for kind} kind]])]
 
-    (for [[category ingredients] util/ingredients]
-      [:section.category
-       [:h4 (name category)]
-       (for [ingredient ingredients]
-         [:div.ingredient 
-          [:input.ii {:type "checkbox" :id ingredient :name "ingredient" :value ingredient}]
-          [:label.il {:for ingredient} ingredient]])])
+      (for [[category ingredients] util/ingredients]
+        [:section.category
+         [:h4 (name category)]
+         (for [ingredient ingredients]
+           [:div.ingredient 
+            [:input.ii {:type    "checkbox"
+                        :id      ingredient
+                        :name    "ingredient"
+                        :value   ingredient
+                        :checked (selected-ingredients ingredient)}]
+            [:label.il {:for ingredient} ingredient]])])
 
-    [:input {:type "submit" :value "Strain"}]]])
+      [:input {:type "submit" :value "Strain"}]]]))
 
 (defn- card-recipe [recipe]
   (let [ingredients (str/split-lines recipe)]
@@ -115,7 +126,7 @@
 (defn home [cursor]
   (page "Home" 
     [:main.cocktails
-     (sidebar)
+     (sidebar {})
      (cocktail-cards {:pagination/cursor (if cursor (Integer. cursor) 0)
                       :pagination/origin :home})]))
 
@@ -125,9 +136,9 @@
       (cocktail-page cocktail))))
 
 (defn cocktails [{{:strs [cursor] :as strainer} :query-params query-string :query-string}]
-  (page (str "Cocktails") 
+  (page (str "On the Hunt") 
     [:main.cocktails
-     (sidebar) ; todo pass strainer to retain selections
+     (sidebar strainer)
      (cocktail-cards strainer {:pagination/cursor (if cursor (Integer. cursor) 0)
                                :pagination/origin :strainer
                                :pagination/query-string query-string})]))
