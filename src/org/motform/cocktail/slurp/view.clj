@@ -35,28 +35,28 @@
       [:section.search
        [:input {:type "text" :name "search" :id "search" :placeholder "Search" :value search}]]
 
-      [:section.kinds
+      [:section.category
        [:h4 "Style"]
        (for [kind (sort (db/all :cocktail/kind))]
-         [:div.ingredient
-          [:input.ii {:type    "checkbox"
-                      :id      kind
-                      :name    "kind"
-                      :value   kind
-                      :checked (selected-kinds kind)}]
-          [:label.il {:for kind} kind]])]
+         (list [:input.ingredient-check
+                {:type    "checkbox"
+                 :id      kind
+                 :name    "kind"
+                 :value   kind
+                 :checked (selected-kinds kind)}]
+               [:label.ingredient {:for kind} kind]))
 
-      (for [[category ingredients] util/ingredients]
-        [:section.category
-         [:h4 (name category)]
-         (for [ingredient ingredients]
-           [:div.ingredient 
-            [:input.ii {:type    "checkbox"
-                        :id      ingredient
-                        :name    "ingredient"
-                        :value   ingredient
-                        :checked (selected-ingredients ingredient)}]
-            [:label.il {:for ingredient} ingredient]])])
+       (for [[category ingredients] util/ingredients]
+         [:section.category
+          [:h4 (name category)]
+          (for [ingredient ingredients]
+            (list [:input.ingredient-check
+                   {:type    "checkbox"
+                    :id      ingredient
+                    :name    "ingredient"
+                    :value   ingredient
+                    :checked (selected-ingredients ingredient)}]
+                  [:label.ingredient {:for ingredient} ingredient]))])]
 
       [:input {:type "submit" :value "Strain"}]]]))
 

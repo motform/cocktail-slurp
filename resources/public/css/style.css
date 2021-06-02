@@ -167,7 +167,7 @@ footer {
 
 /* sidebar */
 .strainer {
-    display:flex;
+    display: flex;
     flex-direction: column;
     position: fixed;
     width: 50rem;
@@ -199,28 +199,35 @@ footer {
     padding: 0 0 2rem 0;
 }
 
-.kind > input              { margin-left: 3rem; }
-.ingredient > input        { margin-left: 3rem; }
-.ingredient:hover          { background-color: var(--bg2); cursor: pointer; color: var(--fg1); }
-.ingredient:hover > input  { background-color: var(--bg2); cursor: pointer; color: var(--fg1); }
-.ingredient:hover > label  { background-color: var(--bg2); cursor: pointer; color: var(--fg1); }
+.category {
+    display: flex;
+    flex-direction: column;
+}
 
-.ii {
+.ingredient-check {
     display: none;
 }
 
-.ii:checked + .il {
+.ingredient {
+    color: var(--fg3);
+    width: 100%;
+    padding-left: 2rem;
+}
+
+.ingredient:hover {
+    background-color: var(--bg2);
+    cursor: pointer;
     color: var(--fg1);
 }
 
-.ii:checked + .il::after {
+.ingredient-check:checked + .ingredient {
+    color: var(--fg1);
+}
+
+.ingredient-check:checked + .ingredient::after {
     content: "   ←";
     color: var(--fg1);
     margin-left: 1rem;
-}
-
-.il {
-    color: var(--fg3);
 }
 
 .nameplate {
@@ -235,9 +242,6 @@ footer {
     color: var(--fg1);
 }
 
-.strainer label {
-    margin-left: 2rem;
-}
 .strainer input[type=text] {
     font-family: "marionette";
     color: var(--fg1);
@@ -257,7 +261,6 @@ footer {
     border: 1px solid var(--fg4);
     border-width: 1px 0 0 0;
     width: 100%;
-    margin: 1rem 0 0 0;
     padding: 3rem 2rem;
 }
 
