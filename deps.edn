@@ -2,6 +2,7 @@
  :deps    {com.datomic/datomic-free {:mvn/version "0.9.5703.21"}
            hiccup/hiccup            {:mvn/version "2.0.0-alpha2"}
            hickory/hickory          {:mvn/version "0.7.1"}
+           jarohen/chime            {:mvn/version "0.3.3"}
            ring/ring-jetty-adapter  {:mvn/version "1.9.3"}
            metosin/reitit           {:mvn/version "0.5.13"}
            mount/mount              {:mvn/version "0.1.16"}}

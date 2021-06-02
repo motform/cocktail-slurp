@@ -23,6 +23,9 @@
                    :posts  "resources/edn/posts.edn"})
   :stop (d/shutdown false))
 
+(defn add-cocktail [conn cocktail]
+  (d/transact conn [cocktail]))
+
 ;;; queries
 
 (defn paginate
@@ -42,10 +45,12 @@
                   :where ['_ a '?a]]
                  (d/db conn))))
 
+
 (defn cocktail-by-id [id]
-  (d/pull (d/db conn)
-          '[*]
-          [:cocktail/id id]))
+  (let [result (d/pull (d/db conn)
+                       '[*]
+                       [:cocktail/id id])]
+    (when (:db/id result) result))) ; if the cocktail is missing, :db/id is nil
 
 (defn cocktail-feed []
   (let [result (d/q '[:find [(pull ?e [:cocktail/date :cocktail/id :cocktail/title :cocktail/recipe :cocktail/preparation :cocktail/ingredient]) ...]
@@ -126,6 +131,7 @@
   (strain {:ingredient "rum" :kind "shaken" :search "russian"}) ; strainer supports both str and [str]
 
   (all :cocktail/ingredient)
+
 
   ;; export the cocktails
   (spit "resources/edn/formatted-posts.edn" (pr-str (parse/posts->cocktails "resources/edn/posts.edn"))))
