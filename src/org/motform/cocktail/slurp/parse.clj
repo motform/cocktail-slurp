@@ -32,11 +32,9 @@
     (assoc post :cocktail/date (instant/read-instant-date date))))
 
 (defn- flatten-anchors
-  "Takes a vec of text nodes Hickory has extracted from a <p> and
-  flattens the anchors into their `:content`. Nodes have are pairs
-  str {meta} in a vec, with :content holding the anchor str in
-  cases of that tag, which we would otherwise miss by just
-  filtering for the strings. Does not preserve URLs."
+  "Flatten a vec of nodes Hickory into a string.  Nodes are flattened
+  tuples of [str {meta}], so sometimes one has so extract the string
+  from the meta map."
   [node]
   (if (string? node)
     (str/trim node)
@@ -60,10 +58,7 @@
     (rest body)
     body))
 
-;; WARN does not cover cases where there is only one \n before story
-;; WARN as we cant have nil in the db, we mock it out with ""
 (defn- body [post]
-  (def p post)
   (let [body (-> (select/select (select/child (select/class :post-body)) post)
                  first :content leading-newline? body->str str/trim)
         [recipe prep story] (split-body body)]
