@@ -20,7 +20,7 @@
 (mount/defstate conn
   :start (init-db {:uri    "datomic:mem://cocktail.slurp/dev-server"
                    :schema "resources/edn/cocktail-schema.edn"
-                   :posts  "posts.edn"})
+                   :posts  "new-posts.edn"})
   :stop (d/shutdown false))
 
 ;;; queries
@@ -113,7 +113,7 @@
   (let [{:keys [query args]} (-> strainer util/remove-empty wash-strainer parse-strainer)]
     (if (seq args) ; handle stupid empty calls -> move to interceptor
       (into [] (map first (apply d/q query (d/db conn) args)))
-      (->> cocktail-feed (drop 250) (into [])))))
+      (cocktail-feed))))
 
 (comment
   ;; datomic

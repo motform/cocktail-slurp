@@ -39,8 +39,9 @@
   filtering for the strings. Does not preserve URLs."
   [x]
   (cond 
-    (string? x) x
-    (map? x)    (-> x :content first)
+    (string? x) (str/trim x)
+    (get x :content) "\n\n"
+    (map? x)    (or (-> x :content first) "\n")
     :else (throw (Exception. "invalid input to `flatten-anchors`"))))
 
 (defn- body->str [body]
@@ -52,9 +53,11 @@
 ;; WARN does not cover cases where there is only one \n before story
 ;; WARN as we cant have nil in the db, we mock it out with ""
 (defn- body [post]
+  (def p post)
   (let [body (-> (select/select (select/child (select/class :post-body)) post)
                  first :content body->str str/trim)
         [recipe prep story] (split-body body)]
+    (def b body)
     (assoc post :cocktail/recipe recipe :cocktail/preparation (or prep " ") :cocktail/story (or story " "))))
 
 (defn- nested-img [post]
@@ -99,7 +102,7 @@
   ((parse-tag-by ingredient? :cocktail/ingredient) post))
 
 (defn- prefix-ingredient [ingredient]
-  (if-let [prefix (re-find #"\([\w\p{Punch}]+\)" ingredient)]
+  (if-let [prefix (re-find #"\([\w\p{Punct}]+\)" ingredient)]
     (str/join " " (cons (str/replace prefix #"\(|\)" "")
                         (drop-last (str/split ingredient #" "))))
     ingredient))
@@ -153,7 +156,11 @@
 
   (posts->cocktails "posts.edn")
   
-  (->> "posts.edn" slurp read-string first post->cocktail)
+  (def p1 (->> "new-posts.edn" slurp read-string first)) ; new style
+  (post->cocktail p1)
+  (def p2 (->> "new-posts.edn" slurp read-string (drop 300) first)) ; old style
+  (post->cocktail p2)
+
   (->> "posts.edn" slurp read-string posts->cocktails)
 
   )
