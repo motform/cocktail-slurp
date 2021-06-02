@@ -113,7 +113,7 @@
   (let [{:keys [query args]} (-> strainer util/remove-empty wash-strainer parse-strainer)]
     (if (seq args) ; handle stupid empty calls -> move to interceptor
       (into [] (map first (apply d/q query (d/db conn) args)))
-      (cocktail-feed))))
+      (->> cocktail-feed (drop 250) (into [])))))
 
 (comment
   ;; datomic

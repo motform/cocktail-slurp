@@ -139,7 +139,7 @@
       (cocktail-page cocktail))))
 
 (defn cocktails [{{:strs [cursor] :as strainer} :query-params query-string :query-string}]
-  (page (str "On the Hunt") 
+  (page (str "Search") 
     [:main.cocktails
      (sidebar strainer)
      (cocktail-cards strainer {:pagination/cursor (if cursor (Integer. cursor) 0)

@@ -44,7 +44,7 @@
   [v start end]
   (if (> end (count v))
     (subvec v start)
-    (subvec v start )))
+    (subvec v start end)))
 
 (defn measurement? [s]
   (let [measurements #{"oz" "jigger" "ml" "cl" "dl" "dash" "tsp" "tbsp" "scant" "spoon"
