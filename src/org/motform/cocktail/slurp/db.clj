@@ -53,13 +53,13 @@
     (when (:db/id result) result))) ; if the cocktail is missing, :db/id is nil
 
 (defn cocktail-feed []
-  (let [result (d/q '[:find [(pull ?e [:cocktail/date :cocktail/id :cocktail/title :cocktail/recipe :cocktail/preparation :cocktail/ingredient]) ...]
+  (let [result (d/q '[:find [(pull ?e [:cocktail/date :cocktail/id :cocktail/title :cocktail/recipe :cocktail/preparation :cocktail/ingredient :user/favorite]) ...]
                       :where [?e :cocktail/id]]
                     (d/db conn))]
     (->> result (sort-by :cocktail/date compare) reverse (into []))))
 
 (def base-query
-  '{:query {:find [(pull ?e [:cocktail/id :cocktail/title :cocktail/recipe :cocktail/preparation :cocktail/ingredient :cocktail/kind])]
+  '{:query {:find [(pull ?e [:cocktail/id :cocktail/title :cocktail/recipe :cocktail/preparation :cocktail/ingredient :cocktail/kind :user/favorite])]
             :in [$]
             :where []}
     :args []})
@@ -99,8 +99,9 @@
 (defn- wash-strainer
   "Homogenize & split strings, possibly do other processing to input."
   [strainer]
-  (let [{:keys [search kind ingredient] :as strainer} (util/keywordize strainer)]
+  (let [{:keys [search kind ingredient favorites] :as strainer} (util/keywordize strainer)]
     (cond-> strainer
+      favorites                 (update :favorites boolean)
       (not (str/blank? search)) (update :search #(-> % str/lower-case str/trim (str/replace #" +" " ") (str/split #" ") append-*))
       (util/?coll? ingredient) (update :ingredient #(conj [] %))
       (util/?coll? kind)       (update :kind #(conj [] %)))))
@@ -108,20 +109,26 @@
 (defn- parse-strainer
   "Builds a query map based on user input, excepts irrelevant keys to be falsy.
    Order of clause conj is preserved, so try and do fulltext last."
-  [{:keys [ingredient search kind]}]
+  [{:keys [ingredient search kind favorites]}]
   (cond-> base-query
-    kind       (and-query :cocktail/kind \k kind)
+    kind       (and-query :cocktail/kind       \k kind)
     ingredient (and-query :cocktail/ingredient \i ingredient)
-    search     (fn-and-query :cocktail/fulltext 'fulltext \f '$ search))) ; put `search` in vec so we can reuse the same fn
+    favorites  (and-query :user/favorite       \f [favorites])
+    search     (fn-and-query :cocktail/fulltext 'fulltext \s '$ search))) ; put `search` in vec so we can reuse the same fn
 
 (defn strain [strainer]
   (let [{:keys [query args]} (-> strainer util/remove-empty wash-strainer parse-strainer)]
-    (if (seq args) ; handle stupid empty calls -> move to interceptor
+    (if (seq args) ; if we are on the home page
       (into [] (map first (apply d/q query (d/db conn) args)))
       (cocktail-feed))))
 
 (defn retract-cocktail [id reason]
   (d/transact conn [[:db.fn/retractEntity [:cocktail/id id]]
+                    [:db/add "datomic.tx" :db/doc reason]]))
+
+(defn toggle-cocktail-favorite [id reason]
+  (d/transact conn [[:db/add        [:cocktail/id id] 
+                     :user/favorite (-> id cocktail-by-id :user/favorite not)]
                     [:db/add "datomic.tx" :db/doc reason]]))
 
 (comment
@@ -134,6 +141,9 @@
 
   (strain {:ingredient "rum" :kind "shaken" :search "russian"}) ; strainer supports both str and [str]
 
+  (toggle-cocktail-favorite "5576108970359620518" "testing")
+  
+  (:user/favorite (cocktail-by-id "7857488667133973271"))
 
   (all :cocktail/kind)
 

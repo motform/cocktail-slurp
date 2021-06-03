@@ -23,16 +23,24 @@
       {:name ::spill
        :doc  "Retracts cocktail from db."
        :get  (fn [{{:keys [id]} :path-params}]
-               (db/retract-cocktail id "cocktail retracted by cocktail-page form")
-               {:status 301
+               (db/retract-cocktail id "Cocktail retracted by cocktail-page button.")
+               {:status  301
                 :headers {"location" "/"}})}]
+
+     ["/favorite"
+      {:name ::favorite
+       :doc  "Toggle cocktail as favorite in db."
+       :post  (fn [{{:strs [id]} :form-params}]
+                (db/toggle-cocktail-favorite id "Cocktail toggled by cocktail-page form.")
+                {:status  303
+                 :headers {"location" (str "/cocktail/" id)}})}]
 
      ["/cocktail/{id}"
       {:name ::cocktail
        :doc  "A single cocktail view."
        :get  (fn [{{:keys [id]} :path-params}]
                {:status 200
-                :body (view/cocktail id)})}]
+                :body   (view/cocktail id)})}]
 
      ["/cocktails"
       {:name ::cocktails

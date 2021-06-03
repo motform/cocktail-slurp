@@ -27,20 +27,31 @@
     [:body
      (hiccup2/html content)]]))
 
-(defn- sidebar-mobile [{:strs [ingredient kind search]}]
+(defn- header-mobile []
   [:header.strainer-mobile
    [:a.nameplate {:href "/"} "CS"]
    [:div#ftoggle.filter-mobile {:id "ftoggle"} "search"]])
 
-(defn- sidebar [{:strs [ingredient kind search]}]
+(defn- sidebar [{:strs [ingredient kind search favorites]}]
   (let [selected-ingredients (if (string? ingredient) #{ingredient} (into #{} ingredient))
-        selected-kinds       (if (string? kind) #{kind} (into #{} kind))]
+        selected-kinds       (if (string? kind) #{kind} (into #{} kind))
+        favorites?           (boolean favorites)]
     [:aside#strainer.strainer
      [:a.nameplate {:href "/"} "CS"]
      [:form {:action "/cocktails" :method "get"}
 
       [:section.search
        [:input {:type "text" :name "search" :id "search" :placeholder "Search" :value search}]]
+
+      [:section.category
+       [:h4 "Collections"]
+       (list [:input.ingredient-check
+              {:type    "checkbox"
+               :id      "favorites"
+               :name    "favorites"
+               :value   "true"
+               :checked favorites?}]
+             [:label.ingredient {:for "favorites"} "favorites"])]
 
       [:section.category
        [:h4 "Style"]
@@ -51,19 +62,19 @@
                  :name    "kind"
                  :value   kind
                  :checked (selected-kinds kind)}]
-               [:label.ingredient {:for kind} kind]))
+               [:label.ingredient {:for kind} kind]))]
 
-       (for [[category ingredients] util/ingredients]
-         [:section.category
-          [:h4 (name category)]
-          (for [ingredient ingredients]
-            (list [:input.ingredient-check
-                   {:type    "checkbox"
-                    :id      ingredient
-                    :name    "ingredient"
-                    :value   ingredient
-                    :checked (selected-ingredients ingredient)}]
-                  [:label.ingredient {:for ingredient} ingredient]))])]
+      (for [[category ingredients] util/ingredients]
+        [:section.category
+         [:h4 (name category)]
+         (for [ingredient ingredients]
+           (list [:input.ingredient-check
+                  {:type    "checkbox"
+                   :id      ingredient
+                   :name    "ingredient"
+                   :value   ingredient
+                   :checked (selected-ingredients ingredient)}]
+                 [:label.ingredient {:for ingredient} ingredient]))])
 
       [:input {:type "submit" :value "STRAIN"}]]]))
 
@@ -79,9 +90,7 @@
 (defn- pagination-query-string [query-string]
   (str "cocktails?" (str/replace query-string #"&cursor=\d+$" "") "&"))
 
-(defn- cocktail-cards
-  "Call with zero arity for the latest cocktails."
-  [strainer {:pagination/keys [cursor origin query-string] :as c}]
+(defn- cocktail-cards [strainer {:pagination/keys [cursor origin query-string]}]
   (let [{:keys [cursor cocktails end?]} (db/paginate cursor pagination-step db/strain strainer)]
     (if (empty? cocktails)
       [:div#cards.container
@@ -89,13 +98,15 @@
       [:div#cards.container
        [:section.cards
         (for [{:cocktail/keys [title id preparation recipe] :as c} cocktails]
-          [:section.card
-           (illustration/illustration c "60px")
-           [:div.card-body
-            [:div.card-title-container
-             [:a.card-title {:href (str "/cocktail/" id)} title]]
-            (card-recipe recipe)
-            [:p.card-preparation preparation]]])]
+          (do (println (:user/favorite c))
+              [:section.card
+               (illustration/illustration c "60px")
+               [:div.card-body
+                [:div.card-title-container
+                 [:a.card-title {:href (str "/cocktail/" id)} title]
+                 [:p.card-title-favorite (when (:user/favorite c) "!")]]
+                (card-recipe recipe)
+                [:p.card-preparation preparation]]]))]
        [:footer
         [:a.paginate {:href  (str (if (= origin :home) "?" (pagination-query-string query-string)) "cursor=" (max 0 (- cursor (* 2 pagination-step))))
                       :class (when (>= 0 (- cursor pagination-step)) "hide")}
@@ -110,7 +121,11 @@
          (illustration/illustration c "200px")
          [:section.cocktail 
           [:section.cocktail-header
-           [:h1.page-title title]]
+           [:h1.page-title title]
+           [:form {:action "/favorite" :method "post"}
+            [:input.ingredient-check {:type "checkbox" :name "id" :value id :checked true}]
+            [:input.favorite {:type "submit" 
+                              :value (if (:user/favorite c) "!" "?")}]]]
           [:section.cocktail-body
            [:div.page-content
             [:aside.page-preparation
@@ -134,12 +149,11 @@
 
 ;;; PAGES
 
-(defn cocktails [{{:strs [cursor] :as strainer} :query-params query-string :query-string} 
-                 origin]
+(defn cocktails [{{:strs [cursor] :as strainer} :query-params query-string :query-string} origin]
   (page "Cocktail Slurp"
     [:main.cocktails
+     (header-mobile)
      (sidebar strainer)
-     (sidebar-mobile strainer)
      (cocktail-cards strainer {:pagination/cursor (if cursor (Integer. cursor) 0)
                                :pagination/origin origin
                                :pagination/query-string query-string})

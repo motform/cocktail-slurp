@@ -103,6 +103,14 @@ main {
 .card-title-container {
     width: 100%;
     padding: 0.5rem 2rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.card-title-favorite {
+    font-size: 5rem;
+    color: var(--fg3);
 }
 
 .card-title {
@@ -306,10 +314,26 @@ footer {
 }
 
 .cocktail-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
     border: 1px solid var(--fg4);
     border-width: 0 0 1px 0;
     width: 100%;
-    padding: 5rem;
+    padding: 5rem 3rem 5rem 5rem;
+}
+
+.favorite {
+    margin-left: auto;
+    border: none;
+    background: var(--bg3);
+    color: var(--fg3);
+    font: 10rem/10rem "Margo", "Optima", times;
+}
+
+.favorite:hover {
+    color: var(--fg1);
+    cursor: pointer;
 }
 
 .cocktail-page > .illustration {
@@ -445,6 +469,7 @@ footer {
     .cocktail-header {
         padding: 3rem;
     }
+
     .page-metadata {
         display: none;
     }

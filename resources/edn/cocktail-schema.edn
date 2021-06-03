@@ -69,4 +69,9 @@
  {:db/ident :cocktail/ingredient
   :db/doc "Ingredients used in the cocktail."
   :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/many}]
+  :db/cardinality :db.cardinality/many}
+
+ {:db/ident :user/favorite
+  :db/doc "The favoring of one drink to the other."
+  :db/valueType :db.type/boolean
+  :db/cardinality :db.cardinality/one}]
