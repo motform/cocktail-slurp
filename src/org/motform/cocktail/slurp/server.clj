@@ -5,6 +5,7 @@
             [ring.adapter.jetty :as jetty]
             [reitit.ring.middleware.exception  :as exception]
             [reitit.ring.middleware.parameters :as parameters]
+            [org.motform.cocktail.slurp.db     :as db]
             [org.motform.cocktail.slurp.view   :as view]))
 
 (def app
@@ -17,6 +18,14 @@
                {:status 200
                 :body   (view/cocktails (select-keys request [:query-params :query-string])
                                         :home)})}]
+
+     ["/spill/{id}"
+      {:name ::spill
+       :doc  "Retracts cocktail from db."
+       :get  (fn [{{:keys [id]} :path-params}]
+               (db/retract-cocktail id "cocktail retracted by cocktail-page form")
+               {:status 301
+                :headers {"location" "/"}})}]
 
      ["/cocktail/{id}"
       {:name ::cocktail

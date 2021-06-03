@@ -120,6 +120,10 @@
       (into [] (map first (apply d/q query (d/db conn) args)))
       (cocktail-feed))))
 
+(defn retract-cocktail [id reason]
+  (d/transact conn [[:db.fn/retractEntity [:cocktail/id id]]
+                    [:db/add "datomic.tx" :db/doc reason]]))
+
 (comment
   ;; datomic
   (init-db {:uri    "datomic:mem://cocktail.slurp/repl"
@@ -130,8 +134,8 @@
 
   (strain {:ingredient "rum" :kind "shaken" :search "russian"}) ; strainer supports both str and [str]
 
-  (all :cocktail/ingredient)
 
+  (all :cocktail/kind)
 
   ;; export the cocktails
   (spit "resources/edn/formatted-posts.edn" (pr-str (parse/posts->cocktails "resources/edn/posts.edn"))))

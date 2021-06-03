@@ -25,8 +25,7 @@
              :name    "viewport"
              :charset "utf-8"}]
     [:body
-     (hiccup2/html content)]
-    (hiccup/include-js  "/js/script.js")]))
+     (hiccup2/html content)]]))
 
 (defn- sidebar-mobile [{:strs [ingredient kind search]}]
   [:header.strainer-mobile
@@ -83,7 +82,6 @@
 (defn- cocktail-cards
   "Call with zero arity for the latest cocktails."
   [strainer {:pagination/keys [cursor origin query-string] :as c}]
-  (def c c)
   (let [{:keys [cursor cocktails end?]} (db/paginate cursor pagination-step db/strain strainer)]
     (if (empty? cocktails)
       [:div#cards.container
@@ -107,7 +105,7 @@
                       :class (when end? "hide")}
          "→"]]])))
 
-(defn- cocktail-page [{:cocktail/keys [recipe title date author preparation story url img] :as c}]
+(defn- cocktail-page [{:cocktail/keys [id recipe title date author preparation story url img] :as c}]
   (list [:main.cocktail-page
          (illustration/illustration c "200px")
          [:section.cocktail 
@@ -128,8 +126,9 @@
              [:img {:src img}]]]
            [:div.page-metadata
             [:p (str (subs (str date) 0 11) (subs (str date) 24 28))]
-            [:p  author]
-            [:a {:href url :target "_blank"} "view original"]]]]]
+            [:a {:href url :target "_blank"} "view original"]
+            [:a {:href (str "/spill/" id)} "Spill"]]]]]
+        
         [:footer
          [:a.nameplate {:href "/"} "CS"]]))
 
@@ -143,7 +142,8 @@
      (sidebar-mobile strainer)
      (cocktail-cards strainer {:pagination/cursor (if cursor (Integer. cursor) 0)
                                :pagination/origin origin
-                               :pagination/query-string query-string})]))
+                               :pagination/query-string query-string})
+     (hiccup/include-js "/js/script.js")]))
 
 (defn cocktail [id]
   (let [cocktail (db/cocktail-by-id id)]
