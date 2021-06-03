@@ -76,6 +76,10 @@ main {
     grid-gap: 5rem;
 }
 
+.cards-expanded {
+    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+}
+
 .card {
     max-width: 900px;
     display: flex;
@@ -97,12 +101,19 @@ main {
     white-space: pre-wrap;
     font-size: 3rem;
     line-height: 4.5rem;
-    padding-top: 2rem;
+}
+
+.card-body-expanded-content {
+    min-width: 300px;
+}
+
+.expanded {
+    display: flex;
 }
 
 .card-title-container {
     width: 100%;
-    padding: 0.5rem 2rem;
+    padding: 2rem 2rem 0;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -121,7 +132,7 @@ main {
 .card-recipe {
     width: 100%;
     margin: 2rem 0;
-    padding: 2rem 0 3rem 0;
+    padding: 2rem 1rem 3rem 0;
     border: 1px solid var(--fg4);
     border-width: 1px 0;
 }
@@ -140,6 +151,16 @@ main {
 .card-preparation {
     padding: 0 2rem 2rem 2rem;
 }
+
+.card-img {
+    border: 1px solid var(--fg4);
+    border-width: 0 0 0 1px;
+    display: flex;          
+    align-items: center;    
+    justify-content: center;
+    padding: 2rem;
+}
+
 
 footer {
     margin: 5rem 0 0 0;
@@ -200,12 +221,12 @@ footer {
     font-size: 2rem;
     letter-spacing: 1px;
     text-transform: uppercase;
-    margin: 1rem 0;
     padding: 1rem 0 0 2rem;
     color: var(--fg3);
     border: 1px solid var(--fg4);
     border-width: 1px 0 0 0;
 }
+
 
 .strainer section {
     padding: 0 0 2rem 0;
@@ -266,6 +287,7 @@ footer {
 }
 
 .strainer input[type=submit] {
+    margin: 0;
     font-family: "marionette";
     color: var(--fg3);
     font-size: 3rem;
@@ -280,6 +302,17 @@ footer {
     color: var(--fg1);
     background-color: var(--bg2);
     cursor: pointer;
+}
+
+.settings input[type=submit] {
+    font-family: "marionette";
+    color: var(--fg3);
+    font-size: 3rem;
+    background: none;
+    border: none;
+    text-align: left;
+    width: 100%;
+    padding-left: 2rem;
 }
 
 @media (max-width: 900px) {
@@ -571,5 +604,14 @@ footer {
         width: 100%;
         padding: 5rem;
     }
+
+    .expanded {
+        flex-direction: column;;
+    }
+
+    .card-img {
+        border-width: 1px 0 0 0;
+    }
+
 
 }

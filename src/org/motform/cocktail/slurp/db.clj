@@ -53,14 +53,14 @@
     (when (:db/id result) result))) ; if the cocktail is missing, :db/id is nil
 
 (defn cocktail-feed []
-  (let [result (d/q '[:find [(pull ?e [:cocktail/date :cocktail/id :cocktail/title :cocktail/recipe :cocktail/preparation :cocktail/ingredient :user/favorite]) ...]
+  (let [result (d/q '[:find [(pull ?e [:cocktail/date :cocktail/id :cocktail/title :cocktail/recipe :cocktail/preparation :cocktail/ingredient :cocktail/img :user/favorite]) ...]
                       :where [?e :cocktail/id]]
                     (d/db conn))]
     (->> result (sort-by :cocktail/date compare) reverse (into []))))
 
 (def base-query
-  '{:query {:find [(pull ?e [:cocktail/id :cocktail/title :cocktail/recipe :cocktail/preparation :cocktail/ingredient :cocktail/kind :user/favorite])]
-            :in [$]
+  '{:query {:find  [(pull ?e [:cocktail/id :cocktail/title :cocktail/recipe :cocktail/preparation :cocktail/ingredient :cocktail/kind :cocktail/img :user/favorite])]
+            :in    [$]
             :where []}
     :args []})
 

@@ -32,12 +32,13 @@
    [:a.nameplate {:href "/"} "CS"]
    [:div#ftoggle.filter-mobile {:id "ftoggle"} "search"]])
 
-(defn- sidebar [{:strs [ingredient kind search favorites]}]
+(defn- sidebar [{:strs [ingredient kind search favorites]} {:keys [user/view]}]
   (let [selected-ingredients (if (string? ingredient) #{ingredient} (into #{} ingredient))
         selected-kinds       (if (string? kind) #{kind} (into #{} kind))
         favorites?           (boolean favorites)]
     [:aside#strainer.strainer
      [:a.nameplate {:href "/"} "CS"]
+
      [:form {:action "/cocktails" :method "get"}
 
       [:section.search
@@ -76,7 +77,19 @@
                    :checked (selected-ingredients ingredient)}]
                  [:label.ingredient {:for ingredient} ingredient]))])
 
-      [:input {:type "submit" :value "STRAIN"}]]]))
+      [:input {:type "submit" :value "STRAIN"}]]
+
+     [:section.category.settings 
+      [:h4 "Settings"]
+      [:form {:action "/set-cookie" :method "post"}
+       [:input.ingredient-check
+        {:type    "checkbox"
+         :id      "view"
+         :name    "view"
+         :checked true
+         :value   (case view "expanded" "normal" "normal" "expanded" "expanded")}]
+       [:input.setting {:type "submit" 
+                        :value (str "Expanded cards are " (if (= view "expanded") "on" "off") )}]]]]))
 
 (defn- card-recipe [recipe]
   (let [ingredients (str/split-lines recipe)]
@@ -87,26 +100,49 @@
           [:span.card-recipe-measurement measurement] 
           [:span.card-recipe-ingredient name]]))]))
 
+(defmulti cocktail-card :card/type)
+
+(defmethod cocktail-card "expanded" 
+  [{:cocktail/keys [title id preparation recipe img]
+    :user/keys [favorite] 
+    :as cocktail}]
+  [:section.card
+   (illustration/illustration cocktail "60px")
+   [:div.card-body.expanded
+    [:div.card-body-expanded-content
+     [:div.card-title-container
+      [:a.card-title {:href (str "/cocktail/" id)} title]
+      [:p.card-title-favorite (when favorite "!")]]
+     (card-recipe recipe)
+     [:p.card-preparation preparation]]
+    [:div.card-img [:img {:src img}]]]])
+
+(defmethod cocktail-card "normal" 
+  [{:cocktail/keys [title id preparation recipe] 
+    :user/keys [favorite] 
+    :as cocktail}]
+  [:section.card
+   (illustration/illustration cocktail "60px")
+   [:div.card-body
+    [:div.card-title-container
+     [:a.card-title {:href (str "/cocktail/" id)} title]
+     [:p.card-title-favorite (when favorite "!")]]
+    (card-recipe recipe)
+    [:p.card-preparation preparation]]])
+
 (defn- pagination-query-string [query-string]
   (str "cocktails?" (str/replace query-string #"&cursor=\d+$" "") "&"))
 
-(defn- cocktail-cards [strainer {:pagination/keys [cursor origin query-string]}]
-  (let [{:keys [cursor cocktails end?]} (db/paginate cursor pagination-step db/strain strainer)]
+(defn- cocktail-cards [strainer {:keys [pagination/cursor pagination/origin pagination/query-string user/cookies]}]
+  (let [{:keys [cursor cocktails end?]} (db/paginate cursor pagination-step db/strain strainer)
+        card-view                       (or (get-in cookies ["view" :value]) "normal")]
     (if (empty? cocktails)
       [:div#cards.container
        [:div.empty (util/empty-quip)]]
       [:div#cards.container
-       [:section.cards
-        (for [{:cocktail/keys [title id preparation recipe] :as c} cocktails]
-          (do (println (:user/favorite c))
-              [:section.card
-               (illustration/illustration c "60px")
-               [:div.card-body
-                [:div.card-title-container
-                 [:a.card-title {:href (str "/cocktail/" id)} title]
-                 [:p.card-title-favorite (when (:user/favorite c) "!")]]
-                (card-recipe recipe)
-                [:p.card-preparation preparation]]]))]
+       [:section.cards {:class (when (= card-view "expanded") "cards-expanded")}
+        (for [cocktail cocktails]
+          (cocktail-card (assoc cocktail :card/type card-view)))]
        [:footer
         [:a.paginate {:href  (str (if (= origin :home) "?" (pagination-query-string query-string)) "cursor=" (max 0 (- cursor (* 2 pagination-step))))
                       :class (when (>= 0 (- cursor pagination-step)) "hide")}
@@ -149,14 +185,17 @@
 
 ;;; PAGES
 
-(defn cocktails [{{:strs [cursor] :as strainer} :query-params query-string :query-string} origin]
+(defn cocktails [{{:strs [cursor] :as strainer} :query-params 
+                  :keys [query-string cookies]} 
+                 origin]
   (page "Cocktail Slurp"
     [:main.cocktails
      (header-mobile)
-     (sidebar strainer)
-     (cocktail-cards strainer {:pagination/cursor (if cursor (Integer. cursor) 0)
-                               :pagination/origin origin
-                               :pagination/query-string query-string})
+     (sidebar strainer {:user/view (get-in cookies ["view" :value])})
+     (cocktail-cards strainer {:pagination/cursor       (if cursor (Integer. cursor) 0)
+                               :pagination/origin       origin
+                               :pagination/query-string query-string
+                               :user/cookies            cookies})
      (hiccup/include-js "/js/script.js")]))
 
 (defn cocktail [id]

@@ -3,6 +3,7 @@
             [reitit.dev.pretty  :as pretty]
             [reitit.ring        :as ring]
             [ring.adapter.jetty :as jetty]
+            [ring.middleware.cookies           :as cookies]
             [reitit.ring.middleware.exception  :as exception]
             [reitit.ring.middleware.parameters :as parameters]
             [org.motform.cocktail.slurp.db     :as db]
@@ -16,10 +17,18 @@
        :doc  "Home page, what the kids might call a 'feed'."
        :get  (fn [request]
                {:status 200
-                :body   (view/cocktails (select-keys request [:query-params :query-string])
+                :body   (view/cocktails (select-keys request [:query-params :query-string :cookies])
                                         :home)})}]
 
-     ["/spill/{id}"
+     ["/set-cookie"
+      {:name  ::set-cookie
+       :doc   "Sets a cookie."
+       :post  (fn [{{:strs [view]} :form-params}]
+                {:status  301
+                 :cookies {"view" {:value view}}
+                 :headers {"location" "/"}})}]
+
+     ["/spill/{id}" ; this should really be a post, but the css for input-submit did not want to rotate
       {:name ::spill
        :doc  "Retracts cocktail from db."
        :get  (fn [{{:keys [id]} :path-params}]
@@ -53,6 +62,7 @@
 
     {:exception pretty/exception
      :data {:middleware [parameters/parameters-middleware
+                         cookies/wrap-cookies
                          exception/exception-middleware]}})
    (ring/routes
     (ring/create-resource-handler {:path "/"})
