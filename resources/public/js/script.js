@@ -19,16 +19,10 @@ const partition = (xs) => {
 }
 
 const ingredientPairs = ingredientSection => partition(rest(Array.from(ingredientSection.children)));
-const isActiveSection = ingredientSection => ingredientSection.filter(i =>
-  possibleIngredients.has(i[1].textContent)).length;
 
-let ingredientSections = Array.from(document.getElementsByClassName("ingredients"));
-const ingredientLabels = partition(ingredientSections.map(is => rest(Array.from(is.children))).flat());
-ingredientSections     = ingredientSections.map(is => [is, ingredientPairs(is)]);
-
-let selectedIngredients = new Set();
-let possibleIngredients = new Set();
-let HTTPRequest;
+const isActiveSection = ingredientSection => ingredientSection
+      .filter(i => possibleIngredients.has(i[1].textContent))
+      .length;
 
 function checkIngredientSections() {
   ingredientSections.map(is =>
@@ -80,5 +74,15 @@ function checkChecked() {
   requestIngredientCheck();
 }
 
+let selectedIngredients = new Set();
+let possibleIngredients = new Set();
+let HTTPRequest;
+
+let ingredientSections = Array.from(document.getElementsByClassName("ingredients"));
+const ingredientLabels = partition(ingredientSections
+                                   .map(is => rest(Array.from(is.children)))
+                                   .flat());
+
+ingredientSections = ingredientSections.map(is => [is, ingredientPairs(is)]);
 ingredientLabels.map(i => i[1].onclick = onIngredientClick)
 checkChecked(); // this results in an initial flash, suck it up React
