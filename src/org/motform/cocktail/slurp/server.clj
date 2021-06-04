@@ -24,10 +24,10 @@
      ["/set-cookie"
       {:name  ::set-cookie
        :doc   "Sets a cookie."
-       :post  (fn [{{:strs [view]} :form-params}]
+       :post  (fn [{{:strs [view]} :form-params {:strs [referer]} :headers}]
                 {:status  301
                  :cookies {"view" {:value view}}
-                 :headers {"location" "/"}})}]
+                 :headers {"location" referer}})}]
 
      ["/possible-ingredients"
       {:get (fn [{{:strs [ingredient]} :query-params}]
@@ -64,7 +64,7 @@
        :get  (fn [request]
                {:status 200
                 :body   (view/cocktails
-                         (select-keys request [:query-params :query-string])
+                         (select-keys request [:query-params :query-string :cookies])
                          :strainer)})}]]
 
     {:exception pretty/exception
