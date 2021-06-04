@@ -45,12 +45,20 @@
                   :where ['_ a '?a]]
                  (d/db conn))))
 
-
 (defn cocktail-by-id [id]
   (let [result (d/pull (d/db conn)
                        '[*]
                        [:cocktail/id id])]
     (when (:db/id result) result))) ; if the cocktail is missing, :db/id is nil
+
+(defn cocktail-by-title 
+  "NOTE: Return first scalar, regardless of name conflicts."
+  [title]
+  (d/q `[:find ?id .
+         :where 
+         [?e :cocktail/title ~title]
+         [?e :cocktail/id ?id]]
+       (d/db conn)))
 
 (defn cocktail-feed []
   (let [result (d/q '[:find [(pull ?e [:cocktail/date :cocktail/id :cocktail/title :cocktail/recipe :cocktail/preparation :cocktail/ingredient :cocktail/img :user/favorite]) ...]
@@ -131,7 +139,27 @@
                      :user/favorite (-> id cocktail-by-id :user/favorite not)]
                     [:db/add "datomic.tx" :db/doc reason]]))
 
+(defn possible-ingredients [ingredients]
+  (let [{:keys [query args]} 
+        (and-query '{:query {:find  [[?i ...]] 
+                             :where [[?e :cocktail/ingredient ?i]]
+                             :in    [$]} 
+                     :args []}
+                   :cocktail/ingredient \i ingredients)]
+    (apply d/q query (d/db conn) args)))
+
 (comment
+
+  (d/q '{:find [[?i ...]]
+         :where 
+         [[?e :cocktail/ingredient ?i0]
+          [?e :cocktail/ingredient ?i2]
+          [?e :cocktail/ingredient ?i]]
+         :in [$ ?i0 ?i1]}
+       (d/db conn)
+       "genever"
+       "cream")
+
   ;; datomic
   (init-db {:uri    "datomic:mem://cocktail.slurp/repl"
             :posts  "resources/edn/posts.edn"

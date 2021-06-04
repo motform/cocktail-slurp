@@ -66,7 +66,7 @@
                [:label.ingredient {:for kind} kind]))]
 
       (for [[category ingredients] util/ingredients]
-        [:section.category
+        [:section.category.ingredients
          [:h4 (name category)]
          (for [ingredient ingredients]
            (list [:input.ingredient-check
@@ -152,16 +152,16 @@
                       :class (when end? "hide")}
          "→"]]])))
 
-(defn- cocktail-page [{:cocktail/keys [id recipe title date author preparation story url img] :as c}]
+(defn- cocktail-page [{:cocktail/keys [id recipe title date preparation story url img] :as cocktail}]
   (list [:main.cocktail-page
-         (illustration/illustration c "200px")
+         (illustration/illustration cocktail "200px")
          [:section.cocktail 
           [:section.cocktail-header
            [:h1.page-title title]
            [:form {:action "/favorite" :method "post"}
             [:input.ingredient-check {:type "checkbox" :name "id" :value id :checked true}]
             [:input.favorite {:type "submit" 
-                              :value (if (:user/favorite c) "!" "?")}]]]
+                              :value (if (:user/favorite cocktail) "!!!" "!")}]]]
           [:section.cocktail-body
            [:div.page-content
             [:aside.page-preparation
@@ -204,4 +204,5 @@
       (cocktail-page cocktail))))
 
 (comment
+  
   )

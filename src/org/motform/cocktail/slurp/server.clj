@@ -1,6 +1,7 @@
 (ns org.motform.cocktail.slurp.server
   (:require [mount.core         :as mount]
             [reitit.dev.pretty  :as pretty]
+            [clojure.data.json  :as json]
             [reitit.ring        :as ring]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.cookies           :as cookies]
@@ -27,6 +28,13 @@
                 {:status  301
                  :cookies {"view" {:value view}}
                  :headers {"location" "/"}})}]
+
+     ["/possible-ingredients"
+      {:get (fn [{{:strs [ingredient]} :query-params}]
+              (def r (-> ingredient vector flatten db/possible-ingredients))
+              {:status  200
+               :headers {"content-Type" "application/json"}
+               :body    (-> ingredient vector flatten db/possible-ingredients json/write-str)})}]
 
      ["/spill/{id}" ; this should really be a post, but the css for input-submit did not want to rotate
       {:name ::spill
