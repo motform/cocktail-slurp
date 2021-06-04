@@ -29,9 +29,9 @@ html {
 }
 
 body {
-    background: var(--bg1);
     color: var(--fg1);
     font: 4rem/6rem "Marionette";
+    background-color: var(--bg3);
 }
 
 a {
@@ -547,6 +547,7 @@ footer {
 
     .container {
         margin-left: 0rem;
+        background-color: var(--bg1);
     }
 
     .cards {
