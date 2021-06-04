@@ -14,20 +14,22 @@ let possibleIngredients = new Set();
 let HTTPRequest;
 
 const rest = ([car, ...cdr]) => cdr;
-
 const ingredientLabels =
       Array.from(document.getElementsByClassName("ingredients"))
       .map(is => rest(Array.from(is.children)))
       .flat()
-      .filter(i => i.type !== "checkbox");
+      .reduce((acc, x, i, xs) => {
+        if (i % 2 === 0) acc.push(xs.slice(i, i + 2));
+        return acc
+      }, []);
 
 function checkIngredients() {
   if (HTTPRequest.readyState === XMLHttpRequest.DONE) {
     possibleIngredients = new Set(JSON.parse(HTTPRequest.response));
     if (possibleIngredients.size)
-      ingredientLabels.map(i => i.style.display = (possibleIngredients.has(i.textContent) ? "block" : "none"));
+      ingredientLabels.map(i => i[1].style.display = (possibleIngredients.has(i[1].textContent) ? "block" : "none"));
     else
-      ingredientLabels.map(i => i.style.display = "block");
+      ingredientLabels.map(i => i[1].style.display = "block");
   }
 }
 
@@ -49,4 +51,13 @@ function onIngredientClick(ingredient) {
   requestIngredientCheck()
 }
 
-ingredientLabels.map(i => i.onclick = onIngredientClick)
+function checkChecked() {
+  const checked = ingredientLabels
+        .filter(i => i[0].checked)
+        .map(i => i[1].textContent);
+  selectedIngredients = new Set(checked);
+  requestIngredientCheck();
+}
+
+ingredientLabels.map(i => i[1].onclick = onIngredientClick)
+checkChecked(); // this results in an initial flash, suck it up React
