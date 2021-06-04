@@ -119,6 +119,12 @@ main {
     justify-content: space-between;
 }
 
+.card-title-container-expanded {
+    border: 1px solid var(--fg4);
+    border-width: 0 1px 1px 1px;
+    padding-bottom: 2rem;
+}
+
 .card-title-favorite {
     font-size: 5rem;
     color: var(--fg3);
@@ -135,6 +141,11 @@ main {
     padding: 2rem 1rem 3rem 0;
     border: 1px solid var(--fg4);
     border-width: 1px 0;
+}
+
+.card-recipe-expanded {
+    border-width: 0 0 1px 0;
+    padding-top: 0rem;
 }
 
 .card-recipe-row {

@@ -6,7 +6,7 @@
             [org.motform.cocktail.stuff.illustration :as illustration]
             [org.motform.cocktail.stuff.util         :as util]))
 
-(def pagination-step 51)
+(def pagination-step 50)
 
 ;;; COMPONENTS 
 
@@ -91,9 +91,9 @@
        [:input.setting {:type "submit" 
                         :value (str "Expanded cards are " (if (= view "expanded") "on" "off") )}]]]]))
 
-(defn- card-recipe [recipe]
+(defn- card-recipe [recipe & {:keys [expanded?]}]
   (let [ingredients (str/split-lines recipe)]
-    [:section.card-recipe
+    [:section.card-recipe {:class (when expanded? "card-recipe-expanded")}
      (for [ingredient ingredients]
        (let [{:keys [measurement name]} (util/split-ingredient ingredient)]
          [:span.card-recipe-row 
@@ -108,12 +108,12 @@
     :as cocktail}]
   [:section.card
    (illustration/illustration cocktail "60px")
+   [:div.card-title-container.card-title-container-expanded
+    [:a.card-title {:href (str "/cocktail/" id)} title]
+    [:p.card-title-favorite (when favorite "!")]]
    [:div.card-body.expanded
     [:div.card-body-expanded-content
-     [:div.card-title-container
-      [:a.card-title {:href (str "/cocktail/" id)} title]
-      [:p.card-title-favorite (when favorite "!")]]
-     (card-recipe recipe)
+     (card-recipe recipe :expanded? true)
      [:p.card-preparation preparation]]
     [:div.card-img [:img {:src img}]]]])
 
@@ -135,7 +135,7 @@
 
 (defn- cocktail-cards [strainer {:keys [pagination/cursor pagination/origin pagination/query-string user/cookies]}]
   (let [{:keys [cursor cocktails end?]} (db/paginate cursor pagination-step db/strain strainer)
-        card-view                       (or (get-in cookies ["view" :value]) "normal")]
+        card-view                       (or (get-in cookies ["view" :value]) "expanded")]
     (if (empty? cocktails)
       [:div#cards.container
        [:div.empty (util/empty-quip)]]
@@ -173,8 +173,9 @@
                    [:span.page-recipe-ingredient name]]))]
              [:p preparation]]
             [:div.page-story (when story (str/trim story))]
-            [:div.page-img
-             [:img {:src img}]]]
+            (when img
+              [:div.page-img
+               [:img {:src img}]])]
            [:div.page-metadata
             [:p (str (subs (str date) 0 11) (subs (str date) 24 28))]
             [:a {:href url :target "_blank"} "view original"]

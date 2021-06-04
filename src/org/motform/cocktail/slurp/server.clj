@@ -31,7 +31,6 @@
 
      ["/possible-ingredients"
       {:get (fn [{{:strs [ingredient]} :query-params}]
-              (def r (-> ingredient vector flatten db/possible-ingredients))
               {:status  200
                :headers {"content-Type" "application/json"}
                :body    (-> ingredient vector flatten db/possible-ingredients json/write-str)})}]

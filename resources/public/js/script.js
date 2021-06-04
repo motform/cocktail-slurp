@@ -9,38 +9,59 @@ document.getElementById("ftoggle").onclick = () => {
 
 // auto-filtering ingredients
 
+const rest = ([car, ...cdr]) => cdr;
+
+const partition = (xs) => {
+  return xs.reduce((acc, x, i, xs) => {
+    if (i % 2 === 0) acc.push(xs.slice(i, i + 2));
+    return acc
+  }, []);
+}
+
+const ingredientPairs = ingredientSection => partition(rest(Array.from(ingredientSection.children)));
+const isActiveSection = ingredientSection => ingredientSection.filter(i =>
+  possibleIngredients.has(i[1].textContent)).length;
+
+let ingredientSections = Array.from(document.getElementsByClassName("ingredients"));
+const ingredientLabels = partition(ingredientSections.map(is => rest(Array.from(is.children))).flat());
+ingredientSections     = ingredientSections.map(is => [is, ingredientPairs(is)]);
+
 let selectedIngredients = new Set();
 let possibleIngredients = new Set();
 let HTTPRequest;
 
-const rest = ([car, ...cdr]) => cdr;
-const ingredientLabels =
-      Array.from(document.getElementsByClassName("ingredients"))
-      .map(is => rest(Array.from(is.children)))
-      .flat()
-      .reduce((acc, x, i, xs) => {
-        if (i % 2 === 0) acc.push(xs.slice(i, i + 2));
-        return acc
-      }, []);
+function checkIngredientSections() {
+  ingredientSections.map(is =>
+    (isActiveSection(is[1])
+     ? is[0].style.display = "flex"
+     : is[0].style.display = "none")
+  );
+}
 
 function checkIngredients() {
   if (HTTPRequest.readyState === XMLHttpRequest.DONE) {
     possibleIngredients = new Set(JSON.parse(HTTPRequest.response));
-    if (possibleIngredients.size)
+    if (possibleIngredients.size) {
       ingredientLabels.map(i => i[1].style.display = (possibleIngredients.has(i[1].textContent) ? "block" : "none"));
+      checkIngredientSections();
+    }
     else
       ingredientLabels.map(i => i[1].style.display = "block");
   }
 }
 
 function requestIngredientCheck() {
-  let params = new URLSearchParams(); // this could be a json array, but I like my query strings
-  Array.from(selectedIngredients).map(i => params.append("ingredient", i));
+  if (selectedIngredients.size) {
+    let params = new URLSearchParams(); // this could be a json array, but I like my query strings
+    Array.from(selectedIngredients).map(i => params.append("ingredient", i));
 
-  HTTPRequest = new XMLHttpRequest();
-  HTTPRequest.onreadystatechange = checkIngredients;
-  HTTPRequest.open("GET", "/possible-ingredients" + "?" + params.toString(), true);
-  HTTPRequest.send();
+    HTTPRequest = new XMLHttpRequest();
+    HTTPRequest.onreadystatechange = checkIngredients;
+    HTTPRequest.open("GET", "/possible-ingredients" + "?" + params.toString(), true);
+    HTTPRequest.send();
+  } else {
+    ingredientLabels.map(i => i[1].style.display = "block");
+  }
 }
 
 function onIngredientClick(ingredient) {
