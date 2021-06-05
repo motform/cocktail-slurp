@@ -148,6 +148,17 @@
                    :cocktail/ingredient \i ingredients)]
     (apply d/q query (d/db conn) args)))
 
+(defn enumerated-possible-ingredients [ingredients]
+  (let [{:keys [query args]} 
+        (and-query '{:query {:find  [(pull ?e [:cocktail/ingredient])] 
+                             :where [[?e :cocktail/ingredient ?i]]
+                             :in    [$]} 
+                     :args []}
+                   :cocktail/ingredient \i ingredients)]
+    (->> (apply d/q query (d/db conn) args)
+         (mapcat (comp :cocktail/ingredient first))
+         frequencies)))
+
 (comment
 
   (d/q '{:find [[?i ...]]
@@ -159,6 +170,18 @@
        (d/db conn)
        "genever"
        "cream")
+
+  (->> (d/q '{:find [(pull ?e [:cocktail/ingredient])]
+              :where 
+              [[?e :cocktail/ingredient ?i0]
+               [?e :cocktail/ingredient ?i2]
+               [?e :cocktail/ingredient ?i]]
+              :in [$ ?i0 ?i1]}
+            (d/db conn)
+            "genever"
+            "cream")
+       (mapcat (comp :cocktail/ingredient first))
+       frequencies)
 
   ;; datomic
   (init-db {:uri    "datomic:mem://cocktail.slurp/repl"
