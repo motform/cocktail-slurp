@@ -46,9 +46,7 @@
                  (d/db conn))))
 
 (defn cocktail-by-id [id]
-  (let [result (d/pull (d/db conn)
-                       '[*]
-                       [:cocktail/id id])]
+  (let [result (d/pull (d/db conn) '[*] [:cocktail/id id])]
     (when (:db/id result) result))) ; if the cocktail is missing, :db/id is nil
 
 (defn cocktail-by-title 
@@ -61,13 +59,13 @@
        (d/db conn)))
 
 (defn cocktail-feed []
-  (let [result (d/q '[:find [(pull ?e [:cocktail/date :cocktail/id :cocktail/title :cocktail/recipe :cocktail/preparation :cocktail/ingredient :cocktail/img :user/favorite]) ...]
+  (let [result (d/q '[:find  [(pull ?e [*]) ...]
                       :where [?e :cocktail/id]]
                     (d/db conn))]
     (->> result (sort-by :cocktail/date compare) reverse (into []))))
 
 (def base-query
-  '{:query {:find  [(pull ?e [:cocktail/id :cocktail/title :cocktail/recipe :cocktail/preparation :cocktail/ingredient :cocktail/kind :cocktail/img :user/favorite])]
+  '{:query {:find  [(pull ?e [*])]
             :in    [$]
             :where []}
     :args []})
@@ -111,8 +109,8 @@
     (cond-> strainer
       favorites                 (update :favorites boolean)
       (not (str/blank? search)) (update :search #(-> % str/lower-case str/trim (str/replace #" +" " ") (str/split #" ") append-*))
-      (util/?coll? ingredient) (update :ingredient #(conj [] %))
-      (util/?coll? kind)       (update :kind #(conj [] %)))))
+      (util/?coll? ingredient)  (update :ingredient #(conj [] %))
+      (util/?coll? kind)        (update :kind #(conj [] %)))))
 
 (defn- parse-strainer
   "Builds a query map based on user input, excepts irrelevant keys to be falsy.
@@ -197,6 +195,6 @@
   (:user/favorite (cocktail-by-id "7857488667133973271"))
 
   (all :cocktail/kind)
-
+  
   ;; export the cocktails
   (spit "resources/edn/formatted-posts.edn" (pr-str (parse/posts->cocktails "resources/edn/posts.edn"))))

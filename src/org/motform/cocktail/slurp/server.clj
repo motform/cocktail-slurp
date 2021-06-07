@@ -32,8 +32,8 @@
      ["/possible-ingredients"
       {:get (fn [{{:strs [ingredient]} :query-params}]
               {:status  200
-               :headers {"content-Type" "application/json"}
-               :body    (-> ingredient vector flatten db/possible-ingredients json/write-str)})}]
+               :headers {"content-type" "application/json"}
+               :body    (-> ingredient vector flatten db/enumerated-possible-ingredients json/write-str)})}]
 
      ["/spill/{id}" ; this should really be a post, but the css for input-submit did not want to rotate
       {:name ::spill

@@ -35,12 +35,13 @@ function checkIngredientSections() {
 function checkIngredients() {
   if (HTTPRequest.readyState === XMLHttpRequest.DONE) {
     possibleIngredients = new Set(JSON.parse(HTTPRequest.response));
+
     if (possibleIngredients.size) {
       ingredientLabels.map(i => i[1].style.display = (possibleIngredients.has(i[1].textContent) ? "block" : "none"));
       checkIngredientSections();
-    }
-    else
+    } else {
       ingredientLabels.map(i => i[1].style.display = "block");
+    }      
   }
 }
 
