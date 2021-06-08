@@ -252,21 +252,49 @@ footer {
     flex-direction: column;
 }
 
+.label-toggle {
+    color: var(--fg3);
+    width: 100%;
+    display: flex;
+    padding-left: 2rem;
+}
+
+.label-toggle:hover {
+    background-color: var(--bg2);
+    cursor: pointer;
+    color: var(--fg1);
+}
+
+.label-check:checked + .label-toggle {
+    color: var(--fg1);
+}
+
+.label-check {
+    display: none;
+}
 .ingredient-check {
     display: none;
 }
 
-.ingredient {
-    grid-column: 1;
+.ingredient-container {
     color: var(--fg3);
     width: 100%;
-    padding-left: 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
-.ingredient:hover {
+.ingredient-container:hover {
     background-color: var(--bg2);
     cursor: pointer;
     color: var(--fg1);
+}
+
+.ingredient {
+    grid-column: 1;
+    color: inherit;
+    padding-left: 2rem;
+    pointer-events: none;
 }
 
 .ingredient-check:checked + .ingredient {
@@ -274,8 +302,8 @@ footer {
 }
 
 .possible-cocktails-count {
-    margin-left: 1rem;
     color: inherit;
+    margin-right: 2rem;
 }
 
 .ingredient-check:checked + .possible-cocktails-count {
@@ -627,7 +655,6 @@ footer {
         font-size: 3rem;
         background: none;
         border: 1px solid var(--fg4);
-        border-width: 1px 0 0 0;
         width: 100%;
         padding: 5rem;
     }
@@ -640,5 +667,9 @@ footer {
         border-width: 1px 0 0 0;
     }
 
-
+    .settings input[type=submit] {
+        border: none;
+        padding: 0 0 0 2rem;
+        margin: 0;
+    }
 }

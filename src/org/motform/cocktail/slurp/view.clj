@@ -48,36 +48,38 @@
 
       [:section.category
        [:h4 "Collections"]
-       (list [:input.ingredient-check
+       (list [:input.label-check
               {:type    "checkbox"
                :id      "favorites"
                :name    "favorites"
                :value   "true"
                :checked favorites?}]
-             [:label.ingredient {:for "favorites"} "favorites"])]
+             [:label.label-toggle {:for "favorites"} "favorites"])]
 
       [:section.category
        [:h4 "Style"]
        (for [kind (sort (db/all :cocktail/kind))]
-         (list [:input.ingredient-check
+         (list [:input.label-check
                 {:type    "checkbox"
                  :id      kind
                  :name    "kind"
                  :value   kind
                  :checked (selected-kinds kind)}]
-               [:label.ingredient {:for kind} kind]))]
+               [:label.label-toggle {:for kind} kind]))]
 
       (for [[category ingredients] util/ingredients]
         [:section.category.ingredients
          [:h4 (name category)]
          (for [ingredient ingredients]
-           (list [:input.ingredient-check
-                  {:type    "checkbox"
-                   :id      ingredient
-                   :name    "ingredient"
-                   :value   ingredient
-                   :checked (selected-ingredients ingredient)}]
-                 [:label.ingredient {:for ingredient} ingredient [:span.possible-cocktails-count ""]]))])]
+           [:div.ingredient-container
+            [:input.ingredient-check
+             {:type    "checkbox"
+              :id      ingredient
+              :name    "ingredient"
+              :value   ingredient
+              :checked (selected-ingredients ingredient)}]
+            [:label.ingredient {:for ingredient} ingredient]
+            [:p.possible-cocktails-count ""]])])]
 
      [:section.category.settings 
       [:h4 "Settings"]
