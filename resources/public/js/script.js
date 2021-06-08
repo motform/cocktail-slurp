@@ -20,28 +20,26 @@ const partition = (xs) => {
 
 const ingredientPairs = ingredientSection => partition(rest(Array.from(ingredientSection.children)));
 
-const isActiveSection = ingredientSection => ingredientSection
-      .filter(i => possibleIngredients.has(i[1].textContent))
+const isActiveSection = ([ingredientSection]) => ingredientSection
+      .filter(([checkbox, ingredient]) => possibleIngredients[ingredient.textContent])
       .length;
 
 function checkIngredientSections() {
-  ingredientSections.map(is =>
-    (isActiveSection(is[1])
-     ? is[0].style.display = "flex"
-     : is[0].style.display = "none")
-  );
+  for ([category, section] of ingredientSections) {
+    category.style.display = (isActiveSection([section]) ? "flex" :  "none");
+  }
 }
 
 function checkIngredients() {
   if (HTTPRequest.readyState === XMLHttpRequest.DONE) {
-    possibleIngredients = new Set(JSON.parse(HTTPRequest.response));
+    possibleIngredients = JSON.parse(HTTPRequest.response);
 
-    if (possibleIngredients.size) {
-      ingredientLabels.map(i => i[1].style.display = (possibleIngredients.has(i[1].textContent) ? "block" : "none"));
-      checkIngredientSections();
-    } else {
-      ingredientLabels.map(i => i[1].style.display = "block");
-    }      
+    for ([checkbox, label] of ingredientLabels) {
+      ingredient = label.textContent;
+      label.style.display = (possibleIngredients[ingredient] ? "block" : "none")
+    }
+
+    checkIngredientSections();
   }
 }
 
@@ -55,7 +53,9 @@ function requestIngredientCheck() {
     HTTPRequest.open("GET", "/possible-ingredients" + "?" + params.toString(), true);
     HTTPRequest.send();
   } else {
-    ingredientLabels.map(i => i[1].style.display = "block");
+    for ([checkbox, label] of ingredientLabels) {
+      label.style.display = "block";
+    }
   }
 }
 
@@ -76,7 +76,7 @@ function checkChecked() {
 }
 
 let selectedIngredients = new Set();
-let possibleIngredients = new Set();
+let possibleIngredients = {};
 let HTTPRequest;
 
 let ingredientSections = Array.from(document.getElementsByClassName("ingredients"));
