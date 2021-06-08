@@ -38,7 +38,7 @@ function checkIngredients() {
       const possibleCocktails = possibleIngredients[label.htmlFor];
       label.style.display     = (possibleCocktails ? "block" : "none");
       [possibleCocktailCount] = label.children;
-      possibleCocktailCount.innerText = ((possibleCocktails && !checkbox.checked) ? " " + possibleCocktails : "");
+      possibleCocktailCount.innerText = (possibleCocktails  ? " " + possibleCocktails : "");
     }
 
     checkIngredientSections();
@@ -57,6 +57,8 @@ function requestIngredientCheck() {
   } else {
     for ([checkbox, label] of ingredientLabels) {
       label.style.display = "block";
+      [possibleCocktailCount] = label.children;
+      possibleCocktailCount.innerText = "";
     }
   }
 }

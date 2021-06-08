@@ -66,7 +66,7 @@ main {
 }
 
 .container {
-    margin-left: 50rem;
+    margin-left: 55rem;
 }
 
 .cards {
@@ -210,8 +210,7 @@ footer {
     display: flex;
     flex-direction: column;
     position: fixed;
-    width: 50rem;
-    overflow-y: scroll;
+    width: 55rem;
     top: 0;
     bottom: 0;
     font-size: 3rem;
@@ -222,6 +221,11 @@ footer {
     border-width: 0 1px 0 0;
     overflow: scroll;
     background-color: var(--bg3);
+}
+
+.strainer-form {
+    display: grid;
+    grid-template-columns: 85% 15%;
 }
 
 .strainer-mobile {
@@ -253,6 +257,7 @@ footer {
 }
 
 .ingredient {
+    grid-column: 1;
     color: var(--fg3);
     width: 100%;
     padding-left: 2rem;
@@ -268,19 +273,18 @@ footer {
     color: var(--fg1);
 }
 
-.ingredient-check:checked + .ingredient::after {
-    content: "←";
-    color: var(--fg1);
-    margin-left: 1rem;
-}
-
 .possible-cocktails-count {
     margin-left: 1rem;
-    color: var(--fg4);
+    color: inherit;
+}
+
+.ingredient-check:checked + .possible-cocktails-count {
+    color: var(--fg1);
 }
 
 .nameplate {
     margin: 0 auto;
+    grid-column: span 2;
     font: 10rem "Margo", "Optima", times;
     color: var(--fg3);
     text-align: center;
@@ -291,6 +295,9 @@ footer {
     color: var(--fg1);
 }
 
+.search {
+}
+
 .strainer input[type=text] {
     font-family: "marionette";
     color: var(--fg1);
@@ -299,17 +306,19 @@ footer {
     border: 1px solid var(--fg4);
     border-width: 1px 0 0 0px;
     width: 100%;
-    padding: 4rem 2rem 0rem 2rem;
+    padding: 4rem 2rem 1rem 2rem;
 }
 
 .strainer input[type=submit] {
+    grid-column: 2;
+    grid-row: span 100;
     margin: 0;
     font-family: "marionette";
     color: var(--fg3);
     font-size: 3rem;
     background: none;
     border: 1px solid var(--fg4);
-    border-width: 1px 0 0 0;
+    border-width: 1px 0 0 1px;
     width: 100%;
     padding: 3rem 2rem;
 }
@@ -591,6 +600,7 @@ footer {
     }
 
     .nameplate {
+        grid-row: span 2;
         text-align: left;
         color: var(--fg2);
         margin: 0 0 0 4rem;

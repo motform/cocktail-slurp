@@ -37,12 +37,14 @@
         selected-kinds       (if (string? kind) #{kind} (into #{} kind))
         favorites?           (boolean favorites)]
     [:aside#strainer.strainer
-     [:a.nameplate {:href "/"} "CS"]
+     [:form.strainer-form {:action "/cocktails" :method "get"}
 
-     [:form {:action "/cocktails" :method "get"}
+      [:a.nameplate {:href "/"} "CS"]
 
+      [:input {:type "submit" :value "→"}]
       [:section.search
        [:input {:type "text" :name "search" :id "search" :placeholder "Search" :value search}]]
+
 
       [:section.category
        [:h4 "Collections"]
@@ -75,9 +77,7 @@
                    :name    "ingredient"
                    :value   ingredient
                    :checked (selected-ingredients ingredient)}]
-                 [:label.ingredient {:for ingredient} ingredient [:span.possible-cocktails-count ""]]))])
-
-      [:input {:type "submit" :value "STRAIN"}]]
+                 [:label.ingredient {:for ingredient} ingredient [:span.possible-cocktails-count ""]]))])]
 
      [:section.category.settings 
       [:h4 "Settings"]
