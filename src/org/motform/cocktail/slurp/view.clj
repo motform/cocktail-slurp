@@ -75,7 +75,7 @@
                    :name    "ingredient"
                    :value   ingredient
                    :checked (selected-ingredients ingredient)}]
-                 [:label.ingredient {:for ingredient} ingredient]))])
+                 [:label.ingredient {:for ingredient} ingredient [:span.possible-cocktails-count ""]]))])
 
       [:input {:type "submit" :value "STRAIN"}]]
 

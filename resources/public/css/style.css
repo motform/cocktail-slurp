@@ -269,9 +269,14 @@ footer {
 }
 
 .ingredient-check:checked + .ingredient::after {
-    content: "   ←";
+    content: "←";
     color: var(--fg1);
     margin-left: 1rem;
+}
+
+.possible-cocktails-count {
+    margin-left: 1rem;
+    color: var(--fg4);
 }
 
 .nameplate {

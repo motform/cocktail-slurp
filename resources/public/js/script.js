@@ -21,7 +21,7 @@ const partition = (xs) => {
 const ingredientPairs = ingredientSection => partition(rest(Array.from(ingredientSection.children)));
 
 const isActiveSection = ([ingredientSection]) => ingredientSection
-      .filter(([checkbox, ingredient]) => possibleIngredients[ingredient.textContent])
+      .filter(([checkbox, ingredient]) => possibleIngredients[ingredient.htmlFor])
       .length;
 
 function checkIngredientSections() {
@@ -35,8 +35,10 @@ function checkIngredients() {
     possibleIngredients = JSON.parse(HTTPRequest.response);
 
     for ([checkbox, label] of ingredientLabels) {
-      ingredient = label.textContent;
-      label.style.display = (possibleIngredients[ingredient] ? "block" : "none")
+      const possibleCocktails = possibleIngredients[label.htmlFor];
+      label.style.display     = (possibleCocktails ? "block" : "none");
+      [possibleCocktailCount] = label.children;
+      possibleCocktailCount.innerText = ((possibleCocktails && !checkbox.checked) ? " " + possibleCocktails : "");
     }
 
     checkIngredientSections();
@@ -60,7 +62,7 @@ function requestIngredientCheck() {
 }
 
 function onIngredientClick(ingredient) {
-  const ingredientName = ingredient.target.textContent;
+  const ingredientName = ingredient.target.htmlFor;
   selectedIngredients.has(ingredientName)
     ? selectedIngredients.delete(ingredientName)
     : selectedIngredients.add(ingredientName);
@@ -70,7 +72,7 @@ function onIngredientClick(ingredient) {
 function checkChecked() {
   const checked = ingredientLabels
         .filter(i => i[0].checked)
-        .map(i => i[1].textContent);
+        .map(i => i[1].htmlFor);
   selectedIngredients = new Set(checked);
   requestIngredientCheck();
 }
