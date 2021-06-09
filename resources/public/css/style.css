@@ -1,7 +1,7 @@
 :root {
-    --bg1: hsl(0 0% 100%);
-    --bg2: hsl(0 0% 95%);
-    --bg3: hsl(0 0% 99%);
+    --bg1: hsl(0 0% 99%);
+    --bg2: hsl(30 100% 97%);
+    --bg3: hsl(30 100% 99%);
     --fg1: hsl(0 0% 0%);
     --fg2: hsl(0 0% 30%);
     --fg3: hsl(0 0% 50%);
@@ -13,7 +13,7 @@
         --bg1: hsl(0 0% 5%);
         --bg2: hsl(0 0% 20%);
         --bg3: hsl(0 0% 10%);
-        --fg1: hsl(0 0% 100%);
+        --fg1: hsl(30 100% 99%);
         --fg2: hsl(0 0% 70%);
         --fg3: hsl(0 0% 50%);
         --fg4: hsl(0 0% 30%);
@@ -31,7 +31,7 @@ html {
 body {
     color: var(--fg1);
     font: 4rem/6rem "Marionette";
-    background-color: var(--bg3);
+    background-color: var(--bg1);
 }
 
 a {
@@ -86,6 +86,7 @@ main {
     border-radius: 2rem;
     flex-direction: column;
     line-height: 4rem;
+    background-color: var(--bg3);
 }
 
 .illustration {
@@ -95,7 +96,6 @@ main {
 }
 
 .card-body {
-    background-color: var(--bg3);
     border: 1px solid var(--fg4);
     border-width: 0 1px 1px 1px;
     white-space: pre-wrap;
