@@ -1,18 +1,19 @@
 :root {
-    --bg1: hsl(0 0% 99%);
-    --bg2: hsl(30 100% 97%);
-    --bg3: hsl(30 100% 99%);
+    --bg1: hsl(38 38% 87%);
+    --bg2: hsl(50 40% 97%);
+    --bg3: hsl(0  0% 100%);
     --fg1: hsl(0 0% 0%);
-    --fg2: hsl(0 0% 30%);
-    --fg3: hsl(0 0% 50%);
-    --fg4: hsl(0 0% 80%);
+    --fg2: hsl(38 28% 30%);
+    --fg3: hsl(38 28% 50%);
+    --fg4: hsl(38 38% 80%);
+    
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --bg1: hsl(0 0% 5%);
-        --bg2: hsl(0 0% 20%);
-        --bg3: hsl(0 0% 10%);
+        --bg1: hsl(0 0% 10%);
+        --bg2: hsl(0 0% 15%);
+        --bg3: hsl(0 0% 15%);
         --fg1: hsl(30 100% 99%);
         --fg2: hsl(0 0% 70%);
         --fg3: hsl(0 0% 50%);
@@ -91,13 +92,9 @@ main {
 
 .illustration {
     border-radius: 2rem 2rem 0 0;
-    border: 1px solid var(--fg4);
-    border-width: 1px;
 }
 
 .card-body {
-    border: 1px solid var(--fg4);
-    border-width: 0 1px 1px 1px;
     white-space: pre-wrap;
     font-size: 3rem;
     line-height: 4.5rem;
@@ -120,8 +117,8 @@ main {
 }
 
 .card-title-container-expanded {
-    border: 1px solid var(--fg4);
-    border-width: 0 1px 1px 1px;
+    border: 1px solid var(--bg1);
+    border-width: 0 0 1px 0;
     padding-bottom: 2rem;
 }
 
@@ -139,7 +136,7 @@ main {
     width: 100%;
     margin: 2rem 0;
     padding: 2rem 1rem 3rem 0;
-    border: 1px solid var(--fg4);
+    border: 1px solid var(--bg1);
     border-width: 1px 0;
 }
 
@@ -164,7 +161,7 @@ main {
 }
 
 .card-img {
-    border: 1px solid var(--fg4);
+    border: 1px solid var(--bg1);
     border-width: 0 0 0 1px;
     display: flex;          
     align-items: center;    
@@ -176,7 +173,6 @@ main {
 footer {
     margin: 5rem 0 0 0;
     padding: 5rem;
-    background-color: var(--bg3);
     border: 1px solid var(--fg4);
     border-width: 1px 0 0 0;
     display: flex;
@@ -220,7 +216,7 @@ footer {
     border: 1px solid var(--fg4);
     border-width: 0 1px 0 0;
     overflow: scroll;
-    background-color: var(--bg3);
+    background-color: var(--bg1);
 }
 
 .strainer-form {
@@ -237,7 +233,7 @@ footer {
     letter-spacing: 1px;
     text-transform: uppercase;
     padding: 1rem 0 0 2rem;
-    color: var(--fg3);
+    color: var(--fg2);
     border: 1px solid var(--fg4);
     border-width: 1px 0 0 0;
 }
@@ -314,7 +310,7 @@ footer {
     margin: 0 auto;
     grid-column: span 2;
     font: 10rem "Margo", "Optima", times;
-    color: var(--fg3);
+    color: var(--fg2);
     text-align: center;
     display: block;
 }
@@ -337,6 +333,11 @@ footer {
     padding: 4rem 2rem 1rem 2rem;
 }
 
+.strainer input[type=text]::placeholder {
+    color: var(--fg2);
+}
+
+
 .strainer input[type=submit] {
     grid-column: 2;
     grid-row: span 100;
@@ -349,6 +350,12 @@ footer {
     border-width: 1px 0 0 1px;
     width: 100%;
     padding: 3rem 2rem;
+}
+
+@supports (-webkit-appearance:none) {
+    _::-webkit-full-page-media, _:future, .strainer input[type=submit] { 
+        transform: translate(0, 2px);
+    }
 }
 
 .strainer input[type=submit]:hover {
@@ -395,15 +402,14 @@ footer {
 .cocktail {
     white-space: pre-wrap;
     background-color: var(--bg3);
-    border: 1px solid var(--fg4);
-    border-width: 0 1px 1px 1px;
+    border: 1px solid var(--bg1);
 }
 
 .cocktail-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    border: 1px solid var(--fg4);
+    border: 1px solid var(--bg1);
     border-width: 0 0 1px 0;
     width: 100%;
     padding: 5rem 3rem 5rem 5rem;
@@ -437,7 +443,7 @@ footer {
 }
 
 .page-preparation {
-    border: 1px solid var(--fg4);
+    border: 1px solid var(--bg1);
     border-width: 0 1px 0 0;
 }
 
@@ -448,7 +454,7 @@ footer {
 .page-recipe {
     width: 100%;
     padding: 5rem 2rem 6rem 0;
-    border: 1px solid var(--fg4);
+    border: 1px solid var(--bg1);
     border-width: 0 0 1px 0;
 }
 
@@ -469,13 +475,13 @@ footer {
 }
 
 .page-story {
-    border: 1px solid var(--fg4);
+    border: 1px solid var(--bg1);
     border-width: 0 1px 0 0;
     padding: 5rem;
 }
 
 .page-img {
-    border: 1px solid var(--fg4);
+    border: 1px solid var(--bg1);
     border-width: 0 1px 0 0;
     display: flex;          
     align-items: center;    
@@ -620,7 +626,7 @@ footer {
     .strainer-mobile {
         display: flex;
         border: 1px solid var(--fg4);
-        background-color: var(--bg3);
+        background-color: var(--bg1);
         border-width: 0 0 1px 0;
         margin-bottom: 4rem;
         align-items: center;
@@ -665,6 +671,8 @@ footer {
 
     .card-img {
         border-width: 1px 0 0 0;
+        padding-top: 5rem;
+        padding-bottom: 5rem;
     }
 
     .settings input[type=submit] {
