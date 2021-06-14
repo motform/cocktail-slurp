@@ -10,10 +10,12 @@
   An unsolicited misrepresentation of [[https://cocktailvirgin.blogspot.com][the internets foremost experimental cocktail repository]].
 
 ** Why post a website on Github?
-   Good question! Someone once said that “publishing your website in a public repository is almost always a bad idea”, and they where probably right. Still, good advice is there to be ignored. I guess I like having a reliable and easily accessible backup around. It’s also nice to post some live examples of full stack Clojure configurations. cocktail-slurp uses a [[https://www.datomic.com][Datomic Free]] in the back with some [[https://github.com/day8/re-frame][re-frame]] in the front, which is not a combination I found all to many examples of. It does in no way represent best practices or production quality code, but that’s not always a bad thing.
+   Good question! Someone once said that “publishing your website in a public repository is almost always a bad idea”, and they where probably right. Still, good advice is there to be ignored. I guess I like having a reliable and easily accessible backup around. It’s also nice to post some live examples of full stack Clojure configurations. cocktail-slurp uses a [[https://www.datomic.com][Datomic Free]] in to store cocktails that are served using a simple ring-reitit-hiccup SSR stack. There where not that many examples of this available on GitHub, so I hope someone might find it to be a good reference.
+
+   Previous versions of the website used a "full-stack" SPA approach with shadow-cljs and re-frame. This development can be traced up to commit 0a427af9176125531105c29bad177d66663db992.
 
 ** Instructions
-   Note that cocktail-slurp is set in [[https://www.swisstypefaces.com/fonts/suisse/][Suisse Int'l]], whose Book weight is available for free on the foundry website. Without it, the CSS falls back to whatever your browser sets ~sans-serif~ to.
-
    To run a development version of the both the front- and back-end, run ~make dev~. The ~Makefile~ also contains commands to run and deploy jars (~make jar~) and docker containers (~make docker~).
+
+   Cocktail-slurp uses commercial fonts, so either bring your own or buy [[https://hex.xyz/Marionette/][Marionette]] and [[https://www.futurefonts.xyz/hex/margo][Margo]], both by the immensely talented Nick Sherman.
 
