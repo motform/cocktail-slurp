@@ -12,7 +12,7 @@
 ** Why post a website on Github?
    Good question! Someone once said that “publishing your website in a public repository is almost always a bad idea”, and they where probably right. Still, good advice is there to be ignored. I guess I like having a reliable and easily accessible backup around. It’s also nice to post some live examples of full stack Clojure configurations. cocktail-slurp uses a [[https://www.datomic.com][Datomic Free]] in to store cocktails that are served using a simple ring-reitit-hiccup SSR stack. There where not that many examples of this available on GitHub, so I hope someone might find it to be a good reference.
 
-   Previous versions of the website used a "full-stack" SPA approach with shadow-cljs and re-frame. This development can be traced up to commit 0a427af9176125531105c29bad177d66663db992.
+   Previous versions of the website used a "full-stack" SPA approach with shadow-cljs and re-frame. This development can be traced up to commit [[https://github.com/motform/cocktail-slurp/commit/0a427af9176125531105c29bad177d66663db992][0a427af]].
 
 ** Instructions
    To run a development version of the both the front- and back-end, run ~make dev~. The ~Makefile~ also contains commands to run and deploy jars (~make jar~) and docker containers (~make docker~).
