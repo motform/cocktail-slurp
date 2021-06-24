@@ -112,7 +112,7 @@
    (illustration/illustration cocktail "60px")
    [:div.card-title-container.card-title-container-expanded
     [:a.card-title {:href (str "/cocktail/" id)} title]
-    [:p.card-title-favorite (when favorite "!")]]
+    [:p.card-title-favorite (when favorite "♥")]]
    [:div.card-body.expanded
     [:div.card-body-expanded-content
      (card-recipe recipe :expanded? true)
@@ -163,7 +163,7 @@
            [:form {:action "/favorite" :method "post"}
             [:input.ingredient-check {:type "checkbox" :name "id" :value id :checked true}]
             [:input.favorite {:type "submit" 
-                              :value (if (:user/favorite cocktail) "!!!" "!")}]]]
+                              :value (if (:user/favorite cocktail) "♥" "♡")}]]]
           [:section.cocktail-body
            [:div.page-content
             [:aside.page-preparation

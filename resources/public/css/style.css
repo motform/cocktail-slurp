@@ -124,7 +124,7 @@ main {
 
 .card-title-favorite {
     font-size: 5rem;
-    color: var(--fg3);
+    color: var(--bg1);
 }
 
 .card-title {
@@ -419,12 +419,12 @@ footer {
     margin-left: auto;
     border: none;
     background: var(--bg3);
-    color: var(--fg3);
-    font: 10rem/10rem "Margo", "Optima", times;
+    color: var(--bg1);
+    font: 5rem/5rem "Margo", "Optima", times;
 }
 
 .favorite:hover {
-    color: var(--fg1);
+    color: var(--fg2);
     cursor: pointer;
 }
 
@@ -545,12 +545,14 @@ footer {
         font-size: 3rem;
         line-height: 5rem;
     }
+
     .cocktail-page > .illustration {
         margin-top: -140px;
     }
+
     .cocktail {
         border-width: 0;
-        background-color: var(--bg1);
+        background-color: var(--bg3);
     }
 
     .page-title {

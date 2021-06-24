@@ -50,10 +50,11 @@
   (let [measurements #{"oz" "jigger" "ml" "cl" "dl" "dash" "tsp" "tbsp" "scant" "spoon"
                        "quart" "bsp" "heaping" "whole" "Whole" "drop" "drops" "parts" "part"}]
     (or (measurements (str/lower-case s))
-        (re-matches #"\d+ [\d/\-]+" s) 
-        (re-matches #"[\d/]+"   s) 
-        (re-matches #"\d+%+"   s) 
-        (re-matches #"\d+\-\d+" s)))) 
+        ;; NOTE this should probably be collapsed into a single regex
+        (re-matches #"~*\d+ [\d/\-]+" s) 
+        (re-matches #"~*[\d/]+"       s) 
+        (re-matches #"~*\d+%+"        s) 
+        (re-matches #"~*\d+\-\d+"     s)))) 
 
 (defn abbrev-measurement [measurement]
   (case (str/lower-case measurement)
