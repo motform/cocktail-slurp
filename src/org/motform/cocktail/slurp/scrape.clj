@@ -17,7 +17,7 @@
             [mount.core     :as mount]
             [org.motform.cocktail.slurp.db    :as db]
             [org.motform.cocktail.slurp.parse :as parse])
-  (:import  [java.time LocalTime ZonedDateTime ZoneId Period]))
+  (:import  [java.time LocalTime Period ZonedDateTime ZoneId ]))
 
 (def every-day-9am-in-boston
   (chime/periodic-seq
@@ -41,7 +41,7 @@
            first :attrs :href)
        "9")) ;; HACK add 9 to url to get more posts per page
 
-;; FIXME for some reason, there is a single result with :http: in a k
+;; FIXME for some reason, there is a always a :http: and :http2: key in the spit edn,
 ;;       this breaks ~read-string~ parsing, so it has be removed (right now by hand)
 (defn scrape-from-scratch! [url path]
   (loop [url url pages []]

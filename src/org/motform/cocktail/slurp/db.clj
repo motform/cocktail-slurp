@@ -1,5 +1,7 @@
 (ns org.motform.cocktail.slurp.db
   (:require [clojure.string :as str]
+            [clojure.edn    :as edn]
+            [clojure.set    :as set]
             [datomic.api    :as d]
             [mount.core     :as mount]
             [org.motform.cocktail.slurp.parse :as parse]
@@ -7,14 +9,16 @@
 
 ;;; db
 
+(def bar (-> "resources/edn/bar.edn" slurp edn/read-string))
+
 (defn init-db
   "Initialize and populate the in-memory Datomic db.
    Expects `posts` to be the relative path to an .edn of scraped posts."
   [{:keys [schema posts uri]}]
   (d/create-database uri)
   (let [conn (d/connect uri)]
-    (d/transact conn (-> schema slurp read-string))
-    (d/transact conn (-> posts slurp read-string parse/posts->cocktails))
+    (d/transact conn (-> schema slurp edn/read-string))
+    (d/transact conn (-> posts slurp edn/read-string parse/posts->cocktails))
     conn))
 
 (mount/defstate conn
@@ -52,22 +56,28 @@
 (defn cocktail-by-title 
   "NOTE: Return first scalar, regardless of name conflicts."
   [title]
-  (d/q `[:find ?id .
+  (d/q '[:find ?id .
+         :in $ ?title
          :where 
-         [?e :cocktail/title ~title]
+         [?e :cocktail/title ?title]
          [?e :cocktail/id ?id]]
-       (d/db conn)))
+       (d/db conn) title))
 
 (defn cocktail-feed []
-  (let [result (d/q '[:find  [(pull ?e [*]) ...]
-                      :where [?e :cocktail/id]]
-                    (d/db conn))]
-    (->> result (sort-by :cocktail/date compare) reverse (into []))))
+  (let [result (d/q '[:find [(pull ?e [*]) ...]
+                      :in $ ?collection
+                      :where
+                      [?e :cocktail/id]
+                      [?e :cocktail/ingredient ?ingredient]
+                      [(contains? ?collection ?ingredient)]]
+                    (d/db conn) bar)]
+    (->> result (sort-by :cocktail/date) reverse (into []))))
 
 (def base-query
   '{:query {:find  [(pull ?e [*])]
-            :in    [$]
-            :where []}
+            :in    [$ ?collection]
+            :where [[?e :cocktail/ingredient ?ingredient]
+                    [(contains? ?collection ?ingredient)]]}
     :args []})
 
 (defn- gen-syms [s xs]
@@ -125,7 +135,7 @@
 (defn strain [strainer]
   (let [{:keys [query args]} (-> strainer util/remove-empty wash-strainer parse-strainer)]
     (if (seq args) ; if we are on the home page
-      (into [] (map first (apply d/q query (d/db conn) args)))
+      (mapv first (apply d/q query (d/db conn) bar args))
       (cocktail-feed))))
 
 (defn retract-cocktail [id reason]
@@ -149,11 +159,12 @@
 (defn enumerated-possible-ingredients [ingredients]
   (let [{:keys [query args]} 
         (and-query '{:query {:find  [(pull ?e [:cocktail/ingredient])] 
-                             :where [[?e :cocktail/ingredient ?i]]
-                             :in    [$]} 
+                             :where [[?e :cocktail/ingredient ?ingredient]
+                                     [(contains? ?collection ?ingredient)]]
+                             :in    [$ ?collection]} 
                      :args []}
                    :cocktail/ingredient \i ingredients)]
-    (->> (apply d/q query (d/db conn) args)
+    (->> (apply d/q query (d/db conn) bar args)
          (mapcat (comp :cocktail/ingredient first))
          frequencies)))
 
