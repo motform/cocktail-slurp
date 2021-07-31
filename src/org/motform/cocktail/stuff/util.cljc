@@ -47,27 +47,30 @@
     (subvec v start end)))
 
 (defn measurement? [s]
-  (let [measurements #{"oz" "jigger" "ml" "cl" "dl" "dash" "tsp" "tbsp" "scant" "spoon"
-                       "quart" "bsp" "heaping" "whole" "Whole" "drop" "drops" "parts" "part"}]
+  (let [measurements #{"oz" "jigger" "ml" "cl" "dl" "dash" "tsp" "tbsp" "scant" "spoon" "wineglass"
+                       "pony""quart" "bsp" "heaping" "whole" "Whole" "drop" "drops" "parts" "part"}]
     (or (measurements (str/lower-case s))
         ;; NOTE this should probably be collapsed into a single regex
         (re-matches #"~*\d+ [\d/\-]+" s) 
         (re-matches #"~*[\d/]+"       s) 
         (re-matches #"~*\d+%+"        s) 
+        (re-matches #">|<\d*/\d*"      s)
         (re-matches #"~*\d+\-\d+"     s)))) 
 
 (defn abbrev-measurement [measurement]
   (case (str/lower-case measurement)
-    "jigger"  "jig"
-    "dash"    "ds"
-    "scant"   "s" 
-    "heaping" "h"
-    "drops"   "dr"
-    "drop"    "dr"
-    "spoon"   "spn"
-    "whole"   "w"
-    "part"    "p"
-    "parts"   "p"
+    "jigger"    "jig"
+    "dash"      "ds"
+    "scant"     "s" 
+    "heaping"   "h"
+    "drops"     "dr"
+    "drop"      "dr"
+    "spoon"     "spn"
+    "whole"     "w"
+    "part"      "p"
+    "parts"     "p"
+    "wineglass" "wg"
+    "pony"      "pony"
     (str/lower-case measurement)))
 
 (defn split-ingredient [ingredient]
