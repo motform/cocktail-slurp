@@ -47,7 +47,7 @@
     (subvec v start end)))
 
 (defn measurement? [s]
-  (let [measurements #{"oz" "jigger" "ml" "cl" "dl" "dash" "tsp" "tbsp" "scant" "spoon" "wineglass"
+  (let [measurements #{"oz" "jigger" "ml" "cl" "dl" "dash" "tsp" "tbsp" "scant" "spoon" "wineglass" "barspoon"
                        "pony""quart" "bsp" "heaping" "whole" "Whole" "drop" "drops" "parts" "part"}]
     (or (measurements (str/lower-case s))
         ;; NOTE this should probably be collapsed into a single regex
@@ -71,6 +71,7 @@
     "parts"     "p"
     "wineglass" "wg"
     "pony"      "pony"
+    "barspoon"  "bsp"
     (str/lower-case measurement)))
 
 (defn split-ingredient [ingredient]
