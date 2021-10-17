@@ -2,11 +2,14 @@
     --bg1: hsl(38 38% 87%);
     --bg2: hsl(50 40% 97%);
     --bg3: hsl(0  0% 100%);
+    --bg4: hsl(50 40% 95%);
+    --bg5: hsl(50 40% 90%);
+    --bg6: hsl(50 40% 80%);
     --fg1: hsl(0 0% 0%);
     --fg2: hsl(38 28% 30%);
-    --fg3: hsl(38 28% 50%);
+    --fg3: hsl(38 28% 40%);
     --fg4: hsl(38 38% 80%);
-    
+    --shadow: hsl(28 28% 80% / 0.2);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,6 +21,7 @@
         --fg2: hsl(0 0% 70%);
         --fg3: hsl(0 0% 50%);
         --fg4: hsl(0 0% 30%);
+        --shadow: hsl(28 28% 15% / 0.2);
     }
 }
 
@@ -67,7 +71,7 @@ main {
 }
 
 .container {
-    margin-left: 55rem;
+    margin-left: 45rem;
 }
 
 .cards {
@@ -88,6 +92,12 @@ main {
     flex-direction: column;
     line-height: 4rem;
     background-color: var(--bg3);
+    box-shadow:
+        1px 2px 2px var(--shadow),
+        2px 4px 4px var(--shadow),
+        4px 8px 8px var(--shadow),
+        8px 16px 16px var(--shadow),
+        16px 32px 32px var(--shadow);
 }
 
 .illustration {
@@ -95,13 +105,14 @@ main {
 }
 
 .card-body {
-    white-space: pre-wrap;
     font-size: 3rem;
     line-height: 4.5rem;
 }
 
 .card-body-expanded-content {
-    min-width: 300px;
+    border: 1px solid var(--fg4);
+    border-width: 1px 0 0 0;
+    width: 100%;
 }
 
 .expanded {
@@ -117,8 +128,6 @@ main {
 }
 
 .card-title-container-expanded {
-    border: 1px solid var(--bg1);
-    border-width: 0 0 1px 0;
     padding-bottom: 2rem;
 }
 
@@ -135,7 +144,7 @@ main {
 .card-recipe {
     width: 100%;
     margin: 2rem 0;
-    padding: 2rem 1rem 3rem 0;
+    padding: 2rem 3rem 3rem 0;
     border: 1px solid var(--bg1);
     border-width: 1px 0;
 }
@@ -157,32 +166,30 @@ main {
 }
 
 .card-preparation {
-    padding: 0 2rem 2rem 2rem;
+    padding: 0 3rem 2rem 2rem;
 }
 
 .card-img {
-    border: 1px solid var(--bg1);
-    border-width: 0 0 0 1px;
-    display: flex;          
-    align-items: center;    
-    justify-content: center;
-    padding: 2rem;
+}
+
+.card-img {
+    width: auto;
+    border-radius: 0 0 10px 0;
 }
 
 
 footer {
     margin: 5rem 0 0 0;
     padding: 5rem;
-    border: 1px solid var(--fg4);
-    border-width: 1px 0 0 0;
     display: flex;
     justify-content: space-between;
 }
 
 .paginate {
-    font-size: 6rem;
-    padding: 0 5rem;
-    color: var(--fg1);
+    font-size: 7rem;
+    padding: 0 2rem;
+    margin-bottom: 4rem;
+    color: var(--fg2);
 }
 
 .paginate:hover {
@@ -194,9 +201,11 @@ footer {
 }
 
 .tagline {
-    font-size: 2.5rem;
+    margin-top: 3px;
+    font-size: 2rem;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--fg4);
+    color: var(--fg3);
 }
 
 /* Strainer */
@@ -206,7 +215,7 @@ footer {
     display: flex;
     flex-direction: column;
     position: fixed;
-    width: 55rem;
+    width: 45rem;
     top: 0;
     bottom: 0;
     font-size: 3rem;
@@ -216,12 +225,16 @@ footer {
     border: 1px solid var(--fg4);
     border-width: 0 1px 0 0;
     overflow: scroll;
-    background-color: var(--bg1);
+    background-color: var(--bg4);
+
+    box-shadow:
+        1px 2px 2px var(--shadow),
+        2px 4px 4px var(--shadow);
 }
 
 .strainer-form {
-    display: grid;
-    grid-template-columns: 85% 15%;
+    display: flex;
+    flex-direction: column;
 }
 
 .strainer-mobile {
@@ -232,7 +245,7 @@ footer {
     font-size: 2rem;
     letter-spacing: 1px;
     text-transform: uppercase;
-    padding: 1rem 0 0 2rem;
+    padding: 1.5rem 0 1rem 3rem;
     color: var(--fg2);
     border: 1px solid var(--fg4);
     border-width: 1px 0 0 0;
@@ -252,22 +265,24 @@ footer {
     color: var(--fg3);
     width: 100%;
     display: flex;
-    padding-left: 2rem;
+    padding: 0.25rem 1rem 0.25rem 3rem;
 }
 
 .label-toggle:hover {
-    background-color: var(--bg2);
+    background-color: var(--bg1);
     cursor: pointer;
-    color: var(--fg1);
+    color: var(--fg2);
 }
 
 .label-check:checked + .label-toggle {
     color: var(--fg1);
+    background-color: var(--bg1);
 }
 
 .label-check {
     display: none;
 }
+
 .ingredient-check {
     display: none;
 }
@@ -275,26 +290,31 @@ footer {
 .ingredient-container {
     color: var(--fg3);
     width: 100%;
+    padding: 0.25rem 0rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
 .ingredient-container:hover {
-    background-color: var(--bg2);
+    background-color: var(--bg1);
     cursor: pointer;
-    color: var(--fg1);
+    color: var(--fg2);
 }
 
 .ingredient {
     grid-column: 1;
     color: inherit;
-    padding-left: 2rem;
+    padding-left: 3rem;
     pointer-events: none;
 }
 
 .ingredient-check:checked + .ingredient {
     color: var(--fg1);
+}
+
+.ingredient-check:checked + .ingredient-container {
+    background-color: var(--bg1);
 }
 
 .possible-cocktails-count {
@@ -304,6 +324,7 @@ footer {
 
 .ingredient-check:checked + .possible-cocktails-count {
     color: var(--fg1);
+    background-color: var(--bg6);
 }
 
 .nameplate {
@@ -324,13 +345,13 @@ footer {
 
 .strainer input[type=text] {
     font-family: "marionette";
-    color: var(--fg1);
-    font-size: 3.5rem;
-    background: none;
+    color: var(--fg2);
+    font-size: 3rem;
+    background: var(--bg5);
     border: 1px solid var(--fg4);
-    border-width: 1px 0 0 0px;
-    width: 100%;
-    padding: 4rem 2rem 1rem 2rem;
+    margin: 0.5rem 2rem 1rem 3rem;
+    padding: 1.5rem 2rem;
+    width: 85%;
 }
 
 .strainer input[type=text]::placeholder {
@@ -339,17 +360,20 @@ footer {
 
 
 .strainer input[type=submit] {
-    grid-column: 2;
-    grid-row: span 100;
     margin: 0;
-    font-family: "marionette";
-    color: var(--fg3);
-    font-size: 3rem;
-    background: none;
     border: 1px solid var(--fg4);
+    background: none;
+    background-color: var(--bg2);
     border-width: 1px 0 0 1px;
     width: 100%;
     padding: 3rem 2rem;
+
+    color: var(--fg3);
+    font-family: "marionette";
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: right;
+    font-size: 2.5rem;
 }
 
 @supports (-webkit-appearance:none) {
@@ -360,19 +384,21 @@ footer {
 
 .strainer input[type=submit]:hover {
     color: var(--fg1);
-    background-color: var(--bg2);
+    background-color: var(--bg1);
     cursor: pointer;
 }
 
 .settings input[type=submit] {
     font-family: "marionette";
     color: var(--fg3);
-    font-size: 3rem;
-    background: none;
+    font-size: 2.5rem;
+    background: var(--bg4);
     border: none;
     text-align: left;
     width: 100%;
     padding-left: 2rem;
+    text-transform: none;
+    letter-spacing: 0;
 }
 
 @media (max-width: 900px) {
@@ -583,6 +609,7 @@ footer {
         margin: 0;
         border-width: 0;
     }
+
     .page-img {
         border-width: 0 0 1px 0;
         grid-row: 2;
@@ -628,7 +655,7 @@ footer {
     .strainer-mobile {
         display: flex;
         border: 1px solid var(--fg4);
-        background-color: var(--bg1);
+        background-color: var(--bg4);
         border-width: 0 0 1px 0;
         margin-bottom: 4rem;
         align-items: center;
@@ -673,13 +700,24 @@ footer {
 
     .card-img {
         border-width: 1px 0 0 0;
-        padding-top: 5rem;
-        padding-bottom: 5rem;
+        border-radius: 0 0 10px 10px;
     }
 
     .settings input[type=submit] {
         border: none;
         padding: 0 0 0 2rem;
         margin: 0;
+    }
+
+    .strainer input[type=text] {
+        width: 95%;
+    }
+
+    .ingredient-container {
+        color: var(--fg2);
+    }
+
+    .label-toggle {
+        color: var(--fg2);
     }
 }

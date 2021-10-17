@@ -47,15 +47,15 @@
     (subvec v start end)))
 
 (defn measurement? [s]
-  (let [measurements #{"oz" "jigger" "ml" "cl" "dl" "dash" "tsp" "tbsp" "scant" "spoon" "wineglass" "barspoon"
-                       "pony""quart" "bsp" "heaping" "whole" "Whole" "drop" "drops" "parts" "part"}]
+  (let [measurements #{"oz" "jigger" "ml" "cl" "dl" "dash" "tsp" "tbsp" "scant" "spoon" "wineglass" "barspoon" "egg" "pinch"
+                       "pony" "quart" "bsp" "heaping" "whole" "Whole" "drop" "drops" "parts" "part" "leaf" "spring" "sprig"}]
     (or (measurements (str/lower-case s))
         ;; NOTE this should probably be collapsed into a single regex
-        (re-matches #"~*\d+ [\d/\-]+" s) 
-        (re-matches #"~*[\d/]+"       s) 
-        (re-matches #"~*\d+%+"        s) 
-        (re-matches #">|<\d*/\d*"      s)
-        (re-matches #"~*\d+\-\d+"     s)))) 
+        (re-matches #"~*\d+ [\d/\-]+"    s) 
+        (re-matches #"~*[\d/]+"          s) 
+        (re-matches #"~*\d+%+"           s) 
+        (re-matches #">|<\d*/\d*"        s)
+        (re-matches #"~*\d+\-\d+"        s))))
 
 (defn abbrev-measurement [measurement]
   (case (str/lower-case measurement)
@@ -72,6 +72,12 @@
     "wineglass" "wg"
     "pony"      "pony"
     "barspoon"  "bsp"
+    "leaf"      "leaf"
+    "leafs"     "leafs"
+    "spring"    "s"
+    "sprig"     "s"
+    "egg"       "egg"
+    "pinch"     "pinch"
     (str/lower-case measurement)))
 
 (defn split-ingredient [ingredient]

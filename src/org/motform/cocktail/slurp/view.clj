@@ -30,7 +30,7 @@
 (defn- header-mobile []
   [:header.strainer-mobile
    [:a.nameplate {:href "/"} "CS"]
-   [:div#ftoggle.filter-mobile {:id "ftoggle"} "search"]])
+   [:div#ftoggle.filter-mobile {:id "ftoggle"} "filter"]])
 
 (defn- sidebar [{:strs [ingredient kind search favorites]} {:keys [user/view]}]
   (let [selected-ingredients (if (string? ingredient) #{ingredient} (into #{} ingredient))
@@ -41,10 +41,10 @@
 
       [:a.nameplate {:href "/"} "CS"]
 
-      [:input {:type "submit" :value "→"}]
+      
       [:section.search
-       [:input {:type "text" :name "search" :id "search" :placeholder "Search" :value search}]]
-
+       [:h4 "search"]
+       [:input {:type "text" :name "search" :id "search" :value search}]]
 
       [:section.category
        [:h4 "Collections"]
@@ -80,6 +80,8 @@
               :checked (selected-ingredients ingredient)}]
             [:label.ingredient {:for ingredient} ingredient]
             [:p.possible-cocktails-count ""]])])]
+
+     [:input {:type "submit" :value "Filter cocktails >"}]
 
      [:section.category.settings 
       [:h4 "Settings"]
@@ -117,7 +119,7 @@
     [:div.card-body-expanded-content
      (card-recipe recipe :expanded? true)
      [:p.card-preparation preparation]]
-    [:div.card-img [:img {:src img}]]]])
+    [:img.card-img {:src img}]]])
 
 (defmethod cocktail-card "normal" 
   [{:cocktail/keys [title id preparation recipe] 

@@ -17,7 +17,7 @@
             [mount.core     :as mount]
             [org.motform.cocktail.slurp.db    :as db]
             [org.motform.cocktail.slurp.parse :as parse])
-  (:import  [java.time LocalTime Period ZonedDateTime ZoneId ]))
+  (:import  [java.time LocalTime Period ZonedDateTime ZoneId]))
 
 (def every-day-9am-in-boston
   (chime/periodic-seq
