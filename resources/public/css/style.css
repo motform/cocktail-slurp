@@ -316,11 +316,6 @@ footer {
 
 .ingredient-check:checked + .ingredient {
     color: var(--black);
-    background-color: var(--beige10);
-}
-
-.ingredient-check:checked + .ingredient-container {
-    background-color: var(--beige10);
 }
 
 .possible-cocktails-count {

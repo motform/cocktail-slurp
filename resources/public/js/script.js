@@ -1,3 +1,5 @@
+"use strict";
+
 // mobile filter menu toggle
 let toggle = false;
 
@@ -27,14 +29,14 @@ function checkIngredients() {
   if (HTTPRequest.readyState === XMLHttpRequest.DONE) {
     possibleIngredients = JSON.parse(HTTPRequest.response);
 
-    for (ingredientContainer of ingredientContainers) {
+    for (const ingredientContainer of ingredientContainers) {
       const [_, label, count] = Array.from(ingredientContainer.children);
-      ingredientName = label.htmlFor;
+      const ingredientName = label.htmlFor;
       const possibleCocktails = possibleIngredients[ingredientName];
       const isSelected = selectedIngredients.has(ingredientName);
 
       ingredientContainer.style.display = (possibleCocktails ? "flex" : "none");
-      // label.style.color = (isSelected ? "var(--fg1)" : "var(--fg3)");
+      ingredientContainer.style.backgroundColor = (isSelected ? "var(--beige8)" : "");
       count.innerText = (possibleCocktails ? possibleCocktails : "");
     }
 
@@ -45,7 +47,7 @@ function checkIngredients() {
 function requestIngredientCheck() {
   if (selectedIngredients.size) {
     let params = new URLSearchParams(); // this could be a json array, but I like my query strings
-    for (ingredient of Array.from(selectedIngredients)) {
+    for (const ingredient of Array.from(selectedIngredients)) {
       params.append("ingredient", ingredient);
     }
 
@@ -54,7 +56,7 @@ function requestIngredientCheck() {
     HTTPRequest.open("GET", "/possible-ingredients" + "?" + params.toString(), true);
     HTTPRequest.send();
   } else {
-    for (ingredientContainer of ingredientContainers) {
+    for (const ingredientContainer of ingredientContainers) {
       const [_, label, count] = Array.from(ingredientContainer.children)
       ingredientContainer.style.display = "flex";
       count.innerText = "";
@@ -69,6 +71,7 @@ function onIngredientClick(ingredientContainer) {
   return function() {
     if (selectedIngredients.has(ingredientName)) {
       selectedIngredients.delete(ingredientName);
+      ingredientContainer.style.backgroundColor = "";
       checkbox.checked = false;
     } else {
       selectedIngredients.add(ingredientName);
@@ -80,9 +83,11 @@ function onIngredientClick(ingredientContainer) {
 }
 
 function checkChecked() {
-  for (ingredientContainer of ingredientContainers) {
+  for (const ingredientContainer of ingredientContainers) {
     const [checkbox, label, _] = Array.from(ingredientContainer.children);
-    if (checkbox.checked) selectedIngredients.add(label.htmlFor)
+    if (checkbox.checked) {
+      selectedIngredients.add(label.htmlFor)
+    }
     requestIngredientCheck();
   }
 }
