@@ -1,47 +1,43 @@
 :root {
-    --bg1: hsl(38 38% 87%);
-    --bg2: hsl(50 40% 97%);
-    --bg3: hsl(0  0% 100%);
-    --bg4: hsl(50 40% 95%);
-    --bg5: hsl(50 40% 90%);
-    --bg6: hsl(50 40% 80%);
-    --fg1: hsl(0 0% 0%);
-    --fg2: hsl(38 28% 30%);
-    --fg3: hsl(38 28% 40%);
-    --fg4: hsl(38 38% 80%);
+    --beige0: #fdfcfa; 
+    --beige1: #fbf9f6;
+    --beige2: #f9f6f1;
+    --beige4: #f7f3ed;
+    --beige5: #f5f0e8;
+    --beige6: #f2ede3;
+    --beige7: #f0eadf;
+    --beige8: #eee7da;
+    --beige9: #ece4d6;
+    --beige10: #eae1d1;  /* Page background! */
+    --beige11: hsl(38 38% 86%);
+    --beige12: hsl(38 38% 80%); /* border */ 
+    --beige13: hsl(38 28% 30%);
+    --beige14: hsl(38 28% 35%);
+
+    --white:  #ffffff;
+    --black:  #000000;
     --shadow: hsl(28 28% 80% / 0.2);
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg1: hsl(0 0% 10%);
-        --bg2: hsl(0 0% 15%);
-        --bg3: hsl(0 0% 15%);
-        --fg1: hsl(30 100% 99%);
-        --fg2: hsl(0 0% 70%);
-        --fg3: hsl(0 0% 50%);
-        --fg4: hsl(0 0% 30%);
-        --shadow: hsl(28 28% 15% / 0.2);
-    }
+* {
+    box-sizing: border-box;
 }
-
-* { box-sizing: border-box; }
 
 html {
     -webkit-font-smoothing: antialiased;
     font-size: 5px;
-    color: var(--fg1);
+    color: var(--black);
 }
 
 body {
-    color: var(--fg1);
+    color: var(--black);
     font: 4rem/6rem "Marionette";
-    background-color: var(--bg1);
+    background-color: var(--beige10);
 }
 
 a {
     text-decoration: none;
-    color: var(--fg1);
+    color: var(--black);
     cursor: pointer;
     white-space: pre-wrap;
 }
@@ -66,19 +62,19 @@ main {
 .empty {
     margin: 10rem;
     font: 12rem/11rem "Margo", "Optima", times;
-    color: var(--fg3);
+    color: var(--beige14);
     text-align: center;
 }
 
 .container {
-    margin-left: 45rem;
+    margin-left: 47rem;
 }
 
 .cards {
     margin: 5rem;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    grid-gap: 5rem;
+    grid-gap: 7rem;
 }
 
 .cards-expanded {
@@ -86,12 +82,12 @@ main {
 }
 
 .card {
+    border: 1px solid var(--beige11);
     max-width: 900px;
     display: flex;
     border-radius: 2rem;
     flex-direction: column;
-    line-height: 4rem;
-    background-color: var(--bg3);
+    background-color: var(--white);
     box-shadow:
         1px 2px 2px var(--shadow),
         2px 4px 4px var(--shadow),
@@ -100,17 +96,18 @@ main {
         16px 32px 32px var(--shadow);
 }
 
-.illustration {
-    border-radius: 2rem 2rem 0 0;
+.card .illustration {
+    border-radius: 1.8rem 1.8rem 0 0;
+    height: 60px;
 }
 
 .card-body {
     font-size: 3rem;
-    line-height: 4.5rem;
+    line-height: 4.8rem;
 }
 
 .card-body-expanded-content {
-    border: 1px solid var(--fg4);
+    border: 1px solid var(--beige10);
     border-width: 1px 0 0 0;
     width: 100%;
 }
@@ -121,7 +118,7 @@ main {
 
 .card-title-container {
     width: 100%;
-    padding: 2rem 2rem 0;
+    padding: 3rem 2rem 5rem 3rem;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -133,25 +130,28 @@ main {
 
 .card-title-favorite {
     font-size: 5rem;
-    color: var(--bg1);
+    color: var(--beige10);
 }
 
 .card-title {
     font: 12rem/11rem "Margo", "Optima", times;
     text-transform: capitalize;
+    padding-bottom: 1rem;
 }
 
 .card-recipe {
     width: 100%;
-    margin: 2rem 0;
+    margin-bottom: 2rem;
     padding: 2rem 3rem 3rem 0;
-    border: 1px solid var(--bg1);
+    border: 1px solid var(--beige10);
     border-width: 1px 0;
 }
 
 .card-recipe-expanded {
     border-width: 0 0 1px 0;
-    padding-top: 0rem;
+    padding-top: 2rem;
+    padding-left: 2rem;
+    background: var(--beige2)
 }
 
 .card-recipe-row {
@@ -161,12 +161,12 @@ main {
 }
 
 .card-recipe-measurement {
-    max-width: 12rem;
-    min-width: 12rem;
+    max-width: 13rem;
+    min-width: 13rem;
 }
 
 .card-preparation {
-    padding: 0 3rem 2rem 2rem;
+    padding: 0 3rem 3rem 4rem;
 }
 
 .card-img {
@@ -189,11 +189,11 @@ footer {
     font-size: 7rem;
     padding: 0 2rem;
     margin-bottom: 4rem;
-    color: var(--fg2);
+    color: var(--beige13);
 }
 
 .paginate:hover {
-    color: var(--fg1);
+    color: var(--black);
 }
 
 .hide {
@@ -205,7 +205,7 @@ footer {
     font-size: 2rem;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--fg3);
+    color: var(--beige14);
 }
 
 /* Strainer */
@@ -222,10 +222,10 @@ footer {
     line-height: 5rem;
     margin-right: 5rem;
     text-transform: capitalize;
-    border: 1px solid var(--fg4);
+    border: 1px solid var(--beige12);
     border-width: 0 1px 0 0;
     overflow: scroll;
-    background-color: var(--bg4);
+    background-color: var(--beige1);
 
     box-shadow:
         1px 2px 2px var(--shadow),
@@ -246,11 +246,16 @@ footer {
     letter-spacing: 1px;
     text-transform: uppercase;
     padding: 1.5rem 0 1rem 3rem;
-    color: var(--fg2);
-    border: 1px solid var(--fg4);
+    color: var(--beige13);
+    border: 1px solid var(--beige12);
     border-width: 1px 0 0 0;
+    margin-top: 2rem;
 }
 
+#collections {
+    border-width: 0;
+    margin-top: 0;
+}
 
 .strainer section {
     padding: 0 0 2rem 0;
@@ -262,21 +267,21 @@ footer {
 }
 
 .label-toggle {
-    color: var(--fg3);
+    color: var(--beige14);
     width: 100%;
     display: flex;
     padding: 0.25rem 1rem 0.25rem 3rem;
 }
 
 .label-toggle:hover {
-    background-color: var(--bg1);
+    background-color: var(--beige8);
     cursor: pointer;
-    color: var(--fg2);
+    color: var(--beige13);
 }
 
 .label-check:checked + .label-toggle {
-    color: var(--fg1);
-    background-color: var(--bg1);
+    color: var(--black);
+    background-color: var(--beige8);
 }
 
 .label-check {
@@ -288,7 +293,7 @@ footer {
 }
 
 .ingredient-container {
-    color: var(--fg3);
+    color: var(--beige14);
     width: 100%;
     padding: 0.25rem 0rem;
     display: flex;
@@ -297,9 +302,9 @@ footer {
 }
 
 .ingredient-container:hover {
-    background-color: var(--bg1);
+    background-color: var(--beige8);
     cursor: pointer;
-    color: var(--fg2);
+    color: var(--beige13);
 }
 
 .ingredient {
@@ -310,11 +315,12 @@ footer {
 }
 
 .ingredient-check:checked + .ingredient {
-    color: var(--fg1);
+    color: var(--black);
+    background-color: var(--beige10);
 }
 
 .ingredient-check:checked + .ingredient-container {
-    background-color: var(--bg1);
+    background-color: var(--beige10);
 }
 
 .possible-cocktails-count {
@@ -323,57 +329,72 @@ footer {
 }
 
 .ingredient-check:checked + .possible-cocktails-count {
-    color: var(--fg1);
-    background-color: var(--bg6);
+    color: var(--black);
+    background-color: var(--beige3);
 }
 
 .nameplate {
-    margin: 0 auto;
-    grid-column: span 2;
     font: 10rem "Margo", "Optima", times;
-    color: var(--fg2);
+    color: var(--beige13);
     text-align: center;
     display: block;
+    margin: 2rem 0 8rem 0;
 }
 
 .nameplate:hover {
-    color: var(--fg1);
+    color: var(--black);
 }
 
 .search {
 }
 
+#search-label {
+    border-width: 0;
+}
+
 .strainer input[type=text] {
     font-family: "marionette";
-    color: var(--fg2);
+    color: var(--beige13);
     font-size: 3rem;
-    background: var(--bg5);
-    border: 1px solid var(--fg4);
+    background: var(--beige4);
+    border: 1px solid var(--beige12);
     margin: 0.5rem 2rem 1rem 3rem;
     padding: 1.5rem 2rem;
     width: 85%;
 }
 
 .strainer input[type=text]::placeholder {
-    color: var(--fg2);
+    color: var(--beige13);
 }
 
+.submit-container {
+    top: -3px;
+    position: sticky;
+    position: -webkit-sticky;
+    margin-bottom: 2rem;
+    box-shadow:
+        1px 2px 2px var(--shadow),
+        2px 4px 4px var(--shadow),
+        4px 8px 8px var(--shadow),
+        8px 16px 16px var(--shadow),
+        16px 32px 32px var(--shadow);
+}
 
 .strainer input[type=submit] {
     margin: 0;
-    border: 1px solid var(--fg4);
+    border: 1px solid var(--beige12);
+    border-width: 1px 0;
     background: none;
-    background-color: var(--bg2);
-    border-width: 1px 0 0 1px;
+    background-color: var(--beige5);
     width: 100%;
-    padding: 3rem 2rem;
+    padding: 3rem;
 
-    color: var(--fg3);
+    color: var(--beige14);
     font-family: "marionette";
     text-transform: uppercase;
     letter-spacing: 1px;
-    text-align: right;
-    font-size: 2.5rem;
+    text-align: left;
+    font-size: 2rem;
 }
 
 @supports (-webkit-appearance:none) {
@@ -383,16 +404,15 @@ footer {
 }
 
 .strainer input[type=submit]:hover {
-    color: var(--fg1);
-    background-color: var(--bg1);
+    background-color: var(--beige10);
     cursor: pointer;
 }
 
 .settings input[type=submit] {
     font-family: "marionette";
-    color: var(--fg3);
+    color: var(--beige14);
     font-size: 2.5rem;
-    background: var(--bg4);
+    background: var(--beige3);
     border: none;
     text-align: left;
     width: 100%;
@@ -413,29 +433,30 @@ footer {
 /* Cocktail page */
 
 .cocktail-page {
-    margin: 5rem 5rem 10rem 5rem; 
+    margin: 5rem 5rem 10rem 55rem; 
+    line-height: 160%;
 }
 
 .cocktail-page a {
     text-decoration: underline;
-    text-decoration-color: var(--fg4);
+    text-decoration-color: var(--beige12);
 }
 
 .cocktail-page a:hover {
-    text-decoration-color: var(--fg1);
+    text-decoration-color: var(--black);
 }
 
 .cocktail {
     white-space: pre-wrap;
-    background-color: var(--bg3);
-    border: 1px solid var(--bg1);
+    background-color: var(--white);
+    border: 1px solid var(--beige10);
 }
 
 .cocktail-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    border: 1px solid var(--bg1);
+    border: 1px solid var(--beige10);
     border-width: 0 0 1px 0;
     width: 100%;
     padding: 5rem 3rem 5rem 5rem;
@@ -444,13 +465,13 @@ footer {
 .favorite {
     margin-left: auto;
     border: none;
-    background: var(--bg3);
-    color: var(--bg1);
+    background: var(--white);
+    color: var(--beige10);
     font: 5rem/5rem "Margo", "Optima", times;
 }
 
 .favorite:hover {
-    color: var(--fg2);
+    color: var(--beige13);
     cursor: pointer;
 }
 
@@ -469,8 +490,9 @@ footer {
 }
 
 .page-preparation {
-    border: 1px solid var(--bg1);
+    border: 1px solid var(--beige10);
     border-width: 0 1px 0 0;
+    background: var(--beige1);
 }
 
 .page-preparation p {
@@ -480,8 +502,9 @@ footer {
 .page-recipe {
     width: 100%;
     padding: 5rem 2rem 6rem 0;
-    border: 1px solid var(--bg1);
+    border: 1px solid var(--beige10);
     border-width: 0 0 1px 0;
+    background: var(--beige2);
 }
 
 .page-recipe-row {
@@ -501,13 +524,13 @@ footer {
 }
 
 .page-story {
-    border: 1px solid var(--bg1);
+    border: 1px solid var(--beige10);
     border-width: 0 1px 0 0;
     padding: 5rem;
 }
 
 .page-img {
-    border: 1px solid var(--bg1);
+    border: 1px solid var(--beige10);
     border-width: 0 1px 0 0;
     display: flex;          
     align-items: center;    
@@ -519,7 +542,7 @@ footer {
 }
 
 .page-metadata {
-    color: var(--fg4);
+    color: var(--beige12);
     display: flex;
     width: 8rem;
     justify-content: space-between;
@@ -531,13 +554,13 @@ footer {
 }
 
 .page-metadata a {
-    color: var(--fg4);
+    color: var(--beige12);
     text-decoration: underline;
 }
 
 .page-metadata a:hover {
-    color: var(--fg1);
-    text-decoration-color: var(--fg1);
+    color: var(--black);
+    text-decoration-color: var(--black);
 }
 
 /* "tablet" */
@@ -572,13 +595,33 @@ footer {
         line-height: 5rem;
     }
 
+    .nameplate {
+        grid-row: span 2;
+        text-align: left;
+        color: var(--beige13);
+        margin: 0 0 0 4rem;
+    }
+
+    .submit-container {
+        z-index: 1;
+        top: 12rem;
+        background-color: var(--beige4);
+        font-size: 2rem;
+    }
+
+    .search {
+        margin: 3rem 0;
+    }
+
     .cocktail-page > .illustration {
-        margin-top: -140px;
+        height: 90px;
+        margin-top: -30px;
+        border-radius: 0;
     }
 
     .cocktail {
         border-width: 0;
-        background-color: var(--bg3);
+        background-color: var(--beige0);
     }
 
     .page-title {
@@ -635,7 +678,7 @@ footer {
 
     .container {
         margin-left: 0rem;
-        background-color: var(--bg1);
+        background-color: var(--beige10);
     }
 
     .cards {
@@ -653,26 +696,20 @@ footer {
     }
 
     .strainer-mobile {
+        z-index: 10;
         display: flex;
-        border: 1px solid var(--fg4);
-        background-color: var(--bg4);
+        border: 1px solid var(--beige12);
+        background-color: var(--beige0);
         border-width: 0 0 1px 0;
         margin-bottom: 4rem;
         align-items: center;
         padding-right: 4rem;
     }
 
-    .nameplate {
-        grid-row: span 2;
-        text-align: left;
-        color: var(--fg2);
-        margin: 0 0 0 4rem;
-    }
-
     .filter-mobile {
         font-size: 3rem;
         margin-left: auto;
-        color: var(--fg2);
+        color: var(--beige13);
         text-transform: uppercase;
         cursor: pointer;
     }
@@ -686,16 +723,14 @@ footer {
 
     .strainer input[type=submit] {
         font-family: "marionette";
-        color: var(--fg3);
-        font-size: 3rem;
-        background: none;
-        border: 1px solid var(--fg4);
-        width: 100%;
-        padding: 5rem;
+        color: var(--beige14);
+        font-size: 2.5rem;
+        padding-top: 5rem;
+        padding-bottom: 5rem;
     }
 
     .expanded {
-        flex-direction: column;;
+        flex-direction: column;
     }
 
     .card-img {
@@ -714,10 +749,10 @@ footer {
     }
 
     .ingredient-container {
-        color: var(--fg2);
+        color: var(--beige13);
     }
 
     .label-toggle {
-        color: var(--fg2);
+        color: var(--beige13);
     }
 }

@@ -136,6 +136,6 @@
 
 (defn illustration [{ingredients :cocktail/ingredient} h]
   (let [w "100%"]
-    [:svg.illustration {:style {:height h :width w}}
+    [:svg.illustration {:style { :width w}}
      (for [ingredient ingredients]
        (background-rect ingredient w h))]))

@@ -30,7 +30,7 @@
 (defn- header-mobile []
   [:header.strainer-mobile
    [:a.nameplate {:href "/"} "CS"]
-   [:div#ftoggle.filter-mobile {:id "ftoggle"} "filter"]])
+   [:div#ftoggle.filter-mobile {:id "ftoggle"} "STRAIN"]])
 
 (defn- sidebar [{:strs [ingredient kind search favorites]} {:keys [user/view]}]
   (let [selected-ingredients (if (string? ingredient) #{ingredient} (into #{} ingredient))
@@ -41,13 +41,16 @@
 
       [:a.nameplate {:href "/"} "CS"]
 
-      
       [:section.search
-       [:h4 "search"]
-       [:input {:type "text" :name "search" :id "search" :value search}]]
+       [:h4#search-label "search"]
+       [:input {:type "text" :name "search" :id "search" :value search :autofocus true}]]
+
+      
+      [:div.submit-container
+       [:input {:type "submit" :value "Filter cocktails >"}]]     
 
       [:section.category
-       [:h4 "Collections"]
+       [:h4#collections "Collections"]
        (list [:input.label-check
               {:type    "checkbox"
                :id      "favorites"
@@ -79,21 +82,7 @@
               :value   ingredient
               :checked (selected-ingredients ingredient)}]
             [:label.ingredient {:for ingredient} ingredient]
-            [:p.possible-cocktails-count ""]])])]
-
-     [:input {:type "submit" :value "Filter cocktails >"}]
-
-     [:section.category.settings 
-      [:h4 "Settings"]
-      [:form {:action "/set-cookie" :method "post"}
-       [:input.ingredient-check
-        {:type    "checkbox"
-         :id      "view"
-         :name    "view"
-         :checked true
-         :value   (case view "expanded" "normal" "normal" "expanded" "expanded")}]
-       [:input.setting {:type "submit" 
-                        :value (str "Expanded cards are " (if (= view "expanded") "on" "off") )}]]]]))
+            [:p.possible-cocktails-count ""]])])]]))
 
 (defn- card-recipe [recipe & {:keys [expanded?]}]
   (let [ingredients (str/split-lines recipe)]
@@ -146,7 +135,7 @@
       [:div#cards.container
        [:section.cards {:class (when (= card-view "expanded") "cards-expanded")}
         (for [cocktail cocktails]
-          (cocktail-card (assoc cocktail :card/type card-view)))]
+          [:div (cocktail-card (assoc cocktail :card/type card-view))])]
        [:footer
         [:a.paginate {:href  (str (if (= origin :home) "?" (pagination-query-string query-string)) "cursor=" (max 0 (- cursor (* 2 pagination-step))))
                       :class (when (>= 0 (- cursor pagination-step)) "hide")}
@@ -157,36 +146,37 @@
          "→"]]])))
 
 (defn- cocktail-page [{:cocktail/keys [id recipe title date preparation story url img] :as cocktail}]
-  (list [:main.cocktail-page
-         (illustration/illustration cocktail "200px")
-         [:section.cocktail 
-          [:section.cocktail-header
-           [:h1.page-title title]
-           [:form {:action "/favorite" :method "post"}
-            [:input.ingredient-check {:type "checkbox" :name "id" :value id :checked true}]
-            [:input.favorite {:type "submit" 
-                              :value (if (:user/favorite cocktail) "♥" "♡")}]]]
-          [:section.cocktail-body
-           [:div.page-content
-            [:aside.page-preparation
-             [:section.page-recipe
-              (for [ingredient (str/split-lines recipe)]
-                (let [{:keys [measurement name]} (util/split-ingredient ingredient)]
-                  [:span.page-recipe-row 
-                   [:span.page-recipe-measurement measurement] 
-                   [:span.page-recipe-ingredient name]]))]
-             [:p preparation]]
-            [:div.page-story (when story (str/trim story))]
-            (when img
-              [:div.page-img
-               [:img {:src img}]])]
-           [:div.page-metadata
-            [:p (str (subs (str date) 0 11) (subs (str date) 24 28))]
-            [:a {:href url :target "_blank"} "view original"]
-            [:a {:href (str "/spill/" id)} "Spill"]]]]]
-        
-        [:footer
-         [:a.nameplate {:href "/"} "CS"]]))
+  (list
+   (header-mobile)
+   (sidebar {} {})
+   [:main.cocktail-page
+    (illustration/illustration cocktail "200px")
+    [:section.cocktail 
+     [:section.cocktail-header
+      [:h1.page-title title]
+      [:form {:action "/favorite" :method "post"}
+       [:input.ingredient-check {:type "checkbox" :name "id" :value id :checked true}]
+       [:input.favorite {:type "submit" 
+                         :value (if (:user/favorite cocktail) "♥" "♡")}]]]
+     [:section.cocktail-body
+      [:div.page-content
+       [:aside.page-preparation
+        [:section.page-recipe
+         (for [ingredient (str/split-lines recipe)]
+           (let [{:keys [measurement name]} (util/split-ingredient ingredient)]
+             [:span.page-recipe-row 
+              [:span.page-recipe-measurement measurement] 
+              [:span.page-recipe-ingredient name]]))]
+        [:p preparation]]
+       [:div.page-story (when story (str/trim story))]
+       (when img
+         [:div.page-img
+          [:img {:src img}]])]
+      [:div.page-metadata
+       [:p (str (subs (str date) 0 11) (subs (str date) 24 28))]
+       [:a {:href url :target "_blank"} "view original"]
+       [:a {:href (str "/spill/" id)} "Spill"]]]]]
+   (hiccup/include-js "/js/script.js")))
 
 ;;; PAGES
 
