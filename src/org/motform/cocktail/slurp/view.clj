@@ -20,6 +20,7 @@
     (hiccup/include-css "/css/reset.css")
     (hiccup/include-css "/css/fonts.css")
     (hiccup/include-css "/css/style.css")
+    [:script  {:type "text/javascript" :src "/js/script.js" :defer true}]
     [:title title]
     [:meta  {:content "width=device-width, initial-scale=1"
              :name    "viewport"
@@ -124,6 +125,7 @@
     [:p.card-preparation preparation]]])
 
 (defn- pagination-query-string [query-string]
+  (swap! *qs conj query-string)
   (str "cocktails?" (str/replace query-string #"&cursor=\d+$" "") "&"))
 
 (defn- cocktail-cards [strainer {:keys [pagination/cursor pagination/origin pagination/query-string user/cookies]}]
@@ -137,7 +139,8 @@
         (for [cocktail cocktails]
           [:div (cocktail-card (assoc cocktail :card/type card-view))])]
        [:footer
-        [:a.paginate {:href  (str (if (= origin :home) "?" (pagination-query-string query-string)) "cursor=" (max 0 (- cursor (* 2 pagination-step))))
+        [:a.paginate {:href  (str (if (= origin :home) "?" (pagination-query-string query-string))
+                                  "cursor=" (max 0 (- cursor (* 2 pagination-step))))
                       :class (when (>= 0 (- cursor pagination-step)) "hide")}
          "←"]
         [:p.tagline "quality versus quantity does not have to be a winner-take-all proposition"]
@@ -175,8 +178,7 @@
       [:div.page-metadata
        [:p (str (subs (str date) 0 11) (subs (str date) 24 28))]
        [:a {:href url :target "_blank"} "view original"]
-       [:a {:href (str "/spill/" id)} "Spill"]]]]]
-   (hiccup/include-js "/js/script.js")))
+       [:a {:href (str "/spill/" id)} "Spill"]]]]]))
 
 ;;; PAGES
 
@@ -190,14 +192,23 @@
      (cocktail-cards strainer {:pagination/cursor       (if cursor (Integer. cursor) 0)
                                :pagination/origin       origin
                                :pagination/query-string query-string
-                               :user/cookies            cookies})
-     (hiccup/include-js "/js/script.js")]))
+                               :user/cookies            cookies})]))
 
 (defn cocktail [id]
   (let [cocktail (db/cocktail-by-id id)]
     (page (str "Cocktail Slurp | " (str/capitalize (:cocktail/title cocktail)))
       (cocktail-page cocktail))))
 
+(defn ajax-cocktail-cards [{{:strs [cursor] :as strainer} :query-params 
+                            :keys [query-string cookies]} 
+                           origin]
+  (hiccup2/html
+   (cocktail-cards strainer {:pagination/cursor       (if cursor (Integer. cursor) 0)
+                             :pagination/origin       origin
+                             :pagination/query-string query-string
+                             :user/cookies            cookies})))
+
 (comment
-  
+  (def s (ajax-cocktail-cards {} :home))
+  (str s)
   )

@@ -15,7 +15,7 @@ const rest = ([car, ...cdr]) => cdr;
 
 const isActiveSection = ([ingredientSection]) =>
       ingredientSection.filter(ingredientContainer => {
-        const [_, label] = Array.from(ingredientContainer.children);
+        const [, label] = Array.from(ingredientContainer.children);
         return possibleIngredients[label.htmlFor];
       }).length;
 
@@ -27,10 +27,22 @@ function checkIngredientSections() {
 
 function checkIngredients() {
   if (HTTPRequest.readyState === XMLHttpRequest.DONE) {
-    possibleIngredients = JSON.parse(HTTPRequest.response);
+    const response = JSON.parse(HTTPRequest.response);
+    possibleIngredients = response.ingredients;
+    const cocktailCards = response.cocktailCards;
 
+    // Flush and update the cocktail cards.
+    if (pageLoad) {
+      pageLoad = false; // Don't do it the first time!
+    } else {
+      cocktailPage.removeChild(cocktailPage.lastChild);
+      cocktailPage.insertAdjacentHTML("beforeend", cocktailCards);
+      window.scrollTo(0, 0);
+    }
+
+    // Update the state of the strainer.
     for (const ingredientContainer of ingredientContainers) {
-      const [_, label, count] = Array.from(ingredientContainer.children);
+      const [, label, count] = Array.from(ingredientContainer.children);
       const ingredientName = label.htmlFor;
       const possibleCocktails = possibleIngredients[ingredientName];
       const isSelected = selectedIngredients.has(ingredientName);
@@ -45,19 +57,24 @@ function checkIngredients() {
 }
 
 function requestIngredientCheck() {
-  if (selectedIngredients.size) {
+  if (selectedIngredients.size || pageLoad || true) {
     let params = new URLSearchParams(); // this could be a json array, but I like my query strings
     for (const ingredient of Array.from(selectedIngredients)) {
       params.append("ingredient", ingredient);
     }
 
+    if (params.toString().length) {
+      history.pushState({}, "", "/cocktails" + "?" + params.toString());
+    }
+
     HTTPRequest = new XMLHttpRequest();
     HTTPRequest.onreadystatechange = checkIngredients;
-    HTTPRequest.open("GET", "/possible-ingredients" + "?" + params.toString(), true);
+    HTTPRequest.open("GET", "/api/possible-ingredients" + "?" + params.toString(), true);
     HTTPRequest.send();
-  } else {
+
+  } else { // No ingredients are selected, reset the state of the strainer.
     for (const ingredientContainer of ingredientContainers) {
-      const [_, label, count] = Array.from(ingredientContainer.children)
+      const [, label, count] = Array.from(ingredientContainer.children);
       ingredientContainer.style.display = "flex";
       count.innerText = "";
     }
@@ -84,12 +101,12 @@ function onIngredientClick(ingredientContainer) {
 
 function checkChecked() {
   for (const ingredientContainer of ingredientContainers) {
-    const [checkbox, label, _] = Array.from(ingredientContainer.children);
+    const [checkbox, label,] = Array.from(ingredientContainer.children);
     if (checkbox.checked) {
       selectedIngredients.add(label.htmlFor)
     }
-    requestIngredientCheck();
   }
+  requestIngredientCheck();
 }
 
 let selectedIngredients = new Set();
@@ -102,4 +119,7 @@ const ingredientContainers = ingredientSections.map(is => rest(Array.from(is.chi
 ingredientSections = ingredientSections.map(is => [is, rest(Array.from(is.children))]);  // an array of [section, sectionIngredients]
 
 ingredientContainers.map(i => i.onclick = onIngredientClick(i));
+let pageLoad = true;
 checkChecked(); // this results in an initial flash, suck it up React
+
+const cocktailPage = document.querySelector("main");

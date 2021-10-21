@@ -29,11 +29,21 @@
                  :cookies {"view" {:value view}}
                  :headers {"location" referer}})}]
 
-     ["/possible-ingredients"
-      {:get (fn [{{:strs [ingredient]} :query-params}]
+     
+     ["/api/possible-ingredients"
+      {:get (fn [{{:strs [ingredient]} :query-params
+                  :keys  [query-string]}]
               {:status  200
                :headers {"content-type" "application/json"}
-               :body    (-> ingredient vector flatten db/enumerated-possible-ingredients json/write-str)})}]
+               :body
+               (let [ingredients (-> (if ingredient ingredient []) vector flatten)]
+                 (json/write-str {"ingredients"    (db/enumerated-possible-ingredients ingredients)
+                                  "cocktailCards"  (str (view/ajax-cocktail-cards
+                                                         {:query-params {"search" ""
+                                                                         "ingredient" ingredients}
+                                                          :query-string query-string
+                                                          :cookies {}}
+                                                         :strainer))}))})}]
 
      ["/spill/{id}" ; this should really be a post, but the css for input-submit did not want to rotate
       {:name ::spill
@@ -83,4 +93,8 @@
 (comment
   (app {:request-method :get
         :uri ""})
+
+  stranier-ingredients
+  stranier-query
+  {:query-params {"search" "", "ingredient" ["bourbon whiskey" "rye whiskey"]}, :query-string "search=&ingredient=bourbon+whiskey&ingredient=rye+whiskey", :cookies {}}  
   )
