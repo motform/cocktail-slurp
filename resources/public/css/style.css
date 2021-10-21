@@ -222,14 +222,21 @@ footer {
     line-height: 5rem;
     margin-right: 5rem;
     text-transform: capitalize;
+    background-color: var(--beige1);
     border: 1px solid var(--beige12);
     border-width: 0 1px 0 0;
     overflow: scroll;
-    background-color: var(--beige1);
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 
     box-shadow:
         1px 2px 2px var(--shadow),
         2px 4px 4px var(--shadow);
+}
+
+.strainer::-webkit-scrollbar {
+    display: none;
+
 }
 
 .strainer-form {
@@ -430,6 +437,15 @@ footer {
 .cocktail-page {
     margin: 5rem 5rem 10rem 55rem; 
     line-height: 160%;
+    border-radius: 30px;
+
+    box-shadow:
+        2.1px 1.7px 3.2px var(--shadow),
+        5.1px 4.1px 7.6px var(--shadow),
+        9.5px 7.6px 14.3px var(--shadow),
+        17px 13.6px 25.5px var(--shadow),
+        31.8px 25.5px 47.6px var(--shadow),
+        76px 61px 114px var(--shadow) ;
 }
 
 .cocktail-page a {
@@ -471,16 +487,18 @@ footer {
 }
 
 .cocktail-page > .illustration {
-    transform: translate(0, 10px);
     border-width: 0;
+    height: 100px;
+    border-radius: 30px 30px 0 0;
 }
 
 .cocktail-body {
     display: flex;
+    font: 3.5rem/6rem "Marionette", "Optima", times;
 }
 
 .page-title {
-    font: 25rem/20rem "Margo", "Optima", times;
+    font: 20rem/18rem "Margo", "Optima", times;
     text-transform: capitalize;
 }
 

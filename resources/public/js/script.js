@@ -123,3 +123,13 @@ let pageLoad = true;
 checkChecked(); // this results in an initial flash, suck it up React
 
 const cocktailPage = document.querySelector("main");
+
+/*
+  TODO:
+
+  1. turn the filter-cocktails button into a clear-filters button on desktop?
+  2. stop extranious cocktail-requests on mobile (where the views are hidden anyway)
+  3. make the cocktail-page look less boring
+  4. add "similar cocktails" to the cocktail-page
+
+ */
