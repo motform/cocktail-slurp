@@ -412,19 +412,6 @@ footer {
     cursor: pointer;
 }
 
-.settings input[type=submit] {
-    font-family: "marionette";
-    color: var(--beige14);
-    font-size: 2.5rem;
-    background: var(--beige3);
-    border: none;
-    text-align: left;
-    width: 100%;
-    padding-left: 2rem;
-    text-transform: none;
-    letter-spacing: 0;
-}
-
 @media (max-width: 900px) {
     .cocktails    { grid-template-columns: 1fr; grid-gap: 5rem; }
     .filters      { display: none; }
@@ -731,17 +718,18 @@ footer {
 
     .strainer {
         width: 100%;
+        max-width: 100%;
         z-index: -1;
         border-width: 0;
         transform: translate(0, -2px);
     }
 
     .strainer input[type=submit] {
+        -webkit-appearance: none;
         font-family: "marionette";
         color: var(--beige14);
         font-size: 2.5rem;
-        padding-top: 5rem;
-        padding-bottom: 5rem;
+        border-radius: 0px;
     }
 
     .expanded {
@@ -753,14 +741,8 @@ footer {
         border-radius: 0 0 10px 10px;
     }
 
-    .settings input[type=submit] {
-        border: none;
-        padding: 0 0 0 2rem;
-        margin: 0;
-    }
-
     .strainer input[type=text] {
-        width: 95%;
+        width: 90%;
     }
 
     .ingredient-container {

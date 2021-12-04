@@ -136,7 +136,7 @@
       [:div#cards.container
        [:section.cards {:class (when (= card-view "expanded") "cards-expanded")}
         (for [cocktail cocktails]
-          [:div (cocktail-card (assoc cocktail :card/type card-view))])]
+          [:div.card-container (cocktail-card (assoc cocktail :card/type card-view))])]
        [:footer
         [:a.paginate {:href  (str (if (= origin :home) "?" (pagination-query-string query-string))
                                   "cursor=" (max 0 (- cursor (* 2 pagination-step))))

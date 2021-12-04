@@ -36,7 +36,7 @@ const checkIngredients = () => {
     // Flush and update the cocktail cards.
     if (pageLoad) {
       pageLoad = false; // Don't do it the first time!
-    } else if (!onSingleCocktailPage) {
+    } else if (!onSingleCocktailPage && !onMobile) {
       cocktailPage.removeChild(cocktailPage.lastChild);
       cocktailPage.insertAdjacentHTML("beforeend", cocktailCards);
       window.scrollTo(0, 0);
@@ -111,7 +111,13 @@ const checkChecked = () => {
   requestIngredientCheck();
 }
 
+/*********************************************************************************/
 
+// Booleans for page adaption
+const onSingleCocktailPage = "cocktail" === location.pathname.split("/")[1];
+const onMobile = window.screen.width <= 800;
+
+// Track ingredient state
 let selectedIngredients = new Set();
 let possibleIngredients = {};
 let HTTPRequest;
@@ -119,21 +125,10 @@ let HTTPRequest;
 let ingredientSections = Array.from(document.getElementsByClassName("ingredients"));
 const ingredientContainers = ingredientSections.map(is => rest(Array.from(is.children))).flat();
 
-ingredientSections = ingredientSections.map(is => [is, rest(Array.from(is.children))]);  // an array of [section, sectionIngredients]
+// an array of [section, sectionIngredients]
+ingredientSections = ingredientSections.map(is => [is, rest(Array.from(is.children))]); 
 
 ingredientContainers.map(i => i.onclick = onIngredientClick(i));
 let pageLoad = true;
-const onSingleCocktailPage = "cocktail" === location.pathname.split("/")[1];
 
-checkChecked(); // this results in an initial flash, suck it up React
-
-
-/*
-  TODO:
-
-  1. turn the filter-cocktails button into a clear-filters button on desktop?
-  2. stop extranious cocktail-requests on mobile (where the views are hidden anyway)
-  3. make the cocktail-page look less boring
-  4. add "similar cocktails" to the cocktail-page
-
-*/
+checkChecked(); // this results in an initial flash, welp
