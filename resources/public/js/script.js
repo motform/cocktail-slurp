@@ -40,7 +40,6 @@ const checkIngredients = () => {
       cocktailPage.removeChild(cocktailPage.lastChild);
       cocktailPage.insertAdjacentHTML("beforeend", cocktailCards);
       window.scrollTo(0, 0);
-    } else {
     }
 
     // Update the state of the strainer.

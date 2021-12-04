@@ -170,10 +170,8 @@ main {
 }
 
 .card-img {
-}
-
-.card-img {
-    width: auto;
+    width: 100%;
+    height: auto;
     border-radius: 0 0 10px 0;
 }
 
