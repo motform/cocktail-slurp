@@ -125,7 +125,6 @@
     [:p.card-preparation preparation]]])
 
 (defn- pagination-query-string [query-string]
-  (swap! *qs conj query-string)
   (str "cocktails?" (str/replace query-string #"&cursor=\d+$" "") "&"))
 
 (defn- cocktail-cards [strainer {:keys [pagination/cursor pagination/origin pagination/query-string user/cookies]}]

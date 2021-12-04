@@ -273,6 +273,10 @@ footer {
     flex-direction: column;
 }
 
+.category:last-child {
+    margin-bottom: 8rem;
+}
+
 .label-toggle {
     color: var(--beige14);
     width: 100%;
@@ -696,7 +700,7 @@ footer {
 
     .cards {
         margin: 2rem;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         grid-gap: 4rem;
     }
 

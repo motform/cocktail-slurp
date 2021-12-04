@@ -51,6 +51,7 @@
                  (concat pages (posts cursor))))
       (spit path (pr-str (into [] pages))))))
 
+;; TODO This should also update the underlying .edn 
 (defn scrape-new-cocktails! [url conn]
   (let [cocktails (-> url page posts parse/posts->cocktails)]
     (doseq [{:keys [cocktail/id] :as cocktail} cocktails]

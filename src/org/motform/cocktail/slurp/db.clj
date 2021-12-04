@@ -143,7 +143,7 @@
                     [:db/add "datomic.tx" :db/doc reason]]))
 
 (defn toggle-cocktail-favorite [id reason]
-  (d/transact conn [[:db/add        [:cocktail/id id] 
+  (d/transact conn [[:db/add [:cocktail/id id] 
                      :user/favorite (-> id cocktail-by-id :user/favorite not)]
                     [:db/add "datomic.tx" :db/doc reason]]))
 
@@ -171,10 +171,9 @@
 (comment
 
   (d/q '{:find [[?i ...]]
-         :where 
-         [[?e :cocktail/ingredient ?i0]
-          [?e :cocktail/ingredient ?i2]
-          [?e :cocktail/ingredient ?i]]
+         :where [[?e :cocktail/ingredient ?i0]
+                 [?e :cocktail/ingredient ?i2]
+                 [?e :cocktail/ingredient ?i]]
          :in [$ ?i0 ?i1]}
        (d/db conn)
        "genever"
@@ -199,7 +198,10 @@
 
   (d/delete-database "datomic:mem://cocktail.slurp/repl")
 
-  (strain {:ingredient "rum" :kind "shaken" :search "russian"}) ; strainer supports both str and [str]
+  ;; strainer supports both str and [str]
+  (strain {:ingredient "rum"
+           :kind       "shaken"
+           :search     "russian"})
 
   (toggle-cocktail-favorite "5576108970359620518" "testing")
   

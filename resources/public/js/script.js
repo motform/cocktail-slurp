@@ -19,25 +19,28 @@ const isActiveSection = ([ingredientSection]) =>
         return possibleIngredients[label.htmlFor];
       }).length;
 
-function checkIngredientSections() {
+const checkIngredientSections = () => {
   for (const [category, section] of ingredientSections) {
     category.style.display = (isActiveSection([section]) ? "flex" :  "none");
   }
 }
 
-function checkIngredients() {
+const checkIngredients = () => {
   if (HTTPRequest.readyState === XMLHttpRequest.DONE) {
-    const response = JSON.parse(HTTPRequest.response);
-    possibleIngredients = response.ingredients;
+    const cocktailPage  = document.querySelector("main");
+
+    const response      = JSON.parse(HTTPRequest.response);
     const cocktailCards = response.cocktailCards;
+    possibleIngredients = response.ingredients;
 
     // Flush and update the cocktail cards.
     if (pageLoad) {
       pageLoad = false; // Don't do it the first time!
-    } else {
+    } else if (!onSingleCocktailPage) {
       cocktailPage.removeChild(cocktailPage.lastChild);
       cocktailPage.insertAdjacentHTML("beforeend", cocktailCards);
       window.scrollTo(0, 0);
+    } else {
     }
 
     // Update the state of the strainer.
@@ -56,7 +59,7 @@ function checkIngredients() {
   }
 }
 
-function requestIngredientCheck() {
+const requestIngredientCheck = () => {
   if (selectedIngredients.size || pageLoad || true) {
     let params = new URLSearchParams(); // this could be a json array, but I like my query strings
     for (const ingredient of Array.from(selectedIngredients)) {
@@ -81,11 +84,11 @@ function requestIngredientCheck() {
   }
 }
 
-function onIngredientClick(ingredientContainer) {
+const onIngredientClick = (ingredientContainer) => {
   const [checkbox, label, count] = Array.from(ingredientContainer.children);
   const ingredientName = label.htmlFor;
 
-  return function() {
+  return () => {
     if (selectedIngredients.has(ingredientName)) {
       selectedIngredients.delete(ingredientName);
       ingredientContainer.style.backgroundColor = "";
@@ -99,7 +102,7 @@ function onIngredientClick(ingredientContainer) {
   }
 }
 
-function checkChecked() {
+const checkChecked = () => {
   for (const ingredientContainer of ingredientContainers) {
     const [checkbox, label,] = Array.from(ingredientContainer.children);
     if (checkbox.checked) {
@@ -108,6 +111,7 @@ function checkChecked() {
   }
   requestIngredientCheck();
 }
+
 
 let selectedIngredients = new Set();
 let possibleIngredients = {};
@@ -120,9 +124,10 @@ ingredientSections = ingredientSections.map(is => [is, rest(Array.from(is.childr
 
 ingredientContainers.map(i => i.onclick = onIngredientClick(i));
 let pageLoad = true;
+const onSingleCocktailPage = "cocktail" === location.pathname.split("/")[1];
+
 checkChecked(); // this results in an initial flash, suck it up React
 
-const cocktailPage = document.querySelector("main");
 
 /*
   TODO:
@@ -132,4 +137,4 @@ const cocktailPage = document.querySelector("main");
   3. make the cocktail-page look less boring
   4. add "similar cocktails" to the cocktail-page
 
- */
+*/
