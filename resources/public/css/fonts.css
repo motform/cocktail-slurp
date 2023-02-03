@@ -1,8 +1,14 @@
 @font-face {
-    src: url('/fonts/Margo_Condensed_v0.1-Medium.woff2') format("woff2"),
-         url('/fonts/Margo_Condensed_v0.1-Medium.woff')  format("woff");
+    src: url('/fonts/Margo_v0.2_Condensed-Medium.woff2') format("woff2");
     font-family: "Margo";
     font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    src: url('/fonts/Margo_v0.2_Condensed-Medium_Italic.woff2') format("woff2");
+    font-family: "Margo";
+    font-style: italic;
     font-weight: 400;
 }
 
