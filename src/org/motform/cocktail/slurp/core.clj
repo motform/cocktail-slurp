@@ -5,7 +5,7 @@
             [org.motform.cocktail.slurp.scrape])
   (:gen-class))
 
-(defn -main [_]
+(defn -main [& _]
   (mount/start))
 
 (comment
