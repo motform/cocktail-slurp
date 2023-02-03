@@ -24,14 +24,15 @@
     [:title title]
     [:meta  {:content "width=device-width, initial-scale=1"
              :name    "viewport"
-             :charset "utf-8"}]
+             :charset "utf-8"
+             :theme-color "#fdfcfa"}]
     [:body
      (hiccup2/html content)]]))
 
 (defn- header-mobile []
   [:header.strainer-mobile
    [:a.nameplate {:href "/"} "CS"]
-   [:div#ftoggle.filter-mobile {:id "ftoggle"} "STRAIN"]])
+   [:div#ftoggle.filter-mobile {:id "ftoggle"} "MENU"]])
 
 (defn- sidebar [{:strs [ingredient kind search favorites]} {:keys [user/view]}]
   (let [selected-ingredients (if (string? ingredient) #{ingredient} (into #{} ingredient))
@@ -42,13 +43,12 @@
 
       [:a.nameplate {:href "/"} "CS"]
 
-      [:section.search
+      #_[:section.search
        [:h4#search-label "search"]
        [:input {:type "text" :name "search" :id "search" :value search :autofocus true}]]
 
-      
       [:div.submit-container
-       [:input {:type "submit" :value "Filter cocktails >"}]]     
+       [:input {:type "submit" :value "Filter cocktails >"}]]
 
       [:section.category
        [:h4#collections "Collections"]
@@ -90,16 +90,13 @@
     [:section.card-recipe {:class (when expanded? "card-recipe-expanded")}
      (for [ingredient ingredients]
        (let [{:keys [measurement name]} (util/split-ingredient ingredient)]
-         [:span.card-recipe-row 
-          [:span.card-recipe-measurement measurement] 
+         [:span.card-recipe-row
+          [:span.card-recipe-measurement measurement]
           [:span.card-recipe-ingredient name]]))]))
 
 (defmulti cocktail-card :card/type)
 
-(defmethod cocktail-card "expanded" 
-  [{:cocktail/keys [title id preparation recipe img]
-    :user/keys [favorite] 
-    :as cocktail}]
+(defmethod cocktail-card "expanded" [{:cocktail/keys [title id preparation recipe img] :user/keys [favorite] :as cocktail}]
   [:section.card
    (illustration/illustration cocktail "60px")
    [:div.card-title-container.card-title-container-expanded
@@ -109,11 +106,12 @@
     [:div.card-body-expanded-content
      (card-recipe recipe :expanded? true)
      [:p.card-preparation preparation]]
-    [:img.card-img {:src img}]]])
+    [:div.card-img-container
+     [:img.card-img {:src img}]]]])
 
-(defmethod cocktail-card "normal" 
-  [{:cocktail/keys [title id preparation recipe] 
-    :user/keys [favorite] 
+(defmethod cocktail-card "normal"
+  [{:cocktail/keys [title id preparation recipe]
+    :user/keys [favorite]
     :as cocktail}]
   [:section.card
    (illustration/illustration cocktail "60px")
@@ -153,12 +151,12 @@
    (sidebar {} {})
    [:main.cocktail-page
     (illustration/illustration cocktail "200px")
-    [:section.cocktail 
+    [:section.cocktail
      [:section.cocktail-header
       [:h1.page-title title]
       [:form {:action "/favorite" :method "post"}
        [:input.ingredient-check {:type "checkbox" :name "id" :value id :checked true}]
-       [:input.favorite {:type "submit" 
+       [:input.favorite {:type "submit"
                          :value (if (:user/favorite cocktail) "♥" "♡")}]]]
      [:section.cocktail-body
       [:div.page-content
@@ -166,8 +164,8 @@
         [:section.page-recipe
          (for [ingredient (str/split-lines recipe)]
            (let [{:keys [measurement name]} (util/split-ingredient ingredient)]
-             [:span.page-recipe-row 
-              [:span.page-recipe-measurement measurement] 
+             [:span.page-recipe-row
+              [:span.page-recipe-measurement measurement]
               [:span.page-recipe-ingredient name]]))]
         [:p preparation]]
        [:div.page-story (when story (str/trim story))]
@@ -181,25 +179,25 @@
 
 ;;; PAGES
 
-(defn cocktails [{{:strs [cursor] :as strainer} :query-params 
-                  :keys [query-string cookies]} 
+(defn cocktails [{{:strs [cursor] :as strainer} :query-params
+                  :keys [query-string cookies]}
                  origin]
   (page "Cocktail Slurp"
-    [:main.cocktails
-     (header-mobile)
-     (sidebar strainer {:user/view (get-in cookies ["view" :value])})
-     (cocktail-cards strainer {:pagination/cursor       (if cursor (Integer. cursor) 0)
-                               :pagination/origin       origin
-                               :pagination/query-string query-string
-                               :user/cookies            cookies})]))
+        [:main.cocktails
+         (header-mobile)
+         (sidebar strainer {:user/view (get-in cookies ["view" :value])})
+         (cocktail-cards strainer {:pagination/cursor       (if cursor (Integer. cursor) 0)
+                                   :pagination/origin       origin
+                                   :pagination/query-string query-string
+                                   :user/cookies            cookies})]))
 
 (defn cocktail [id]
   (let [cocktail (db/cocktail-by-id id)]
     (page (str "Cocktail Slurp | " (str/capitalize (:cocktail/title cocktail)))
-      (cocktail-page cocktail))))
+          (cocktail-page cocktail))))
 
-(defn ajax-cocktail-cards [{{:strs [cursor] :as strainer} :query-params 
-                            :keys [query-string cookies]} 
+(defn ajax-cocktail-cards [{{:strs [cursor] :as strainer} :query-params
+                            :keys [query-string cookies]}
                            origin]
   (hiccup2/html
    (cocktail-cards strainer {:pagination/cursor       (if cursor (Integer. cursor) 0)
@@ -209,5 +207,4 @@
 
 (comment
   (def s (ajax-cocktail-cards {} :home))
-  (str s)
-  )
+  (str s))

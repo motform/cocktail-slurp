@@ -73,12 +73,12 @@ main {
 .cards {
     margin: 5rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     grid-gap: 7rem;
 }
 
 .cards-expanded {
-    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
 }
 
 .card {
@@ -169,12 +169,24 @@ main {
     padding: 0 3rem 3rem 4rem;
 }
 
+.card-img-container {
+	border-left: 1px solid var(--beige10);
+    border-top: 1px solid var(--beige10);
+    padding: 10px;
+    display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
 .card-img {
     width: 100%;
     height: auto;
-    border-radius: 0 0 10px 0;
+    border-radius: 10px;
+	box-shadow: 1px 2px 2px var(--shadow),
+				2px 4px 4px var(--shadow),
+				4px 8px 8px var(--shadow),
+				8px 12px 12px var(--shadow);
 }
-
 
 footer {
     margin: 5rem 0 0 0;
@@ -619,7 +631,8 @@ footer {
 
     .cocktail-page > .illustration {
         height: 90px;
-        margin-top: -30px;
+        margin-top: -20px;
+        margin-bottom: 4px;
         border-radius: 0;
     }
 
@@ -741,17 +754,26 @@ footer {
     .card-img {
         border-width: 1px 0 0 0;
         border-radius: 0 0 10px 10px;
+		box-shadow: none;
+		transform: translate(0px, 7px);
     }
 
-    .strainer input[type=text] {
-        width: 90%;
-    }
+	.card-img-container {
+		border-left: none;
+		border-top: none;
+		padding: 0;
+		display: block;
+	}
 
-    .ingredient-container {
-        color: var(--beige13);
-    }
+	.strainer input[type=text] {
+		width: 90%;
+	}
 
-    .label-toggle {
-        color: var(--beige13);
-    }
+	.ingredient-container {
+		color: var(--beige13);
+	}
+
+	.label-toggle {
+		color: var(--beige13);
+	}
 }

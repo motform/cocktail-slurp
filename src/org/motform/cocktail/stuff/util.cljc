@@ -7,16 +7,6 @@
   [m k v]
   (if v (assoc m k v) m))
 
-(defn ?update
-  "Update `k` with `f` in `m`, the `k` exists, otherwise returns `m`. "
-  [m k f & args]
-  (if (k m) (apply update m k f args) m))
-
-(defn map-map
-  "Maps a `f` to all the v in `m`"
-  [m f]
-  (into {} (for [[k v] m] [k (f v)])))
-
 (defn map-keys [m f]
   (reduce-kv
    (fn [m k v]
@@ -46,22 +36,23 @@
     (subvec v start)
     (subvec v start end)))
 
+(def measurements #{"oz" "oz." "jigger" "ml" "cl" "dl" "dash" "dah" "dashes" "tsp" "tbsp" "scant" "spoon" "wineglass" "barspoon" "egg" "pinch"
+                    "pony" "quart" "bsp" "heaping" "whole"  "drop" "drops" "parts" "part" "leaf" "spring" "sprig" "gill"})
+
 (defn measurement? [s]
-  (let [measurements #{"oz" "jigger" "ml" "cl" "dl" "dash" "tsp" "tbsp" "scant" "spoon" "wineglass" "barspoon" "egg" "pinch"
-                       "pony" "quart" "bsp" "heaping" "whole" "Whole" "drop" "drops" "parts" "part" "leaf" "spring" "sprig"}]
-    (or (measurements (str/lower-case s))
-        ;; NOTE this should probably be collapsed into a single regex
-        (re-matches #"~*\d+ [\d/\-]+"    s) 
-        (re-matches #"~*[\d/]+"          s) 
-        (re-matches #"~*\d+%+"           s) 
-        (re-matches #">|<\d*/\d*"        s)
-        (re-matches #"~*\d+\-\d+"        s))))
+  (or (measurements (str/lower-case s))
+      ;; NOTE this should probably be collapsed into a single regex
+      (re-matches #"~*\d+ [\d/\-\-]+"    s)
+      (re-matches #"~*[\d/]+"          s)
+      (re-matches #"~*\d+%+"           s)
+      (re-matches #">|<\d*/\d*"        s)
+      (re-matches #"~*\d+\-\d+"        s)))
 
 (defn abbrev-measurement [measurement]
   (case (str/lower-case measurement)
     "jigger"    "jig"
     "dash"      "ds"
-    "scant"     "s" 
+    "scant"     "s"
     "heaping"   "h"
     "drops"     "dr"
     "drop"      "dr"
@@ -90,7 +81,6 @@
                       (drop-while measurement?)
                       (str/join " ")))))
 
-
 (def ingredients
   {:base    ["applejack" "aquavit" "batavia arrack" "bourbon whiskey" "brandy" "cachaça" "calvados" "cognac" "genever" "gin" "grappa" "mezcal" "pisco" "rum" "rye whiskey" "scotch" "tequila" "vodka" "whiskey" "white rum"]
    :liqueur ["absinthe" "amaretto" "amaro" "amaro nonino" "amer picon" "aperol" "apricot liqueur" "averna" "bauchant" "becherovka" "benedictine" "campari" "chartreuse" "cherry brandy" "cointreau" "creme de banane" "creme de cacao" "creme de cassis" "creme de noyaux" "creme de rose" "creme de violette" "creole shrub" "curacao" "cynar" "drambuie" "falernum" "fernet-branca" "galliano" "gammeldansk bitters" "ginger liqueur" "green chartreuse" "honey liqueur" "infused vodka" "kahlua" "kümmel" "licor 43" "malört" "maraschino" "mirto" "pastis" "pear liqueur" "pimento dram" "pimm's no. 1" "pineau des charentes" "sloe gin" "st. germain" "strega" "suze" "swedish punsch" "walnut liqueur" "yellow chartreuse"]
@@ -99,7 +89,6 @@
    :juice   ["grapefruit juice" "lemon juice" "lime juice" "orange juice" "pineapple juice"]
    :syrup   ["cinnamon simple syrup" "grenadine" "gum syrup" "maple syrup" "mint simple syrup" "orgeat"  "passion fruit syrup" "pineapple syrup" "raspberry syrup" "rock candy syrup" "simple syrup" "vanilla simple syrup" "other simple syrup"]
    :pantry  ["apple cider" "beer" "cocoa" "cream" "creme de peche" "egg" "egg white" "ginger beer" "honey" "soda" "sugar" "tea"]})
-
 
 (defn empty-quip []
   (rand-nth ["Fresh out!" "Nothing of that sort." "Strange combination kiddo." "To boldly go where no-one has mixed before." "Bar is closed." "Someone missed the last call." "That's not an appropriate use for Chartreuse."]))
