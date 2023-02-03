@@ -75,8 +75,7 @@
   :start (chime/chime-at every-day-9am-in-boston
                          (fn [time]
                            (println "Scraping new cocktails at" time)
-                           (scrape-new-cocktails! "https://cocktailvirgin.blogspot.com" db/conn))
-                         {:on-finished #(println "Scraped new cocktails!")})
+                           (scrape-new-cocktails! "https://cocktailvirgin.blogspot.com" db/conn)))
   :stop  (.close scraper))
 
 (comment
