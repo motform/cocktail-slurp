@@ -147,7 +147,7 @@
 (defn post->cocktail [post]
   (-> post
       id url title author date body img categories bars ingredients prefix-ingredients fulltext kind
-      (dissoc :type :attrs :tag :content)))
+      (dissoc :type :attrs :tag :content :cocktail/fulltext)))
 
 (def xf-cocktail
   (comp (map post->cocktail)
