@@ -2,7 +2,8 @@
   :db/doc "(Blogspot) id of the cocktail."
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one
-  :db/unique :db.unique/identity}
+  :db/unique :db.unique/identity
+  }
 
  {:db/ident :cocktail/title
   :db/doc "Cocktail title. Note that we allow for/have multiple cocktails with the same title."
@@ -35,11 +36,11 @@
   :db/valueType :db.type/string 
   :db/cardinality :db.cardinality/one}
 
- {:db/ident :cocktail/fulltext
-  :db/doc "Concatenation of all string attributes to assist in fulltext search."
-  :db/valueType :db.type/string 
-  :db/cardinality :db.cardinality/one
-  :db/fulltext true}
+ ;; {:db/ident :cocktail/fulltext
+ ;;  :db/doc "Concatenation of all string attributes to assist in fulltext search."
+ ;;  :db/valueType :db.type/string 
+ ;;  :db/cardinality :db.cardinality/one
+ ;;  :db/fulltext true}
 
  {:db/ident :cocktail/img
   :db/doc "URL for the img from Blogspot, not always available."

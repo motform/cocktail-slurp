@@ -1,11 +1,20 @@
 {:paths   ["src" "resources"]
- :deps    {com.datomic/datomic-free {:mvn/version "0.9.5703.21"}
+ :deps    {com.fbeyer/reitit-ring-defaults {:mvn/version "0.1.0"}
+           ;; com.datomic/datomic-free {:mvn/version "0.9.5697"}
+           datascript/datascript    {:mvn/version "1.4.0"}
            hiccup/hiccup            {:mvn/version "2.0.0-alpha2"}
            hickory/hickory          {:mvn/version "0.7.1"}
            jarohen/chime            {:mvn/version "0.3.3"}
-           ring/ring-jetty-adapter  {:mvn/version "1.9.3"}
-           metosin/reitit           {:mvn/version "0.5.13"}
+           metosin/reitit           {:mvn/version "0.5.16"}
            mount/mount              {:mvn/version "0.1.16"}
-           org.clojure/data.json    {:mvn/version "2.3.1"}}
- :aliases {:server  {:main-opts ["-m" "org.motform.cocktail.slurp.core"]}
-           :depstar {:extra-deps {seancorfield/depstar {:mvn/version "2.0.216"}}}}}
+           org.clojure/data.json    {:mvn/version "2.4.0"}
+           ring/ring-jetty-adapter  {:mvn/version "1.9.5"}}
+
+ :aliases {:dev {:extra-deps {cider/cider-nrepl         {:mvn/version "0.28.5"}
+                              mx.cider/enrich-classpath {:mvn/version "1.9.0"}}
+                 :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]" "--socket" "nrepl-socket"]}
+
+           :server  {:main-opts ["-m" "org.motform.cocktail.slurp.core"]}
+
+           :build {:extra-deps {io.github.clojure/tools.build {:git/tag "v0.9.3" :git/sha "e537cd1"}}
+                   :ns-default build}}}

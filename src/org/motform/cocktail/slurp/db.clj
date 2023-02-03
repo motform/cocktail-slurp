@@ -1,31 +1,55 @@
 (ns org.motform.cocktail.slurp.db
-  (:require [clojure.string :as str]
-            [clojure.edn    :as edn]
-            [clojure.set    :as set]
-            [datomic.api    :as d]
-            [mount.core     :as mount]
+  (:require [clojure.edn     :as edn]
+            [clojure.java.io :as io]
+            [clojure.string  :as str]
+            ;; [datomic.api     :as d]
+            [datascript.core    :as d]
+            [mount.core      :as mount]
             [org.motform.cocktail.slurp.parse :as parse]
-            [org.motform.cocktail.stuff.util  :as util]))
+            [org.motform.cocktail.stuff.util  :as util])
+  (:import (java.io PushbackReader)))
 
 ;;; db
 
-(def bar (-> "resources/edn/bar.edn" slurp edn/read-string))
+(defn- read-edn-resource [path]
+  (with-open [reader (io/reader (io/resource path))]
+    (edn/read (PushbackReader. reader))))
+
+(def bar (read-edn-resource "edn/bar.edn"))
+
+;; (defn init-db
+;;   "Initialize and populate the in-memory Datomic db.
+;;    Expects `posts` to be the relative path to an .edn of scraped posts."
+;;   [{:keys [schema posts uri]}]
+;;   (println "Initializing DB at" uri)
+;;   (d/create-database uri)
+;;   (let [conn (d/connect uri)]
+;;     (println "Reading and transacting" schema)
+;;     (d/transact conn (read-edn-resource schema))
+;;     (println "Reading and transacting" posts)
+;;     (d/transact conn (-> posts read-edn-resource parse/posts->cocktails))
+;;     (println "Database initalized")
+;;     conn))
+
+(def schema
+  {:cocktail/id {:db/cardinality :db.cardinality/one
+                 :db/unique :db.unique/identity}
+   :cocktail/ingredient {:db/cardinality :db.cardinality/many}})
 
 (defn init-db
   "Initialize and populate the in-memory Datomic db.
    Expects `posts` to be the relative path to an .edn of scraped posts."
-  [{:keys [schema posts uri]}]
-  (d/create-database uri)
-  (let [conn (d/connect uri)]
-    (d/transact conn (-> schema slurp edn/read-string))
-    (d/transact conn (-> posts slurp edn/read-string parse/posts->cocktails))
+  [{:keys [posts]}]
+  (let [conn   (d/create-conn schema)
+        posts  (parse/posts->cocktails (read-edn-resource posts))]
+    (d/transact conn posts)
     conn))
 
 (mount/defstate conn
-  :start (init-db {:uri    "datomic:mem://cocktail.slurp/dev-server"
-                   :schema "resources/edn/cocktail-schema.edn"
-                   :posts  "resources/edn/posts.edn"})
-  :stop (d/shutdown false))
+  :start (init-db {;; :uri    "datomic:mem://cocktail.slurp/dev-server"
+                   ;; :schema "edn/cocktail-schema.edn"
+                   :posts  "edn/posts.edn"})
+  :stop nil)
 
 (defn add-cocktail [conn cocktail]
   (d/transact conn [cocktail]))
@@ -53,12 +77,12 @@
   (let [result (d/pull (d/db conn) '[*] [:cocktail/id id])]
     (when (:db/id result) result))) ; if the cocktail is missing, :db/id is nil
 
-(defn cocktail-by-title 
+(defn cocktail-by-title
   "NOTE: Return first scalar, regardless of name conflicts."
   [title]
   (d/q '[:find ?id .
          :in $ ?title
-         :where 
+         :where
          [?e :cocktail/title ?title]
          [?e :cocktail/id ?id]]
        (d/db conn) title))
@@ -143,25 +167,25 @@
                     [:db/add "datomic.tx" :db/doc reason]]))
 
 (defn toggle-cocktail-favorite [id reason]
-  (d/transact conn [[:db/add [:cocktail/id id] 
+  (d/transact conn [[:db/add [:cocktail/id id]
                      :user/favorite (-> id cocktail-by-id :user/favorite not)]
                     [:db/add "datomic.tx" :db/doc reason]]))
 
 (defn possible-ingredients [ingredients]
-  (let [{:keys [query args]} 
-        (and-query '{:query {:find  [[?i ...]] 
+  (let [{:keys [query args]}
+        (and-query '{:query {:find  [[?i ...]]
                              :where [[?e :cocktail/ingredient ?i]]
-                             :in    [$]} 
+                             :in    [$]}
                      :args []}
                    :cocktail/ingredient \i ingredients)]
     (apply d/q query (d/db conn) args)))
 
 (defn enumerated-possible-ingredients [ingredients]
-  (let [{:keys [query args]} 
-        (and-query '{:query {:find  [(pull ?e [:cocktail/ingredient])] 
+  (let [{:keys [query args]}
+        (and-query '{:query {:find  [(pull ?e [:cocktail/ingredient])]
                              :where [[?e :cocktail/ingredient ?ingredient]
                                      [(contains? ?collection ?ingredient)]]
-                             :in    [$ ?collection]} 
+                             :in    [$ ?collection]}
                      :args []}
                    :cocktail/ingredient \i ingredients)]
     (->> (apply d/q query (d/db conn) bar args)
@@ -169,6 +193,8 @@
          frequencies)))
 
 (comment
+
+  (def conn (init-db {:posts  "edn/posts.edn"}))
 
   (d/q '{:find [[?i ...]]
          :where [[?e :cocktail/ingredient ?i0]
@@ -180,7 +206,7 @@
        "cream")
 
   (->> (d/q '{:find [(pull ?e [:cocktail/ingredient])]
-              :where 
+              :where
               [[?e :cocktail/ingredient ?i0]
                [?e :cocktail/ingredient ?i2]
                [?e :cocktail/ingredient ?i]]
@@ -191,7 +217,23 @@
        (mapcat (comp :cocktail/ingredient first))
        frequencies)
 
-  ;; datomic
+  (d/q '{:find [[?i ...]]
+         :where [[?e :cocktail/ingredient ?i0]
+                 [?e :cocktail/ingredient ?i2]
+                 [?e :cocktail/ingredient ?i]]
+         :in [$ ?i0 ?i1]}
+       (d/db conn)
+       "genever"
+       "cream")
+
+  (d/q '[:find  ?t
+         :where
+         [?e :cocktail/ingredient "genever"]
+         [?e :cocktail/ingredient "cream"]
+         [?e :cocktail/title ?t]]
+       (d/db conn))
+
+;; datomic
   (init-db {:uri    "datomic:mem://cocktail.slurp/repl"
             :posts  "resources/edn/posts.edn"
             :schema "resources/edn/cocktail-schema.edn"})
@@ -204,10 +246,15 @@
            :search     "russian"})
 
   (toggle-cocktail-favorite "5576108970359620518" "testing")
-  
+
   (:user/favorite (cocktail-by-id "7857488667133973271"))
 
   (all :cocktail/kind)
-  
+
+  (cocktail-by-id "7536913279937580588")
+
   ;; export the cocktails
-  (spit "resources/edn/formatted-posts.edn" (pr-str (parse/posts->cocktails "resources/edn/posts.edn"))))
+  (spit "resources/edn/formatted-posts.edn" (pr-str (parse/posts->cocktails "resources/edn/posts.edn")))
+
+  :comment)
+
