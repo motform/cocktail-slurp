@@ -1,9 +1,11 @@
 !resources/public
 .clj-kondo/.cache/
 .shadow-cljs/
+.m2/
 node_modules/
 package-lock.json
 resources/public/js/
 resources/public/fonts/
 target/
 TODO.org
+fly.toml
