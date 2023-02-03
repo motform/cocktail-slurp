@@ -1,10 +1,12 @@
 (ns org.motform.cocktail.slurp.server
-  (:require [mount.core         :as mount]
+  (:require [clojure.data.json  :as json]
+            [mount.core         :as mount]
             [reitit.dev.pretty  :as pretty]
-            [clojure.data.json  :as json]
             [reitit.ring        :as ring]
             [ring.adapter.jetty :as jetty]
-            [ring.middleware.cookies           :as cookies]
+            [ring.middleware.cookies  :as cookies]
+            [ring.middleware.defaults :refer [api-defaults]]
+            [reitit.ring.middleware.defaults   :as defaults]
             [reitit.ring.middleware.exception  :as exception]
             [reitit.ring.middleware.parameters :as parameters]
             [org.motform.cocktail.slurp.db     :as db]
@@ -78,23 +80,26 @@
                          :strainer)})}]]
 
     {:exception pretty/exception
-     :data {:middleware [parameters/parameters-middleware
+     :data {:middleware [defaults/ring-defaults-middleware
+                         parameters/parameters-middleware
                          cookies/wrap-cookies
-                         exception/exception-middleware]}})
+                         exception/exception-middleware]
+            :defaults api-defaults}})
    (ring/routes
     (ring/create-resource-handler {:path "/"})
     (ring/redirect-trailing-slash-handler)
     (ring/create-default-handler))))
 
 (mount/defstate server
-  :start (jetty/run-jetty #'app {:port 8888 :join? false})
+  :start (let [port 8090 
+               server (jetty/run-jetty #'app {:port port :join? false})]
+           (println "Started server at port" port)
+           server)
   :stop  (.stop server))
 
 (comment
   (app {:request-method :get
         :uri ""})
 
-  stranier-ingredients
-  stranier-query
   {:query-params {"search" "", "ingredient" ["bourbon whiskey" "rye whiskey"]}, :query-string "search=&ingredient=bourbon+whiskey&ingredient=rye+whiskey", :cookies {}}  
   )
