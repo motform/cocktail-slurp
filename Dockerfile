@@ -10,6 +10,6 @@ RUN clj -Sdeps '{:mvn/local-repo "./.m2/repository"}' -T:build uber
 FROM openjdk:21-slim-buster AS runtime
 COPY --from=builder /opt/target/core-1.0-standalone.jar /core.jar
 
-EXPOSE 8090
+EXPOSE 8080
 
 ENTRYPOINT ["java", "-cp", "core.jar", "clojure.main", "-m", "org.motform.cocktail.slurp.core"]

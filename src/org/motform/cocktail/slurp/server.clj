@@ -91,8 +91,8 @@
     (ring/create-default-handler))))
 
 (mount/defstate server
-  :start (let [port 8090 
-               server (jetty/run-jetty #'app {:port port :join? false})]
+  :start (let [port 8080
+               server (jetty/run-jetty #'app {:port port})]
            (println "Started server at port" port)
            server)
   :stop  (.stop server))

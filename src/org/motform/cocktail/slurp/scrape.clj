@@ -68,11 +68,11 @@
       (when-not (:db/id (db/cocktail-by-id id))
         (db/add-cocktail conn cocktail)))))
 
-(defn- every-x-seconds [seconds]
-  (chime/periodic-seq (Instant/now) (Duration/ofSeconds seconds)))
+(def every-24-hours
+  (chime/periodic-seq (Instant/now) (Duration/ofHours 24)))
 
 (mount/defstate scraper
-  :start (chime/chime-at every-day-9am-in-boston
+  :start (chime/chime-at every-day-9am-in-boston #_every-24-hours
                          (fn [time]
                            (println "Scraping new cocktails at" time)
                            (scrape-new-cocktails! "https://cocktailvirgin.blogspot.com" db/conn)))
